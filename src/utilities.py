@@ -103,8 +103,8 @@ def vary_epsilon(
     all_samples = []
     all_ps = []
     for eps in epsilon:
-        f = lambda e, x: (e.dot(x)/max(np.sum(e), 1) >= tau)*(1 - eps) + eps
-        g = lambda e, x: (e.dot(x)/max(np.sum(e), 1) >= tau)
+        f = lambda e, x: (e.dot(x) / max(np.sum(e), 1) >= tau) * (1 - eps) + eps
+        g = lambda e, x: (e.dot(x) / max(np.sum(e), 1) >= tau)
 
         samples, ps = infer_over_realizations(
             I,
@@ -195,8 +195,8 @@ def vary_beta(
     all_samples = []
     all_ps = []
     for b in beta:
-        b_x = b*np.ones(n)
-        b_y = b*np.ones(m)
+        b_x = b * np.ones(n)
+        b_y = b * np.ones(m)
 
         samples, ps = infer_over_realizations(
             I,
