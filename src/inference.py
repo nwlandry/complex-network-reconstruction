@@ -56,7 +56,6 @@ def infer_adjacency_matrix(
     s_i = skip
 
     samples = np.zeros((nsamples, n, n))
-    print(np.shape(samples))
     sample_num = 0
 
     while it <= burn_in + (nsamples - 1) * skip:
