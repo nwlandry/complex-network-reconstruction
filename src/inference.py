@@ -1,15 +1,11 @@
 import random
 
 import numpy as np
-import xgi
-from scipy import sparse
 from numpy import ndarray
 from scipy.stats import beta
 
 
-def infer_incidence_matrix_and_dynamics(
-    x, beta, f, rho, num_iter=10, max_iter=10
-):
+def infer_adjacency_matrix_and_dynamics(x, c, rho, num_iter=10, max_iter=10):
     n = np.size(x, axis=1)
     it = 0
 
@@ -17,18 +13,18 @@ def infer_incidence_matrix_and_dynamics(
     A = adjacency_matrix_prior(n, rho)
 
     while it < max_iter:
-        A, _ = infer_adjacency_matrix(x, A, beta, f, rho, burn_in=num_iter)
-        # gamma, beta, rho = infer_dynamics(x, A, f)
+        A, _ = infer_adjacency_matrix(x, A, c, rho, burn_in=num_iter)
+        # gamma, c, rho = infer_dynamics(x, A, f)
         it += 1
     return
 
 
 def infer_adjacency_matrix(
-    x, A0, beta, f, rho, nsamples=1, burn_in=100, skip=100, return_likelihoods=False
+    x, A0, c, rho, nsamples=1, burn_in=100, skip=100, return_likelihoods=False
 ):
     # This assumes a uniform prior on hypergraphs with a given rho.
 
-    # form initial contact structure. Number of patients (n) and rooms (m) is fixed.
+    # form initial adjacency matrix
     if not isinstance(A0, ndarray):
         A0 = A0.todense()
 
@@ -43,7 +39,7 @@ def infer_adjacency_matrix(
     l_node = np.zeros(n)
 
     for v in range(n):
-        l_node[v] = node_log_likelihood(x, v, A, beta, f)
+        l_node[v] = neighborhood_log_likelihood(x, v, A, c)
 
     l = np.sum(l_node)
     l_vals = list()
@@ -68,7 +64,7 @@ def infer_adjacency_matrix(
         delta_entries = update_adjacency_matrix(i, j, A)
 
         # update dynamics likelihoods given the new I
-        new_n_l = node_log_likelihood(x, i, A, beta, f)
+        new_n_l = neighborhood_log_likelihood(x, i, A, c) + neighborhood_log_likelihood(x, j, A, c)
 
         if np.isnan(new_n_l):
             print(f"Node {i} gives a NaN")
@@ -122,22 +118,19 @@ def compute_delta(a, b):
         return a - b
 
 
-def node_log_likelihood(x, v, A, beta, f):
+def neighborhood_log_likelihood(x, v, A, c):
     l = 0
     T = np.size(x, axis=0)
     for t in range(T - 1):
-        infected_nbrs = A[v] @ x[t]
-        p_x = beta * f(infected_nbrs)
-        if p_x > 0 and p_x < 1:
-            lt = (1 - x[t, v]) * x[t + 1, v] * np.log(p_x) + (1 - x[t, v]) * (
+        nu = int(round(A[v] @ x[t]))
+
+        if c[nu] > 0 and c[nu] < 1:
+            lt = (1 - x[t, v]) * x[t + 1, v] * np.log(c[nu]) + (1 - x[t, v]) * (
                 1 - x[t + 1, v]
-            ) * np.log(1 - p_x)
-            if np.isnan(lt):
-                print(f"Probability is {p_x}")
-                lt = -np.inf
-        elif p_x == 0 and (1 - x[t, v]) * x[t + 1, v]:
+            ) * np.log(1 - c[nu])
+        elif c[nu] == 0 and (1 - x[t, v]) * x[t + 1, v]:
             lt = -np.inf
-        elif p_x == 1 and (1 - x[t, v]) * (1 - x[t + 1, v]):
+        elif c[nu] == 1 and (1 - x[t, v]) * (1 - x[t + 1, v]):
             lt = -np.inf
         else:
             lt = 0
@@ -145,16 +138,16 @@ def node_log_likelihood(x, v, A, beta, f):
     return l
 
 
-def adjacency_log_likelihood(num_entries, n, m, rho):
-    return num_entries * np.log(rho) + (n * m - num_entries) * np.log(1 - rho)
+def adjacency_log_likelihood(num_entries, n, rho):
+    return num_entries * np.log(rho) + (n * (n-1)/2 - num_entries) * np.log(1 - rho)
 
 
-def log_likelihood(x, A, beta, f):
+def log_likelihood(x, A, c):
     n = np.size(A, axis=0)
 
     l_node = np.zeros(n)
     for v in range(n):
-        l_node[v] = node_log_likelihood(x, v, A, beta, f)
+        l_node[v] = neighborhood_log_likelihood(x, v, A, c)
 
     return np.sum(l_node)
 

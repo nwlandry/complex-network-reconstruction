@@ -1,10 +1,10 @@
-from itertools import product
+import random
 
 import numpy as np
 import xgi
+
 from src.contagion import *
 from src.inference import *
-import random
 
 
 def full_incidence_matrix(H, n, m):
@@ -16,82 +16,69 @@ def full_incidence_matrix(H, n, m):
     return newI
 
 
-def posterior_similarity(I, Isamples):
-    if isinstance(Isamples, list):
-        meanI = np.mean(Isamples, axis=0)
-        return 1 - np.sum(np.abs(I - meanI)) / np.sum(np.abs(I + meanI))
-    elif isinstance(Isamples, np.ndarray):
-        return 1 - np.sum(np.abs(I - Isamples)) / np.sum(np.abs(I + Isamples))
+def posterior_similarity(A, Asamples):
+    meanA = np.mean(Asamples, axis=0)
+    return 1 - np.sum(np.abs(A - meanA)) / np.sum(np.abs(A + meanA))
 
 
-def get_all_incidence_matrices(n, m):
-    if n * m > 16:
-        raise Exception("Too large")
-    matrices = list()
-    for data in product([0, 1], repeat=n * m):
-        matrices.append(np.reshape(data, (n, m)))
-    return matrices
+def samplewise_posterior_similarity(A, Asamples):
+    ps = 0
+    n = np.size(Asamples)
+    for i in range(n):
+        ps += 1 - np.sum(np.abs(A - Asamples[i])) / np.sum(np.abs(A + Asamples[i]))
+    return ps
 
 
 def infer_over_realizations(
-    I,
-    g_x,
-    g_y,
-    b_x,
-    b_y,
+    A,
+    gamma,
+    beta,
     f,
-    g,
     rho,
     num_realizations=10,
     tmin=0,
     tmax=20,
     dt=1,
     nsamples=100,
-    burn_in=10000,
+    burn_in=1000,
     skip=100,
 ):
     # returns samples and posterior similarity
-    n = np.size(g_x, axis=0)
-    m = np.size(g_y, axis=0)
-    s_x = np.zeros(n)
-    s_y = np.zeros(m)
-    s_x[random.randrange(n)] = 1
+    n = np.size(A, axis=0)
+    s = np.zeros(n)
+    s[random.randrange(n)] = 1
     ps = list()
     samples = list()
     for sim in range(num_realizations):
-        x, y = bipartite_sis_to_matrices(
-            I,
-            g_x,
-            g_y,
-            b_x,
-            b_y,
+        x = contagion_process(
+            A,
+            gamma,
+            beta,
             f,
-            g,
-            s_x,
-            s_y,
+            s,
             tmin=tmin,
             tmax=tmax,
             dt=dt,
             random_seed=None,
         )
-        I0 = np.ones((n, m))
-        data, _ = infer_incidence_matrix(
-            x, y, I0, b_x, b_y, f, g, rho, nsamples=nsamples, burn_in=burn_in, skip=skip
+        A0 = np.ones((n, n))
+        data = infer_adjacency_matrix(
+            x, A0, beta, f, rho, nsamples=nsamples, burn_in=burn_in, skip=skip
         )
-        ps.append(posterior_similarity(I, data))
+        ps.append(posterior_similarity(A, data))
         samples.extend(data)
     return samples, ps
 
 
-def vary_epsilon(
-    I,
-    g_x,
-    g_y,
-    b_x,
-    b_y,
+def vary_nu(
+    A,
+    gamma,
+    beta,
+    a,
+    c,
+    f,
     rho,
-    epsilon,
-    tau=0.25,
+    nu_list,
     num_realizations=10,
     tmin=0,
     tmax=20,
@@ -102,18 +89,17 @@ def vary_epsilon(
 ):
     all_samples = []
     all_ps = []
-    for eps in epsilon:
-        f = lambda e, x: (e.dot(x) / max(np.sum(e), 1) >= tau) * (1 - eps) + eps
-        g = lambda e, x: (e.dot(x) / max(np.sum(e), 1) >= tau)
+    for nu in nu_list:
+        g = lambda I, b: 1 - (1 - b) ** I
+        h = lambda I, a, c: 1 / (1 + np.exp(-(I - c) / a)) if a != 0 else I >= c
+
+        f = lambda I: nu * g(I, beta) + (1 - nu) * h(I, a, c)
 
         samples, ps = infer_over_realizations(
-            I,
-            g_x,
-            g_y,
-            b_x,
-            b_y,
+            A,
+            gamma,
+            beta,
             f,
-            g,
             rho,
             num_realizations=num_realizations,
             tmin=tmin,
@@ -130,13 +116,10 @@ def vary_epsilon(
 
 
 def vary_tmax(
-    I,
-    g_x,
-    g_y,
-    b_x,
-    b_y,
+    A,
+    gamma,
+    beta,
     f,
-    g,
     rho,
     num_realizations=10,
     tmin=0,
@@ -151,15 +134,11 @@ def vary_tmax(
     all_samples = []
     all_ps = []
     for tm in tmax:
-        print()
         samples, ps = infer_over_realizations(
-            I,
-            g_x,
-            g_y,
-            b_x,
-            b_y,
+            A,
+            gamma,
+            beta,
             f,
-            g,
             rho,
             num_realizations=num_realizations,
             tmin=tmin,
@@ -176,12 +155,10 @@ def vary_tmax(
 
 
 def vary_beta(
-    I,
-    g_x,
-    g_y,
+    A,
+    gamma,
     beta,
     f,
-    g,
     rho,
     num_realizations=10,
     tmin=0,
@@ -191,21 +168,15 @@ def vary_beta(
     burn_in=10000,
     skip=100,
 ):
-    n, m = np.shape(I)
     all_samples = []
     all_ps = []
     for b in beta:
-        b_x = b * np.ones(n)
-        b_y = b * np.ones(m)
 
         samples, ps = infer_over_realizations(
-            I,
-            g_x,
-            g_y,
-            b_x,
-            b_y,
+            A,
+            gamma,
+            b,
             f,
-            g,
             rho,
             num_realizations=num_realizations,
             tmin=tmin,
