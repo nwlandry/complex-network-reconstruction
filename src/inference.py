@@ -3,23 +3,137 @@ import random
 import numpy as np
 from numpy import ndarray
 from scipy.stats import beta
+from scipy.special import betaln
 
 
-def infer_adjacency_matrix_and_dynamics(x, c, rho, num_iter=10, max_iter=10):
-    n = np.size(x, axis=1)
-    it = 0
+def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
+    # This assumes a uniform prior on hypergraphs with a given rho.
 
-    rho = random.random()
-    A = adjacency_matrix_prior(n, rho)
+    # form initial adjacency matrix
+    if not isinstance(A0, ndarray):
+        A0 = A0.todense()
 
-    while it < max_iter:
-        A, _ = infer_adjacency_matrix(x, A, c, rho, burn_in=num_iter)
-        # gamma, c, rho = infer_dynamics(x, A, f)
+    A = A0.copy()
+    n, m = np.shape(A)
+
+    if n != m:
+        Exception("Matrix must be square!")
+
+    nl, ml = count_all_infection_events(x, A)
+    l = compute_log_likelihood(nl, ml, p_c)
+
+    num_entries = int(np.sum(A))
+
+    samples = np.zeros((nsamples, n, n))
+    accept = 0
+    it = 1
+    s_i = skip
+    sample_num = 0
+
+    while it <= burn_in + (nsamples - 1) * skip:
+
+        # proposal comes from the lower triangle
+        i = random.randrange(1, n)
+        j = random.randrange(i)
+
+        # alter hypergraph
+        delta_entries = update_adjacency_matrix(i, j, A)
+
+        nl_i, ml_i = count_local_infection_events(i, x, A)
+        nl_j, ml_j = count_local_infection_events(j, x, A)
+
+        new_nl = nl.copy()
+        new_ml = ml.copy()
+
+        new_nl[i] = nl_i
+        new_nl[j] = nl_j
+        new_ml[i] = ml_i
+        new_ml[j] = ml_j
+
+        new_l = compute_log_likelihood(new_nl, new_ml, p_c)
+
+        # update likelihood of the incidence matrix given rho
+        new_l_adjacency = adjacency_log_likelihood(
+            num_entries + delta_entries, n, m, rho
+        )
+        delta = compute_delta(new_n_l, l_node[i]) + compute_delta(
+            new_l_adjacency, l_adjacency
+        )
+
+        if np.log(random.random()) <= min(delta, 0):
+            l_node[i] = new_n_l
+
+            if delta < np.inf:
+                l += delta
+            else:
+                l = np.sum(l_node)
+
+            l_adjacency = new_l_adjacency
+
+            num_entries += delta_entries
+            accept += 1
+        else:
+            update_adjacency_matrix(i, j, A)
+
+        if it >= burn_in:
+            if s_i >= skip:
+                samples[sample_num, :, :] = A.copy()
+                sample_num += 1
+                s_i = 1
+            else:
+                s_i += 1
+
         it += 1
-    return
+    print(f"Acceptance ratio is {accept/(burn_in + (nsamples - 1)*skip)}")
+
+    return samples
+    
+
+def count_all_infection_events(x, A):
+    T = np.size(x, axis=0)
+    n = np.size(x, axis=1)
+
+    nl = np.zeros((n, n), dtype=int)
+    ml = np.zeros((n, n), dtype=int)
+
+    for t in range(T - 1):
+        nus = A @ x[t]
+
+        # infection events
+        for i, nu in enumerate(nus):
+            nu = int(round(nu))
+            nl[i, nu] += (x[t + 1, i] - x[t, i] == 1)
+            ml[i, nu] += (x[t + 1, i] == x[t, i] == 0)
+    return nl, ml
 
 
-def infer_adjacency_matrix(
+def count_local_infection_events(i, x, A):
+    T = np.size(x, axis=0)
+    n = np.size(x, axis=1)
+
+    nl = np.zeros(n, dtype=int)
+    ml = np.zeros(n, dtype=int)
+
+    for t in range(T - 1):
+        nu = A[i] @ x[t]
+        
+        nu = int(round(nu))
+        nl[nu] += (x[t + 1, i] - x[t, i] == 1)
+        ml[nu] += (x[t + 1, i] == x[t, i] == 0)
+    return nl, ml
+
+
+def compute_log_likelihood(nl, ml, p_c):
+    a = np.sum(nl, axis=0)
+    b = np.sum(ml, axis=0)
+
+    return np.sum(betaln(a + p_c[0], b + p_c[1]))
+
+
+
+
+
+def infer_adjacency_matrix_old(
     x, A0, c, rho, nsamples=1, burn_in=100, skip=100, return_likelihoods=False
 ):
     # This assumes a uniform prior on hypergraphs with a given rho.
@@ -143,6 +257,8 @@ def adjacency_log_likelihood(num_entries, n, rho):
 
 
 def log_likelihood(x, A, c):
+    if not isinstance(A, ndarray):
+        A = A.todense()
     n = np.size(A, axis=0)
 
     l_node = np.zeros(n)
@@ -161,104 +277,54 @@ def update_adjacency_matrix(i, j, A):
         return -2
 
 
-def adjacency_matrix_prior(n, rho):
-    # n is the number of people, m is number of rooms
-    A = np.zeros((n, n))
-    for i in range(n):
-        for j in range(i):
-            A[i, j] = A[j, i] = 1
-    return A
-
-
-def infer_dynamics(x, y, H, f, g):
+def infer_dynamics(x, A, p_rho, p_gamma, p_c):
     # Our prior on rho is drawn from a beta distribution such that
     # the posterior is also from a beta distribution
-    n = np.size(x, axis=1)
-    m = np.size(y, axis=1)
-    T = np.size(x, axis=0)
-    h_x = np.zeros(n)
-    h_y = np.zeros(m)
-    nh_x = np.zeros(n)
-    nh_y = np.zeros(m)
-    g_x = np.zeros(n)
-    g_y = np.zeros(m)
 
+    T = np.size(x, axis=0)
+    n = np.size(x, axis=1)
+
+    # sample rho
+    e = np.sum(A)
+
+    rho = beta(e + p_rho[0], n*(n - 1)/2 - e + p_rho[1]).rvs()
+
+    n = 0 # healing events
+    m = 0 # non-healing events
+
+    # sample gamma
     for t in range(T - 1):
         # healing events
-        h_x[np.where(x[t + 1] - x[t] == -1)] += 1
-        h_y[np.where(y[t + 1] - y[t] == -1)] += 1
+        n += len(np.where(x[t + 1] - x[t] == -1)[0])
         # non-healing events
-        nh_x[np.where(x[t + 1] * x[t] == 1)] += 1
-        nh_y[np.where(y[t + 1] * y[t] == 1)] += 1
+        m += len(np.where(x[t + 1] * x[t] == 1)[0])
 
-    for i in range(n):
-        g_x[i] = beta(h_x[i] + 1, nh_x[i] + 1).rvs()
+    if n * m == 0:
+        n += 1e-6
+        m += 1e-6
+    gamma = beta(n + p_gamma[0], p_gamma[1]).rvs()
 
-    for i in range(m):
-        g_y[i] = beta(h_y[i] + 1, nh_y[i] + 1).rvs()
+    # sample c
+    # These are the parameters for the beta distribution,
+    # each entry corresponds to a number of infected neighbors
+    n = np.zeros(n)
+    m = np.zeros(n)
 
-    num_entries = H.edges.size.sum()
-    rho = beta(num_entries, n * m - num_entries).rvs()
-
-    b_x, b_y = sample_beta(x, y, H, f, g)
-
-    return g_x, g_y, b_x, b_y, rho
-
-
-def sample_beta(x, y, H, f, g):
-    n = np.size(x, axis=1)
-    m = np.size(y, axis=1)
-
-    b_x = np.zeros(n)
-    b_y = np.zeros(m)
-
-    em = H.edges.size.max()
-    nm = H.nodes.degree.max()
-
-    fmax = f(range(nm), np.ones(nm))
-    gmax = g(range(em), np.ones(em))
-
-    for i in range(n):
-        b_x[i] = sample_one_beta(i, x, y, H.nodes.memberships(), f, fmax)
-    for i in range(m):
-        b_y[i] = sample_one_beta(i, y, x, H.edges.members(dtype=dict), g, gmax)
-    return b_x, b_y
-
-
-def sample_one_beta(i, x1, x2, member_dict, f, m, max_it=100):
-    it = 0
-    while it < max_it:
-        b = random.uniform(0, 1 / m)
-        u = random.random()
-        if np.log(u) < fcn(i, b, x1, x2, member_dict, f) - fcn_max(
-            i, x1, x2, member_dict, f, m
-        ):
-            return b
-        it += 1
-    print(f"Index {i} did not converge!")
-    return random.uniform(0, 1 / m)
-
-
-def fcn(i, beta, x1, x2, member_dict, f):
-    T = np.size(x1, axis=0)
-
-    ll = 0
     for t in range(T - 1):
-        p = beta * f(member_dict[i], x2[t])
-        if p > 0 and p < 1:
-            l = np.log(p) * x1[t + 1, i] * (1 - x1[t, i]) + np.log(1 - p) * (
-                1 - x1[t + 1, i]
-            ) * (1 - x1[t, i])
-            if np.isnan(l):
-                print(f"Probability is {p}")
-            else:
-                ll += l
-        else:
-            ll += -np.inf
-    return ll
+        nus = A @ x[t]
 
+        # infection events
+        for i, nu in enumerate(nus):
+            nu = int(round(nu))
+            n[nu] += (x[t + 1, i] - x[t, i] == 1)
+            m[nu] += (x[t + 1, i] == x[t, i] == 0)
 
-def fcn_max(i, x1, x2, member_dict, f, fmax):
-    return max(
-        [fcn(i, b, x1, x2, member_dict, f) for b in np.linspace(0, 1 / fmax, 10)]
-    )
+    c = np.zeros(n)
+    for i in range(n):
+        if n[i] * m[i] == 0:
+            n[i] += 1e-6
+            m[i] += 1e-6
+        c[i] = beta(n[i] + p_c[0, i], m[i] + p_c[1, i]).rvs()
+    
+    return rho, gamma, c
+
