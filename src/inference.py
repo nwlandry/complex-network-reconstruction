@@ -23,6 +23,7 @@ def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
     l = compute_log_likelihood(nl, ml, p_c)
 
     num_entries = int(np.sum(A))
+    l_adjacency = adjacency_log_likelihood(num_entries, n, m, rho)
 
     samples = np.zeros((nsamples, n, n))
     accept = 0
@@ -56,20 +57,15 @@ def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
         new_l_adjacency = adjacency_log_likelihood(
             num_entries + delta_entries, n, m, rho
         )
-        delta = compute_delta(new_n_l, l_node[i]) + compute_delta(
+        delta = compute_delta(new_l, l) + compute_delta(
             new_l_adjacency, l_adjacency
         )
 
         if np.log(random.random()) <= min(delta, 0):
-            l_node[i] = new_n_l
-
-            if delta < np.inf:
-                l += delta
-            else:
-                l = np.sum(l_node)
-
+            nl = new_nl
+            ml = new_ml
+            l = new_l
             l_adjacency = new_l_adjacency
-
             num_entries += delta_entries
             accept += 1
         else:
