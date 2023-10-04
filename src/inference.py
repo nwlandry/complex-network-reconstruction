@@ -161,12 +161,28 @@ def update_adjacency_matrix(i, j, A):
         return -2
 
 
-def adjacency_matrix_prior(n, rho):
-    # n is the number of people, m is number of rooms
-    A = np.zeros((n, n))
-    for i in range(n):
-        for j in range(i):
-            A[i, j] = A[j, i] = 1
+def adjacency_matrix_prior(x):
+    """
+    Create an adjacency matrix A from a binary data matrix X.
+    The adjacency matrix A represents relationships between nodes based on the following criteria:
+    An edge exists between node i and node j in A if, at time t, node i was infected,
+    and at time t+1, node j was infected in the binary data matrix X.
+
+    Parameters:
+    - X (numpy.ndarray): A binary data matrix with dimensions (num_individuals, num_time_steps).
+                        Each element (i, t) is 1 if node i is infected at time t, and 0 otherwise.
+
+    Returns:
+    - A (numpy.ndarray): The adjacency matrix where A[i][j] is 1 if an edge exists between
+                        node i and node j based on the specified criteria, and 0 otherwise.
+                        The diagonal of A is set to 0 to remove self-edges.
+
+    """
+    x_cut = x[:-1,:]
+    x_roll_cut = x_roll[:-1,:]
+    mat_mul = x_cut.T @ x_roll_cut
+    np.fill_diagonal(mat_mul, 0)
+    A = (mat_mul > 0).astype(int)
     return A
 
 
