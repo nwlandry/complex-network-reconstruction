@@ -178,8 +178,12 @@ def adjacency_matrix_prior(x):
                         The diagonal of A is set to 0 to remove self-edges.
 
     """
+
+    x_roll = np.roll(x, shift =-1 ,axis =0)#shift the matrix over by one time step
+    #cut to reduce wrap around on final time step
     x_cut = x[:-1,:]
     x_roll_cut = x_roll[:-1,:]
+    #multiply matrix, element i,j for this matrix counts the number of times i was infected and t-i and j is infected at t
     mat_mul = x_cut.T @ x_roll_cut
     np.fill_diagonal(mat_mul, 0)
     A = (mat_mul > 0).astype(int)
