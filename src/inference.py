@@ -3,14 +3,17 @@ import random
 import numpy as np
 from numpy import ndarray
 from scipy.stats import beta
-from scipy.special import betaln
+from scipy.special import betaln, binom
 
 import warnings
 
 warnings.filterwarnings("error")
 
 
-def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
+def infer_adjacency_matrix(
+    x, A0, p_rho, p_c=None, nsamples=1, burn_in=100, skip=100, return_likelihood=False
+):
+    rho = beta(p_rho[0], p_rho[1]).rvs()
     # This assumes a uniform prior on hypergraphs with a given rho.
 
     # form initial adjacency matrix
@@ -20,14 +23,21 @@ def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
     A = A0.copy()
     n, m = np.shape(A)
 
+    if p_c is None:
+        p_c = np.ones((n, 2))
+    if np.any(p_c <= 0):
+        raise Exception("Parameters in a beta distribution must be greater than 0.")
+
     if n != m:
         Exception("Matrix must be square!")
 
     nl, ml = count_all_infection_events(x, A)
-    l = compute_log_likelihood(nl, ml, p_c)
+    l_dynamics = dynamics_log_likelihood(nl, ml, p_c)
 
-    num_entries = int(np.sum(A))
-    l_adjacency = adjacency_log_likelihood(num_entries, n, rho)
+    num_entries = int(np.sum(A)/2)
+    max_entries = binom(n, 2)
+    rho = num_entries / max_entries
+    l_adjacency = adjacency_log_likelihood(num_entries, max_entries, p_rho)
 
     samples = np.zeros((nsamples, n, n))
     accept = 0
@@ -35,7 +45,8 @@ def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
     s_i = skip
     sample_num = 0
 
-    l_vals = []
+    if return_likelihood:
+        l_vals = []
 
     while it <= burn_in + (nsamples - 1) * skip:
 
@@ -57,24 +68,25 @@ def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
         new_ml[i] = ml_i
         new_ml[j] = ml_j
 
-        new_l = compute_log_likelihood(new_nl, new_ml, p_c)
+        new_l_dynamics = dynamics_log_likelihood(new_nl, new_ml, p_c)
 
         # update likelihood of the incidence matrix given rho
-        new_l_adjacency = adjacency_log_likelihood(num_entries + delta_entries, n, rho)
+        new_l_adjacency = adjacency_log_likelihood(num_entries + delta_entries, max_entries, p_rho)
 
-        delta = compute_delta(new_l, l) + compute_delta(new_l_adjacency, l_adjacency)
+        delta = compute_delta(new_l_dynamics, l_dynamics) + compute_delta(new_l_adjacency, l_adjacency)
 
         if np.log(random.random()) <= min(delta, 0):
             nl = new_nl
             ml = new_ml
-            l = new_l
+            l_dynamics = new_l_dynamics
             l_adjacency = new_l_adjacency
             num_entries += delta_entries
             accept += 1
         else:
             update_adjacency_matrix(i, j, A)
 
-        l_vals.append(l)
+        if return_likelihood:
+            l_vals.append(l_dynamics + l_adjacency)
         if it >= burn_in:
             if s_i >= skip:
                 samples[sample_num, :, :] = A.copy()
@@ -86,7 +98,10 @@ def infer_adjacency_matrix(x, A0, rho, p_c, nsamples=1, burn_in=100, skip=100):
         it += 1
     print(f"Acceptance ratio is {accept/(burn_in + (nsamples - 1)*skip)}")
 
-    return samples, l_vals
+    if return_likelihood:
+        return samples, l_vals
+    else:
+        return samples
 
 
 def count_all_infection_events(x, A):
@@ -123,10 +138,18 @@ def count_local_infection_events(i, x, A):
     return nl, ml
 
 
-def compute_log_likelihood(nl, ml, p_c):
+def dynamics_log_likelihood(nl, ml, p_c):
     a = np.sum(nl, axis=0)
     b = np.sum(ml, axis=0)
-    return sum(b for b in betaln(a + p_c[0], b + p_c[1]) if np.isfinite(b))
+    return sum(b for b in betaln(a + p_c[0], b + p_c[1]))
+
+
+def adjacency_log_likelihood(num_entries, max_entries, p_rho):
+    rho = num_entries/max_entries
+    if rho == 0 or rho == 1:
+        return -np.inf
+    else:
+        return (num_entries + p_rho[0]) * np.log(rho) + (max_entries - num_entries + p_rho[1]) * np.log(1 - rho)
 
 
 def compute_delta(a, b):
@@ -136,44 +159,34 @@ def compute_delta(a, b):
         return a - b
 
 
-def adjacency_log_likelihood(num_entries, n, rho):
-    return num_entries * np.log(rho) + (n * (n - 1) / 2 - num_entries) * np.log(1 - rho)
-
-
 def update_adjacency_matrix(i, j, A):
     if A[i, j] == 0:
         A[i, j] = A[j, i] = 1
-        return 2
+        return 1
     else:
         A[i, j] = A[j, i] = 0
-        return -2
+        return -1
 
 
-def infer_dynamics(x, A, p_rho, p_gamma, p_c):
-    # Our prior on rho is drawn from a beta distribution such that
-    # the posterior is also from a beta distribution
+def infer_dynamics(x, A, p_gamma, p_c):
+    # Our priors are drawn from a beta distribution such that
+    # the posteriors are also from a beta distribution
+
+    if np.any(p_c <= 0) or np.any(p_gamma <= 0):
+        raise Exception("Parameters in a beta distribution must be greater than 0.")
 
     T = np.size(x, axis=0)
     n = np.size(x, axis=1)
 
-    # sample rho
-    e = np.sum(A)
-
-    rho = beta(e + p_rho[0], n * (n - 1) / 2 - e + p_rho[1]).rvs()
-
+    # sample gamma
     a = 0  # healing events
     b = 0  # non-healing events
-
-    # sample gamma
     for t in range(T - 1):
         # healing events
         a += len(np.where(x[t + 1] - x[t] == -1)[0])
         # non-healing events
         b += len(np.where(x[t + 1] * x[t] == 1)[0])
 
-    if a * b == 0:
-        a += 1e-6
-        b += 1e-6
     gamma = beta(a + p_gamma[0], b + p_gamma[1]).rvs()
 
     # sample c
@@ -198,4 +211,4 @@ def infer_dynamics(x, A, p_rho, p_gamma, p_c):
             b[i] += 1e-6
         c[i] = beta(a[i] + p_c[0, i], b[i] + p_c[1, i]).rvs()
 
-    return rho, gamma, c
+    return gamma, c
