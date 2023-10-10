@@ -7,8 +7,10 @@ import numpy as np
 from src.contagion import *
 from src.inference import *
 
+
 def to_imshow_orientation(A):
     return np.flipud(A.T)
+
 
 def posterior_similarity(A, Asamples):
     meanA = np.mean(Asamples, axis=0)
@@ -21,6 +23,10 @@ def samplewise_posterior_similarity(A, Asamples):
     for i in range(n):
         ps += 1 - np.sum(np.abs(A - Asamples[i])) / np.sum(np.abs(A + Asamples[i]))
     return ps
+
+
+def hamming_distance(A1, A2):
+    return np.sum(np.abs(A1 - A2)) / 2
 
 
 # def infer_over_realizations(
