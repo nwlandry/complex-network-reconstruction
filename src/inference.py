@@ -27,14 +27,20 @@ def infer_adjacency_matrix(
     A = A0.copy()
     n, m = np.shape(A)
 
+    if isinstance(p_rho, (list, tuple)):
+        p_rho = np.array(p_rho)
+
+    if isinstance(p_c, (list, tuple)):
+        p_c = np.array(p_c)
+
     if p_c is None:
         p_c = np.ones((n, 2))
-    if np.any(p_c <= 0):
+    elif np.any(np.array(p_c) <= 0):
         raise Exception("Parameters in a beta distribution must be greater than 0.")
 
     if p_rho is None:
         p_rho = np.ones(2)
-    if np.any(p_rho <= 0):
+    elif np.any(p_rho <= 0):
         raise Exception("Parameters in a beta distribution must be greater than 0.")
 
     if n != m:
@@ -109,7 +115,7 @@ def infer_adjacency_matrix(
                 s_i += 1
 
         it += 1
-    print(f"Acceptance ratio is {accept/(burn_in + (nsamples - 1)*skip)}")
+    print(f"Acceptance ratio is {accept/(burn_in + (nsamples - 1)*skip)}", flush=True)
 
     if return_likelihood:
         return samples, l_vals
@@ -130,8 +136,8 @@ def count_all_infection_events(x, A):
         # infection events
         for i, nu in enumerate(nus):
             nu = int(round(nu))
-            nl[i, nu] += x[t + 1, i] - x[t, i] == 1
-            ml[i, nu] += x[t + 1, i] == x[t, i] == 0
+            nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
+            ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
 
 
@@ -146,8 +152,8 @@ def count_local_infection_events(i, x, A):
         nu = A[i] @ x[t]
 
         nu = int(round(nu))
-        nl[nu] += x[t + 1, i] - x[t, i] == 1
-        ml[nu] += x[t + 1, i] == x[t, i] == 0
+        nl[nu] += x[t + 1, i] * (1 - x[t, i])
+        ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
 
 

@@ -2,25 +2,42 @@ import numpy as np
 import json
 from src import *
 import networkx as nx
+from numpy.linalg import eigh
+import multiprocessing as mp
+import os
+
+
+def single_inference(gamma, c, A, tmax, p_c, p_rho, nsamples, burn_in, skip):
+    n = np.size(A, axis=0)
+    x0 = np.zeros(n)
+    x0[random.randrange(n)] = 1
+
+    x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
+
+    A0 = nx.adjacency_matrix(nx.fast_gnp_random_graph(n, 0.3))
+
+    samples = infer_adjacency_matrix(
+        x, A0, p_rho, p_c, nsamples=nsamples, burn_in=burn_in, skip=skip
+    )
+    return posterior_similarity(A, samples), samplewise_posterior_similarity(A, samples)
+
 
 G = nx.karate_club_graph()
 
-A = nx.adjacency_matrix(G, weight=None)
+A = nx.adjacency_matrix(G, weight=None).todense()
 n = np.size(A, axis=0)
 
-realizations = 5
-nf = 5
-nb = 5
-
-frac = np.linspace(0, 1.0, nf)
-beta = np.linspace(0, 2.0, nb)
+n_processes = len(os.sched_getaffinity(0))
+realizations = 2
+nf = 9
+nb = 8
 
 # MCMC parameters
-burn_in = 1000
+burn_in = 10000
 nsamples = 100
-skip = 100
+skip = 1000
 p_c = np.ones((2, n))
-p_rho = [2, 5]
+p_rho = np.array([1, 1])
 
 # contagion functions and parameters
 sc = lambda nu, beta: 1 - (1 - beta) ** nu  # simple contagion
@@ -28,31 +45,40 @@ cc = lambda nu, tau, beta: beta * (nu >= tau)  # complex contagion
 
 gamma = 1
 tau = 3
-p_s = 0.1
+nu = eigh(A)[0][-1]
+bc = gamma / nu  # quenched mean-field threshold
 
-ps = np.zeros((nf, nb, realizations))
-sps = np.zeros((nf, nb, realizations))
+beta = np.linspace(0, 2.0 * bc, nb)
+frac = np.linspace(0, 1.0, nf)
+tmax = 100
 
+ps = np.zeros((nb, nf, realizations))
+sps = np.zeros((nb, nf, realizations))
+
+arglist = []
 for i, b in enumerate(beta):
     for j, f in enumerate(frac):
         c = f * sc(np.arange(n), b) + (1 - f) * cc(np.arange(n), tau, b)
-
         for k in range(realizations):
-            s0 = np.zeros(n)
-            s0[list(random.sample(range(n), int(p_s * n)))] = 1
+            arglist.append((gamma, c, A, tmax, p_c, p_rho, nsamples, burn_in, skip))
 
-            x = contagion_process(A, gamma, c, s0, tmin=0, tmax=100, random_seed=None)
+with mp.Pool(processes=n_processes) as pool:
+    similarities = pool.starmap(single_inference, arglist)
 
-            A0 = nx.adjacency_matrix(nx.fast_gnp_random_graph(n, 0.3))
-
-            samples = infer_adjacency_matrix(
-                x, A0, p_rho, p_c, nsamples=nsamples, burn_in=burn_in, skip=100
-            )
-
-            ps[i, j, k] = posterior_similarity(A, samples)
-            sps[i, j, k] = samplewise_posterior_similarity(A, samples)
+idx = 0
+for i, b in enumerate(beta):
+    for j, f in enumerate(frac):
+        for k in range(realizations):
+            ps[i, j, k] = similarities[idx][0]
+            sps[i, j, k] = similarities[idx][1]
+            idx += 1
 
 data = {}
+data["gamma"] = gamma
+data["beta"] = beta.tolist()
+data["fraction"] = frac.tolist()
+data["p-rho"] = p_rho.tolist()
+data["p-c"] = p_c.tolist()
 data["ps"] = ps.tolist()
 data["sps"] = sps.tolist()
 
