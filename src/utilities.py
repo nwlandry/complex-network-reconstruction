@@ -29,6 +29,16 @@ def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
 
 
+def erdos_renyi(n, k):
+    A = np.zeros((n, n))
+    p = k / (n - 1)
+    for i in range(n):
+        for j in range(i):
+            A[i, j] = A[j, i] = random.random() <= p
+
+    return A
+
+
 # def infer_over_realizations(
 #     A,
 #     gamma,
