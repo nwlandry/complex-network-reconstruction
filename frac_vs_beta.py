@@ -7,10 +7,12 @@ import multiprocessing as mp
 import os
 
 
-def single_inference(gamma, c, A, tmax, p_c, p_rho, nsamples, burn_in, skip):
+def single_inference(
+    fname, gamma, c, rho0, A, tmax, p_c, p_rho, nsamples, burn_in, skip
+):
     n = np.size(A, axis=0)
     x0 = np.zeros(n)
-    x0[random.randrange(n)] = 1
+    x0[random.sample(range(n), int(rho0 * n))] = 1
 
     x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
 
@@ -19,23 +21,39 @@ def single_inference(gamma, c, A, tmax, p_c, p_rho, nsamples, burn_in, skip):
     samples = infer_adjacency_matrix(
         x, A0, p_rho, p_c, nsamples=nsamples, burn_in=burn_in, skip=skip
     )
-    return posterior_similarity(A, samples), samplewise_posterior_similarity(A, samples)
+    data = {}
+    data["gamma"] = gamma
+    data["c"] = c.tolist()
+    data["p-rho"] = p_rho.tolist()
+    data["p-c"] = p_c.tolist()
+    data["x"] = x.tolist()
+    data["samples"] = samples.tolist()
 
+    datastring = json.dumps(data)
+
+    with open(fname, "w") as output_file:
+        output_file.write(datastring)
+
+
+data_dir = "Data/frac_vs_beta"
+os.makedirs(data_dir, exist_ok=True)
+
+for f in os.listdir(data_dir):
+    os.remove(os.path.join(data_dir, f))
 
 G = nx.karate_club_graph()
-
 A = nx.adjacency_matrix(G, weight=None).todense()
 n = np.size(A, axis=0)
 
 n_processes = len(os.sched_getaffinity(0))
-realizations = 2
-nf = 9
-nb = 8
+realizations = 10
+nf = 100
+nb = 100
 
 # MCMC parameters
 burn_in = 10000
-nsamples = 100
-skip = 1000
+nsamples = 1000
+skip = 2000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 
@@ -43,6 +61,7 @@ p_rho = np.array([1, 1])
 sc = lambda nu, beta: 1 - (1 - beta) ** nu  # simple contagion
 cc = lambda nu, tau, beta: beta * (nu >= tau)  # complex contagion
 
+rho0 = 0.1
 gamma = 1
 tau = 3
 nu = eigh(A)[0][-1]
@@ -60,29 +79,21 @@ for i, b in enumerate(beta):
     for j, f in enumerate(frac):
         c = f * sc(np.arange(n), b) + (1 - f) * cc(np.arange(n), tau, b)
         for k in range(realizations):
-            arglist.append((gamma, c, A, tmax, p_c, p_rho, nsamples, burn_in, skip))
+            arglist.append(
+                (
+                    f"Data/frac_vs_beta/{b}-{f}-{k}",
+                    gamma,
+                    c,
+                    rho0,
+                    A,
+                    tmax,
+                    p_c,
+                    p_rho,
+                    nsamples,
+                    burn_in,
+                    skip,
+                )
+            )
 
 with mp.Pool(processes=n_processes) as pool:
-    similarities = pool.starmap(single_inference, arglist)
-
-idx = 0
-for i, b in enumerate(beta):
-    for j, f in enumerate(frac):
-        for k in range(realizations):
-            ps[i, j, k] = similarities[idx][0]
-            sps[i, j, k] = similarities[idx][1]
-            idx += 1
-
-data = {}
-data["gamma"] = gamma
-data["beta"] = beta.tolist()
-data["fraction"] = frac.tolist()
-data["p-rho"] = p_rho.tolist()
-data["p-c"] = p_c.tolist()
-data["ps"] = ps.tolist()
-data["sps"] = sps.tolist()
-
-datastring = json.dumps(data)
-
-with open("test.json", "w") as output_file:
-    output_file.write(datastring)
+    pool.starmap(single_inference, arglist)
