@@ -27,6 +27,7 @@ def single_inference(
     data["p-rho"] = p_rho.tolist()
     data["p-c"] = p_c.tolist()
     data["x"] = x.tolist()
+    data["A"] = A.tolist()
     data["samples"] = samples.tolist()
 
     datastring = json.dumps(data)
@@ -47,8 +48,8 @@ n = np.size(A, axis=0)
 
 n_processes = len(os.sched_getaffinity(0))
 realizations = 10
-nf = 100
-nb = 100
+nf = 33
+nb = 33
 
 # MCMC parameters
 burn_in = 10000

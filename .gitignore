@@ -149,3 +149,4 @@ tutorials/test.*
 # airspeed velocity files
 benchmarks/html/
 benchmarks/results/
+Data/frac_vs_beta
