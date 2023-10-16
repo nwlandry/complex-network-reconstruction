@@ -36,50 +36,48 @@ def single_inference(
         output_file.write(datastring)
 
 
-data_dir = "Data/frac_vs_beta"
+data_dir = "Data/erdos-renyi_experiment"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
     os.remove(os.path.join(data_dir, f))
 
-G = nx.karate_club_graph()
-A = nx.adjacency_matrix(G, weight=None).todense()
-n = np.size(A, axis=0)
+n = 50
 
 n_processes = len(os.sched_getaffinity(0))
-realizations = 10
-nf = 33
-nb = 33
+realizations = 3
+probabilities = np.linspace(0.0, 1.0, 33)
 
 # MCMC parameters
 burn_in = 10000
-nsamples = 1000
-skip = 2000
+nsamples = 100
+skip = 1500
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 
 # contagion functions and parameters
-sc = lambda nu, beta: 1 - (1 - beta) ** nu  # simple contagion
-cc = lambda nu, tau, beta: beta * (nu >= tau)  # complex contagion
+cf1 = lambda nu, beta: 1 - (1 - beta) ** nu  # simple contagion
+cf2 = lambda nu, beta: beta * (nu >= 2)  # complex contagion, tau=2
+cf3 = lambda nu, beta: beta * (nu >= 3)  # complex contagion, tau=3
+
+cfs = [cf1, cf2, cf3]
 
 rho0 = 1.0
 gamma = 1
-tau = 3
-nu = eigh(A)[0][-1]
-bc = gamma / nu  # quenched mean-field threshold
+b = gamma / 20  # quenched mean-field threshold
 
-beta = np.linspace(0, 2.0 * bc, nb)
-frac = np.linspace(0, 1.0, nf)
 tmax = 1000
 
+
 arglist = []
-for i, b in enumerate(beta):
-    for j, f in enumerate(frac):
-        c = f * sc(np.arange(n), b) + (1 - f) * cc(np.arange(n), tau, b)
+for p in probabilities:
+    for i, cf in enumerate(cfs):
+        c = cf(np.arange(n), b)
         for k in range(realizations):
+            A = erdos_renyi(n, p)
             arglist.append(
                 (
-                    f"Data/frac_vs_beta/{b}-{f}-{k}",
+                    f"{data_dir}/{p}-{i}-{k}",
                     gamma,
                     c,
                     rho0,

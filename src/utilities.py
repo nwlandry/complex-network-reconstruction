@@ -33,9 +33,9 @@ def infections_per_node(x):
     return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
 
 
-def erdos_renyi(n, k):
+def erdos_renyi(n, p):
     A = np.zeros((n, n))
-    p = k / (n - 1)
+
     for i in range(n):
         for j in range(i):
             A[i, j] = A[j, i] = random.random() <= p

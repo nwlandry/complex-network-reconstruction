@@ -147,6 +147,5 @@ tutorials/test.*
 /.vscode
 
 # airspeed velocity files
-benchmarks/html/
-benchmarks/results/
 Data/frac_vs_beta
+Data/erdos-renyi_experiment
