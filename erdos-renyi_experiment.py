@@ -63,7 +63,7 @@ cf3 = lambda nu, beta: beta * (nu >= 3)  # complex contagion, tau=3
 cfs = [cf1, cf2, cf3]
 
 rho0 = 1.0
-gamma = 1
+gamma = 0.1
 b = gamma / 20  # quenched mean-field threshold
 
 tmax = 1000

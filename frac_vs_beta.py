@@ -63,8 +63,8 @@ sc = lambda nu, beta: 1 - (1 - beta) ** nu  # simple contagion
 cc = lambda nu, tau, beta: beta * (nu >= tau)  # complex contagion
 
 rho0 = 1.0
-gamma = 1
-tau = 3
+gamma = 0.1
+tau = 2
 nu = eigh(A)[0][-1]
 bc = gamma / nu  # quenched mean-field threshold
 
