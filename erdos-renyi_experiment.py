@@ -70,14 +70,14 @@ tmax = 1000
 
 
 arglist = []
-for p in probabilities:
-    for i, cf in enumerate(cfs):
+for i, cf in enumerate(cfs):
+    for p in probabilities:
         c = cf(np.arange(n), b)
-        for k in range(realizations):
+        for r in range(realizations):
             A = erdos_renyi(n, p)
             arglist.append(
                 (
-                    f"{data_dir}/{p}-{i}-{k}",
+                    f"{data_dir}/{i}-{p}-{r}",
                     gamma,
                     c,
                     rho0,

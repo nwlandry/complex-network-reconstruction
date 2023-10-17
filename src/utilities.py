@@ -22,7 +22,7 @@ def samplewise_posterior_similarity(A, samples):
     n = np.size(samples, axis=0)
     for i in range(n):
         ps += 1 - np.sum(np.abs(A - samples[i])) / np.sum(np.abs(A + samples[i]))
-    return ps
+    return ps / n
 
 
 def hamming_distance(A1, A2):

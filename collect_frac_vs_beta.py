@@ -72,7 +72,7 @@ for f in os.listdir(data_dir):
 
 data = {}
 data["fraction"] = fraclist
-data["beta"] = beta
+data["beta"] = betalist
 data["sps"] = spsmat.tolist()
 data["ps"] = psmat.tolist()
 data["ipn"] = ipn.tolist()
