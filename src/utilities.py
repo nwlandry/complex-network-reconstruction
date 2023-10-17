@@ -12,16 +12,16 @@ def to_imshow_orientation(A):
     return np.flipud(A.T)
 
 
-def posterior_similarity(A, Asamples):
-    meanA = np.mean(Asamples, axis=0)
+def posterior_similarity(A, samples):
+    meanA = np.mean(samples, axis=0)
     return 1 - np.sum(np.abs(A - meanA)) / np.sum(np.abs(A + meanA))
 
 
-def samplewise_posterior_similarity(A, Asamples):
+def samplewise_posterior_similarity(A, samples):
     ps = 0
-    n = np.size(Asamples, axis=0)
+    n = np.size(samples, axis=0)
     for i in range(n):
-        ps += 1 - np.sum(np.abs(A - Asamples[i])) / np.sum(np.abs(A + Asamples[i]))
+        ps += 1 - np.sum(np.abs(A - samples[i])) / np.sum(np.abs(A + samples[i]))
     return ps
 
 
