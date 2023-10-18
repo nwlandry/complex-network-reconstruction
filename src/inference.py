@@ -4,6 +4,7 @@ import numpy as np
 from numpy import ndarray
 from scipy.stats import beta
 from scipy.special import betaln, binom
+from numba import jit
 
 import warnings
 
@@ -24,7 +25,7 @@ def infer_adjacency_matrix(
     if not isinstance(A0, ndarray):
         A0 = A0.todense()
 
-    A = A0.copy()
+    A = np.array(A0, dtype=float)
     n, m = np.shape(A)
 
     if isinstance(p_rho, (list, tuple)):
@@ -122,13 +123,13 @@ def infer_adjacency_matrix(
     else:
         return samples
 
-
+@jit(nopython=True)
 def count_all_infection_events(x, A):
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
+    T = x.shape[0]
+    n = x.shape[1]
 
-    nl = np.zeros((n, n), dtype=int)
-    ml = np.zeros((n, n), dtype=int)
+    nl = np.zeros((n, n))
+    ml = np.zeros((n, n))
 
     for t in range(T - 1):
         nus = A @ x[t]
@@ -140,16 +141,16 @@ def count_all_infection_events(x, A):
             ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
 
-
+@jit(nopython=True)
 def count_local_infection_events(i, x, A):
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
+    T = x.shape[0]
+    n = x.shape[1]
 
-    nl = np.zeros(n, dtype=int)
-    ml = np.zeros(n, dtype=int)
+    nl = np.zeros(n)
+    ml = np.zeros(n)
 
     for t in range(T - 1):
-        nu = A[i] @ x[t]
+        nu = A[i].dot(x[t])
 
         nu = int(round(nu))
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
@@ -158,22 +159,22 @@ def count_local_infection_events(i, x, A):
 
 
 def dynamics_log_posterior(nl, ml, p_c):
-    a = np.sum(nl, axis=0)
-    b = np.sum(ml, axis=0)
-    return sum(b for b in betaln(a + p_c[0], b + p_c[1]))
+    a = nl.sum(axis=0)
+    b = nl.sum(axis=0)
+    return sum(betaln(a + p_c[0], b + p_c[1]))
 
 
 def adjacency_log_posterior(num_entries, max_entries, p_rho):
     return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
 
-
+@jit(nopython=True)
 def compute_delta(a, b):
     if (a == -np.inf and b == -np.inf) or (a == np.inf and b == np.inf):
         return 0
     else:
         return a - b
 
-
+@jit(nopython=True)
 def update_adjacency_matrix(i, j, A):
     if A[i, j] == 0:
         A[i, j] = A[j, i] = 1
