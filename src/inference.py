@@ -170,18 +170,25 @@ def count_all_infection_events(x, A):
 
 
 def count_local_infection_events(i, x, A):
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
+    T = x.shape[0]
+    n = x.shape[1]
+    nl = np.zeros((n, n), dtype=int)
+    ml = np.zeros((n, n), dtype=int)
 
-    nl = np.zeros(n, dtype=int)
-    ml = np.zeros(n, dtype=int)
+    nus = A @ x[:-1].T
+    nus_i = np.round(nus[i]).astype(int)#select infected neighbor from node i
+    x_i = x[0:,i]#select node i from all time steps
 
-    for t in range(T - 1):
-        nu = A[i] @ x[t]
+    was_infected = (x_i[1:]*(1-x_i[:-1]))#1 if node i was infected at time t, 0 otherwise
+    was_not_infected = (1-x_i[1:])*(1-x_i[:-1])#1 if node i was not infected at time t, 0 otherwise
 
-        nu = int(round(nu))
-        nl[nu] += x[t + 1, i] * (1 - x[t, i])
-        ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
+#    breakpoint()
+    ml = count_mask(nus_i, was_not_infected, 0)
+    nl = count_mask(nus_i, was_infected, 0)
+
+    ml = ml[:n]
+    nl = nl[:n]
+
     return nl, ml
 
 
