@@ -164,11 +164,7 @@ def dynamics_log_posterior(nl, ml, p_c):
 
 
 def adjacency_log_posterior(num_entries, max_entries, p_rho):
-    rho = num_entries / max_entries
-    if rho == 0 or rho == 1:
-        return -np.inf
-    else:
-        return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
+    return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
 
 
 def compute_delta(a, b):
