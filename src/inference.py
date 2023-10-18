@@ -47,12 +47,12 @@ def infer_adjacency_matrix(
         Exception("Matrix must be square!")
 
     nl, ml = count_all_infection_events(x, A)
-    l_dynamics = dynamics_log_likelihood(nl, ml, p_c)
+    l_dynamics = dynamics_log_posterior(nl, ml, p_c)
 
     num_entries = int(np.sum(A) / 2)
     max_entries = binom(n, 2)
 
-    l_adjacency = adjacency_log_likelihood(num_entries, max_entries, p_rho)
+    l_adjacency = adjacency_log_posterior(num_entries, max_entries, p_rho)
 
     samples = np.zeros((nsamples, n, n))
     accept = 0
@@ -83,10 +83,10 @@ def infer_adjacency_matrix(
         new_ml[i] = ml_i
         new_ml[j] = ml_j
 
-        new_l_dynamics = dynamics_log_likelihood(new_nl, new_ml, p_c)
+        new_l_dynamics = dynamics_log_posterior(new_nl, new_ml, p_c)
 
         # update likelihood of the incidence matrix given rho
-        new_l_adjacency = adjacency_log_likelihood(
+        new_l_adjacency = adjacency_log_posterior(
             num_entries + delta_entries, max_entries, p_rho
         )
 
@@ -157,20 +157,18 @@ def count_local_infection_events(i, x, A):
     return nl, ml
 
 
-def dynamics_log_likelihood(nl, ml, p_c):
+def dynamics_log_posterior(nl, ml, p_c):
     a = np.sum(nl, axis=0)
     b = np.sum(ml, axis=0)
     return sum(b for b in betaln(a + p_c[0], b + p_c[1]))
 
 
-def adjacency_log_likelihood(num_entries, max_entries, p_rho):
+def adjacency_log_posterior(num_entries, max_entries, p_rho):
     rho = num_entries / max_entries
     if rho == 0 or rho == 1:
         return -np.inf
     else:
-        return (num_entries + p_rho[0]) * np.log(rho) + (
-            max_entries - num_entries + p_rho[1]
-        ) * np.log(1 - rho)
+        return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
 
 
 def compute_delta(a, b):

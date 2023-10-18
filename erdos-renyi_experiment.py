@@ -45,7 +45,7 @@ for f in os.listdir(data_dir):
 n = 50
 
 n_processes = len(os.sched_getaffinity(0))
-realizations = 3
+realizations = 5
 probabilities = np.linspace(0.0, 1.0, 33)
 
 # MCMC parameters
@@ -64,7 +64,7 @@ cfs = [cf1, cf2, cf3]
 
 rho0 = 1.0
 gamma = 0.1
-b = gamma / 20  # quenched mean-field threshold
+b = gamma / 5  # quenched mean-field threshold
 
 tmax = 1000
 
