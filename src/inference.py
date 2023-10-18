@@ -123,21 +123,49 @@ def infer_adjacency_matrix(
         return samples
 
 
-def count_all_infection_events(x, A):
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
+def count_mask(array, boolean_mask, my_axis):
+    """
+    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
+    along the specified axis `my_axis`.
 
+    Parameters
+    ----------
+    array : numpy.ndarray
+        The input array to count values from.
+    boolean_mask : numpy.ndarray
+        A boolean mask with the same shape as `array`, indicating which values to count.
+    my_axis : int
+        The axis along which to count values.
+    Returns
+    -------
+    numpy.ndarray
+        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
+    """
+    n = array.shape[0]
+    boolean_mask = boolean_mask.astype(int)
+    array = array.astype(int)
+
+    masked_arr = np.where(boolean_mask,array.T,n+1)#assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
+    return np.apply_along_axis(np.bincount, axis=my_axis, arr=masked_arr, minlength=n+2).T
+
+def count_all_infection_events(x, A):
+    T = x.shape[0]
+    n = x.shape[1]
     nl = np.zeros((n, n), dtype=int)
     ml = np.zeros((n, n), dtype=int)
 
-    for t in range(T - 1):
-        nus = A @ x[t]
+    nus = A @ x[:-1].T
+    nus = np.round(nus).astype(int)
 
-        # infection events
-        for i, nu in enumerate(nus):
-            nu = int(round(nu))
-            nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
-            ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
+    was_infected = (x[1:]*(1-x[:-1]))#1 if node i was infected at time t, 0 otherwise
+    was_not_infected = (1-x[1:])*(1-x[:-1])#1 if node i was not infected at time t, 0 otherwise
+
+    ml = count_mask(nus, was_not_infected, 0)
+    nl = count_mask(nus, was_infected, 0)
+
+    ml = ml[:,:n]
+    nl = nl[:,:n]
+
     return nl, ml
 
 
