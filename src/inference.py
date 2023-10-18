@@ -123,6 +123,7 @@ def infer_adjacency_matrix(
     else:
         return samples
 
+
 @jit(nopython=True)
 def count_all_infection_events(x, A):
     T = x.shape[0]
@@ -140,6 +141,7 @@ def count_all_infection_events(x, A):
             nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
             ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
+
 
 @jit(nopython=True)
 def count_local_infection_events(i, x, A):
@@ -167,12 +169,14 @@ def dynamics_log_posterior(nl, ml, p_c):
 def adjacency_log_posterior(num_entries, max_entries, p_rho):
     return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
 
+
 @jit(nopython=True)
 def compute_delta(a, b):
     if (a == -np.inf and b == -np.inf) or (a == np.inf and b == np.inf):
         return 0
     else:
         return a - b
+
 
 @jit(nopython=True)
 def update_adjacency_matrix(i, j, A):
