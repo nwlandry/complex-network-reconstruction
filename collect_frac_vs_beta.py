@@ -1,9 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from src import *
-import os
 import json
+import os
+
+import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
+
+from src import *
 
 mean_infections = []
 ps = []

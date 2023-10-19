@@ -1,12 +1,11 @@
 import random
+import warnings
 
 import numpy as np
-from numpy import ndarray
-from scipy.stats import beta
-from scipy.special import betaln, binom
 from numba import jit
-
-import warnings
+from numpy import ndarray
+from scipy.special import betaln, binom
+from scipy.stats import beta
 
 warnings.filterwarnings("error")
 

@@ -1,10 +1,12 @@
-import numpy as np
 import json
-from src import *
-import networkx as nx
-from numpy.linalg import eigh
 import multiprocessing as mp
 import os
+
+import networkx as nx
+import numpy as np
+from numpy.linalg import eigh
+
+from src import *
 
 
 def single_inference(
@@ -68,7 +70,7 @@ tau = 2
 nu = eigh(A)[0][-1]
 bc = gamma / nu  # quenched mean-field threshold
 
-beta = np.linspace(0, 2.0 * bc, nb)
+beta = np.linspace(0, 1.0, nb)
 frac = np.linspace(0, 1.0, nf)
 tmax = 1000
 
