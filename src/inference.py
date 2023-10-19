@@ -161,7 +161,7 @@ def count_local_infection_events(i, x, A):
 
 def dynamics_log_posterior(nl, ml, p_c):
     a = nl.sum(axis=0)
-    b = nl.sum(axis=0)
+    b = ml.sum(axis=0)
     return sum(betaln(a + p_c[0], b + p_c[1]))
 
 
