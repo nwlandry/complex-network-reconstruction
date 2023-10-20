@@ -12,14 +12,24 @@ def to_imshow_orientation(A):
 
 def posterior_similarity(A, samples):
     meanA = np.mean(samples, axis=0)
-    return 1 - np.sum(np.abs(A - meanA)) / np.sum(np.abs(A + meanA))
+    num = np.sum(np.abs(A - meanA))
+    den = np.sum(np.abs(A + meanA))
+    if den > 0:
+        return 1 - num / den
+    else:
+        return 1
 
 
 def samplewise_posterior_similarity(A, samples):
     ps = 0
     n = np.size(samples, axis=0)
     for i in range(n):
-        ps += 1 - np.sum(np.abs(A - samples[i])) / np.sum(np.abs(A + samples[i]))
+        num = np.sum(np.abs(A - samples[i]))
+        den = np.sum(np.abs(A + samples[i]))
+        if den > 0:
+            ps += 1 - num / den
+        else:
+            ps += 1
     return ps / n
 
 

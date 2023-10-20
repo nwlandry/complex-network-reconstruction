@@ -66,7 +66,7 @@ cfs = [cf1, cf2, cf3]
 
 rho0 = 1.0
 gamma = 0.1
-b = gamma / 5  # quenched mean-field threshold
+b = 0.04
 
 tmax = 1000
 
