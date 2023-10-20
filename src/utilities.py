@@ -49,3 +49,15 @@ def erdos_renyi(n, p):
             A[i, j] = A[j, i] = random.random() <= p
 
     return A
+
+
+def nu_distribution(x, A):
+    k = A.sum(axis=0)
+    nu = A @ x.T
+    T, n = x.shape
+    kmax = int(round(np.max(k)))
+    mat = np.zeros((kmax + 1, kmax + 1))
+    for t in range(T):
+        for i in range(n):
+            mat[int(k[i]), int(nu[i, t])] += 1
+    return mat
