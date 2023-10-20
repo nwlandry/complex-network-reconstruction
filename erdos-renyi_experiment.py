@@ -1,10 +1,12 @@
-import numpy as np
 import json
-from src import *
-import networkx as nx
-from numpy.linalg import eigh
 import multiprocessing as mp
 import os
+
+import networkx as nx
+import numpy as np
+from numpy.linalg import eigh
+
+from src import *
 
 
 def single_inference(

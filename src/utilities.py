@@ -2,8 +2,6 @@ import random
 
 import numpy as np
 
-# import xgi
-
 from src.contagion import *
 from src.inference import *
 
