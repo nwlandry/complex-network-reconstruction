@@ -4,6 +4,7 @@ import numpy as np
 from numpy import ndarray
 from scipy.stats import beta
 from scipy.special import betaln, binom
+from scipy.sparse import csr_matrix
 
 import warnings
 
@@ -24,7 +25,7 @@ def infer_adjacency_matrix(
     if not isinstance(A0, ndarray):
         A0 = A0.todense()
 
-    A = A0.copy()
+    A = csr_matrix(A0.copy())
     n, m = np.shape(A)
 
     if isinstance(p_rho, (list, tuple)):
