@@ -36,7 +36,9 @@ c = sc(np.arange(n), b)
 
 x = contagion_process(A, gamma, c, x0, tmin=0, tmax=1000)
 
-import torch
+
+
+
 
 def count_mask_torch(array, boolean_mask, my_axis):
     """
