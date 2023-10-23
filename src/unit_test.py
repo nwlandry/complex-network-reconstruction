@@ -85,12 +85,35 @@ def dynamics_log_likelihood(nl, ml, p_c):
     return sum(b for b in betaln(a + p_c[0], b + p_c[1]))
 
 
+x_fixed = np.array([[0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1.,0., 0.],
+        [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,0., 1.],
+        [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 1., 1., 1., 0., 0.,0., 0.],
+        [0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,1., 1.],
+        [1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 1.,0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 1., 1., 1., 0., 1., 1.,0., 0.]])
+
+
+fixed_res = (np.array([0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+           0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]), np.array([2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
+
+
 def test_count_all_infection_events():
     #count_all_infection_events(x, A)
-    assert np.array_equal(count_all_infection_events(x, A),count_all_infection_events_loop(x, A))
+    #assert np.array_equal(count_all_infection_events(x, A),count_all_infection_events_loop(x, A))
+    assert np.array_equal(count_all_infection_events(x_fixed, A),count_all_infection_events_loop(x_fixed, A))
+
+
+def test_count_local_infection_events_fixed():
+    """
+    test the local count_infection events agaist the global one
+
+    """
+    assert np.array_equal(count_local_infection_events(14,x_fixed, A),fixed_res)
+
 
 def test_count_local_infection_events():
     assert np.array_equal(count_local_infection_events(1,x, A),count_local_infection_events_loop(1,x, A))
+    #assert np.array_equal(count_local_infection_events(1,x_fixed, A),count_local_infection_events_loop(1,x_fixed, A))
 
 def ensure_infer_adjacency_matrix_runs():
     samples1, l = infer_adjacency_matrix(
