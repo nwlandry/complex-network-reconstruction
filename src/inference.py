@@ -6,6 +6,8 @@ from numba import jit
 from numpy import ndarray
 from scipy.special import betaln, binom
 from scipy.stats import beta
+from scipy.sparse import csr_matrix
+import warnings
 
 warnings.filterwarnings("error")
 
@@ -22,9 +24,10 @@ def infer_adjacency_matrix(
 ):
     # form initial adjacency matrix
     if not isinstance(A0, ndarray):
-        A0 = A0.todense()
+        #A0 = A0.todense()
+        pass
 
-    A = np.array(A0, dtype=float)
+    A = csr_matrix(A0.copy())
     n, m = np.shape(A)
 
     if isinstance(p_rho, (list, tuple)):
@@ -123,39 +126,68 @@ def infer_adjacency_matrix(
         return samples
 
 
-@jit(nopython=True)
+def count_mask(array, boolean_mask, my_axis,max_val):
+    """
+    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
+    along the specified axis `my_axis`.
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        The input array to count values from.
+    boolean_mask : numpy.ndarray
+        A boolean mask with the same shape as `array`, indicating which values to count.
+    my_axis : int
+        The axis along which to count values.
+    Returns
+    -------
+    numpy.ndarray
+        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
+    """
+    n = array.shape[0]
+    boolean_mask = boolean_mask.astype(int)
+    array = array.astype(int)
+
+    masked_arr = np.where(boolean_mask,array.T,max_val+1)#assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
+    return np.apply_along_axis(np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val+2).T
+
 def count_all_infection_events(x, A):
     T = x.shape[0]
     n = x.shape[1]
+    nl = np.zeros((n, n), dtype=int)
+    ml = np.zeros((n, n), dtype=int)
 
-    nl = np.zeros((n, n))
-    ml = np.zeros((n, n))
+    nus = A @ x[:-1].T
+    nus = np.round(nus).astype(int)
 
-    for t in range(T - 1):
-        nus = A @ x[t]
+    was_infected = (x[1:]*(1-x[:-1]))#1 if node i was infected at time t, 0 otherwise
+    was_not_infected = (1-x[1:])*(1-x[:-1])#1 if node i was not infected at time t, 0 otherwise
 
-        # infection events
-        for i, nu in enumerate(nus):
-            nu = int(round(nu))
-            nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
-            ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
+    ml = count_mask(nus, was_not_infected, 0,n)
+    nl = count_mask(nus, was_infected, 0,n)
+
+    ml = ml[:,:n]
+    nl = nl[:,:n]
+
     return nl, ml
 
 
-@jit(nopython=True)
 def count_local_infection_events(i, x, A):
     T = x.shape[0]
     n = x.shape[1]
 
-    nl = np.zeros(n)
-    ml = np.zeros(n)
+    nus = A @ x[:-1].T
+    #nus_i = np.round(nus[i]).astype(int)#select infected neighbor from node i
+    nus_i = nus[i].astype(int)#select infected neighbor from node i
+    x_i = x[0:,i]#select node i from all time steps
 
-    for t in range(T - 1):
-        nu = A[i].dot(x[t])
+    was_infected = (x_i[1:]*(1-x_i[:-1]))#1 if node i was infected at time t, 0 otherwise
+    was_not_infected = (1-x_i[1:])*(1-x_i[:-1])#1 if node i was not infected at time t, 0 otherwise
+    ml = count_mask(nus_i, was_not_infected, 0,n)
+    nl = count_mask(nus_i, was_infected, 0,n)
 
-        nu = int(round(nu))
-        nl[nu] += x[t + 1, i] * (1 - x[t, i])
-        ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
+    ml = ml[:n]
+    nl = nl[:n]
     return nl, ml
 
 
