@@ -1,0 +1,12 @@
+name: complex_inference
+channels:
+  - defaults
+dependencies:
+  - matplotlib
+  - networkx
+  - numpy=1.25
+  - ipykernel
+  - pytest
+  - numba
+  - scipy
+prefix: /Users/willthompson/miniconda3/envs/complex_inference
