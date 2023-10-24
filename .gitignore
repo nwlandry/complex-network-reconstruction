@@ -149,3 +149,8 @@ tutorials/test.*
 # airspeed velocity files
 Data/frac_vs_beta
 Data/erdos-renyi_experiment
+
+#slurm config files
+config.json
+#slurm output files
+*slurm*.out
