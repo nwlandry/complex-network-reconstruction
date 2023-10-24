@@ -174,7 +174,7 @@ def count_local_infection_events_loop(i, x, A):
 
 
 
-def count_mask(array, boolean_mask, my_axis):
+def count_mask(array, boolean_mask, my_axis,max_val):
     """
     Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
     along the specified axis `my_axis`.
@@ -195,8 +195,8 @@ def count_mask(array, boolean_mask, my_axis):
     n = array.shape[0]
     boolean_mask = boolean_mask.astype(int)
     array = array.astype(int)
-    masked_arr = np.where(boolean_mask,array.T,n+1)#assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
-    return np.apply_along_axis(np.bincount, axis=my_axis, arr=masked_arr, minlength=n+2).T
+    masked_arr = np.where(boolean_mask,array.T,max_val+1)#assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
+    return np.apply_along_axis(np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val+2).T
 
 def count_all_infection_events(x, A):
     T = x.shape[0]
