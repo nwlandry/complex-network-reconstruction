@@ -23,10 +23,8 @@ def infer_adjacency_matrix(
 ):
     # form initial adjacency matrix
     if not isinstance(A0, ndarray):
-        #A0 = A0.todense()
+        A0 = A0.todense()
         pass
-
-
     #A = csr_matrix(A0.copy())#sparse matrix - removed due to numba error
     n, m = np.shape(A)
 
@@ -124,6 +122,7 @@ def infer_adjacency_matrix(
         return samples, l_vals
     else:
         return samples
+
 
 
 
