@@ -388,8 +388,8 @@ def count_local_infection_events_torch(i, x, A):
 #%%
 
 
-A_tensor = to_sparse(torch.tensor(A))
-x_tensor = torch.tensor(x
+A_tensor = torch.tensor(A)
+x_tensor = torch.tensor(x)
 start_time = time.time()
 b = count_local_infection_events_torch(i,x_tensor,A_tensor)
 print("Time taken for count_local_infection_events vectorized sparse:", time.time() - start_time)
