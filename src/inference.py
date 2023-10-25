@@ -23,12 +23,8 @@ def infer_adjacency_matrix(
 ):
     # form initial adjacency matrix
     if not isinstance(A0, ndarray):
-        #A0 = A0.todense()
-        pass
-
-
-    A = csr_matrix(A0.copy())
-    n, m = np.shape(A)
+        A0 = A0.todense()
+    n, m = np.shape(A0)
 
     if isinstance(p_rho, (list, tuple)):
         p_rho = np.array(p_rho)
@@ -126,7 +122,7 @@ def infer_adjacency_matrix(
         return samples
 
 
-def count_mask(array, boolean_mask, my_axis,max_val):
+def _count_mask(array, boolean_mask, my_axis,max_val):
     """
     Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
     along the specified axis `my_axis`.
@@ -163,8 +159,8 @@ def count_all_infection_events(x, A):
     was_infected = (x[1:]*(1-x[:-1]))#1 if node i was infected at time t, 0 otherwise
     was_not_infected = (1-x[1:])*(1-x[:-1])#1 if node i was not infected at time t, 0 otherwise
 
-    ml = count_mask(nus, was_not_infected, 0,n)
-    nl = count_mask(nus, was_infected, 0,n)
+    ml = _count_mask(nus, was_not_infected, 0,n)
+    nl = _count_mask(nus, was_infected, 0,n)
 
     ml = ml[:,:n]
     nl = nl[:,:n]
