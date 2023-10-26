@@ -7,7 +7,6 @@ parent = os.path.abspath(os.path.join(path, os.pardir))
 print(parent)
 src_dir = os.path.join(parent, "src")
 print(src_dir)
-# sys.path.append(src_dir)
 sys.path.append(parent)
 
 import matplotlib.pyplot as plt
@@ -15,13 +14,15 @@ import networkx as nx
 import numpy as np
 from numpy.linalg import eigh
 from scipy.stats import beta
-from src import *
+
+from lcs import *
 
 """
 Generate Paramters for Test
 """
 G = nx.karate_club_graph()
 A = nx.adjacency_matrix(G, weight=None).todense()
+A = np.array(A, dtype=float)
 n = np.size(A, axis=0)
 x0 = np.zeros(n)
 x0[random.randrange(n)] = 1
