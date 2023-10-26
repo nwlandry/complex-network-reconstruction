@@ -154,3 +154,5 @@ Data/erdos-renyi_experiment
 config.json
 #slurm output files
 *slurm*.out
+#all config files
+*.yml

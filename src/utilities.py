@@ -2,10 +2,10 @@ import random
 
 import numpy as np
 
-# import xgi
-
 from src.contagion import *
 from src.inference import *
+
+# import xgi
 
 
 def to_imshow_orientation(A):
