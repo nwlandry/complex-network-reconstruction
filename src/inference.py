@@ -4,10 +4,9 @@ import warnings
 import numpy as np
 from numba import jit
 from numpy import ndarray
+from scipy.sparse import csr_matrix
 from scipy.special import betaln, binom
 from scipy.stats import beta
-from scipy.sparse import csr_matrix
-import warnings
 
 warnings.filterwarnings("error")
 
@@ -24,10 +23,8 @@ def infer_adjacency_matrix(
 ):
     # form initial adjacency matrix
     if not isinstance(A0, ndarray):
-        #A0 = A0.todense()
-        pass
-
-    A = csr_matrix(A0.copy())
+        A0 = A0.todense()
+    A = np.array(A0, dtype=int)
     n, m = np.shape(A)
 
     if isinstance(p_rho, (list, tuple)):
@@ -67,7 +64,6 @@ def infer_adjacency_matrix(
         l_vals = []
 
     while it <= burn_in + (nsamples - 1) * skip:
-
         # proposal comes from the lower triangle
         i = random.randrange(1, n)
         j = random.randrange(i)
@@ -126,7 +122,53 @@ def infer_adjacency_matrix(
         return samples
 
 
-def count_mask(array, boolean_mask, my_axis,max_val):
+def count_all_infection_events_loop(x, A):
+    """
+    Counts the number of infection events between all pairs of nodes in a network over time.
+
+    Args:
+        x (numpy.ndarray): A binary matrix of shape (T, n) where T is the number of time steps and n is the number of nodes.
+            Each row represents the state of the nodes at a given time step, where 1 indicates an infected node and 0 indicates a susceptible node.
+        A (numpy.ndarray): An adjacency matrix of shape (n, n) representing the connections between nodes in the network.
+
+    Returns:
+        Tuple[numpy.ndarray, numpy.ndarray]: A tuple of two matrices, nl and ml, both of shape (n, n).
+            nl[i, j] represents the number of times node i was infected with j infected neighbors, while ml[i, j] represents the number of times node i failed to be infected with j infected neighbors.
+    """
+    T = np.size(x, axis=0)
+    n = np.size(x, axis=1)
+
+    nl = np.zeros((n, n), dtype=int)
+    ml = np.zeros((n, n), dtype=int)
+
+    for t in range(T - 1):
+        nus = A @ x[t]
+
+        # infection events
+        for i, nu in enumerate(nus):
+            nu = int(round(nu))
+            nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
+            ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
+    return nl, ml
+
+
+def count_local_infection_events_loop(i, x, A):
+    T = np.size(x, axis=0)
+    n = np.size(x, axis=1)
+
+    nl = np.zeros(n, dtype=int)
+    ml = np.zeros(n, dtype=int)
+
+    for t in range(T - 1):
+        nu = A[i] @ x[t]
+
+        nu = int(round(nu))
+        nl[nu] += x[t + 1, i] * (1 - x[t, i])
+        ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
+    return nl, ml
+
+
+def _count_mask(array, boolean_mask, my_axis, max_val):
     """
     Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
     along the specified axis `my_axis`.
@@ -147,9 +189,13 @@ def count_mask(array, boolean_mask, my_axis,max_val):
     n = array.shape[0]
     boolean_mask = boolean_mask.astype(int)
     array = array.astype(int)
+    masked_arr = np.where(
+        boolean_mask, array.T, max_val + 1
+    )  # assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
+    return np.apply_along_axis(
+        np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val + 2
+    ).T
 
-    masked_arr = np.where(boolean_mask,array.T,max_val+1)#assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
-    return np.apply_along_axis(np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val+2).T
 
 def count_all_infection_events(x, A):
     T = x.shape[0]
@@ -160,14 +206,18 @@ def count_all_infection_events(x, A):
     nus = A @ x[:-1].T
     nus = np.round(nus).astype(int)
 
-    was_infected = (x[1:]*(1-x[:-1]))#1 if node i was infected at time t, 0 otherwise
-    was_not_infected = (1-x[1:])*(1-x[:-1])#1 if node i was not infected at time t, 0 otherwise
+    was_infected = x[1:] * (
+        1 - x[:-1]
+    )  # 1 if node i was infected at time t, 0 otherwise
+    was_not_infected = (1 - x[1:]) * (
+        1 - x[:-1]
+    )  # 1 if node i was not infected at time t, 0 otherwise
 
-    ml = count_mask(nus, was_not_infected, 0,n)
-    nl = count_mask(nus, was_infected, 0,n)
+    ml = _count_mask(nus, was_not_infected, 0, n)
+    nl = _count_mask(nus, was_infected, 0, n)
 
-    ml = ml[:,:n]
-    nl = nl[:,:n]
+    ml = ml[:, :n]
+    nl = nl[:, :n]
 
     return nl, ml
 
@@ -175,16 +225,17 @@ def count_all_infection_events(x, A):
 def count_local_infection_events(i, x, A):
     T = x.shape[0]
     n = x.shape[1]
+    nus_i = A[i] @ x[:-1].T
+    x_i = x[0:, i]  # select node i from all time steps
 
-    nus = A @ x[:-1].T
-    #nus_i = np.round(nus[i]).astype(int)#select infected neighbor from node i
-    nus_i = nus[i].astype(int)#select infected neighbor from node i
-    x_i = x[0:,i]#select node i from all time steps
-
-    was_infected = (x_i[1:]*(1-x_i[:-1]))#1 if node i was infected at time t, 0 otherwise
-    was_not_infected = (1-x_i[1:])*(1-x_i[:-1])#1 if node i was not infected at time t, 0 otherwise
-    ml = count_mask(nus_i, was_not_infected, 0,n)
-    nl = count_mask(nus_i, was_infected, 0,n)
+    was_infected = x_i[1:] * (
+        1 - x_i[:-1]
+    )  # 1 if node i was infected at time t, 0 otherwise
+    was_not_infected = (1 - x_i[1:]) * (
+        1 - x_i[:-1]
+    )  # 1 if node i was not infected at time t, 0 otherwise
+    ml = _count_mask(nus_i, was_not_infected, 0, n)
+    nl = _count_mask(nus_i, was_infected, 0, n)
 
     ml = ml[:n]
     nl = nl[:n]
