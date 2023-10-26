@@ -1,7 +1,6 @@
 import random
 
 import numpy as np
-
 from src.contagion import *
 from src.inference import *
 

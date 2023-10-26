@@ -4,7 +4,6 @@ import warnings
 import numpy as np
 from numba import jit
 from numpy import ndarray
-from scipy.sparse import csr_matrix
 from scipy.special import betaln, binom
 from scipy.stats import beta
 
@@ -135,8 +134,8 @@ def count_all_infection_events_loop(x, A):
         Tuple[numpy.ndarray, numpy.ndarray]: A tuple of two matrices, nl and ml, both of shape (n, n).
             nl[i, j] represents the number of times node i was infected with j infected neighbors, while ml[i, j] represents the number of times node i failed to be infected with j infected neighbors.
     """
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
+    T = x.shape[0]
+    n = x.shape[1]
 
     nl = np.zeros((n, n), dtype=int)
     ml = np.zeros((n, n), dtype=int)
@@ -153,8 +152,8 @@ def count_all_infection_events_loop(x, A):
 
 
 def count_local_infection_events_loop(i, x, A):
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
+    T = x.shape[0]
+    n = x.shape[1]
 
     nl = np.zeros(n, dtype=int)
     ml = np.zeros(n, dtype=int)
@@ -189,56 +188,46 @@ def _count_mask(array, boolean_mask, my_axis, max_val):
     n = array.shape[0]
     boolean_mask = boolean_mask.astype(int)
     array = array.astype(int)
-    masked_arr = np.where(
-        boolean_mask, array.T, max_val + 1
-    )  # assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
-    return np.apply_along_axis(
+    # assign all values that fail the boolean mask to n+1,
+    # these should get removed before returning result
+    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
+    nl, ml = np.apply_along_axis(
         np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val + 2
     ).T
+    return nl[:, :n], ml[:, :n]
 
 
 def count_all_infection_events(x, A):
-    T = x.shape[0]
     n = x.shape[1]
-    nl = np.zeros((n, n), dtype=int)
-    ml = np.zeros((n, n), dtype=int)
 
-    nus = A @ x[:-1].T
-    nus = np.round(nus).astype(int)
+    nus = np.round(A @ x[:-1].T).astype(int)
+    # nus = np.round(nus).astype(int)
 
-    was_infected = x[1:] * (
-        1 - x[:-1]
-    )  # 1 if node i was infected at time t, 0 otherwise
-    was_not_infected = (1 - x[1:]) * (
-        1 - x[:-1]
-    )  # 1 if node i was not infected at time t, 0 otherwise
+    # 1 if node i was infected at time t, 0 otherwise
+    was_infected = x[1:] * (1 - x[:-1])
+
+    # 1 if node i was not infected at time t, 0 otherwise
+    was_not_infected = (1 - x[1:]) * (1 - x[:-1])
 
     ml = _count_mask(nus, was_not_infected, 0, n)
     nl = _count_mask(nus, was_infected, 0, n)
-
-    ml = ml[:, :n]
-    nl = nl[:, :n]
 
     return nl, ml
 
 
 def count_local_infection_events(i, x, A):
-    T = x.shape[0]
     n = x.shape[1]
     nus_i = A[i] @ x[:-1].T
-    x_i = x[0:, i]  # select node i from all time steps
+    x_i = x[:, i]  # select node i from all time steps
 
-    was_infected = x_i[1:] * (
-        1 - x_i[:-1]
-    )  # 1 if node i was infected at time t, 0 otherwise
-    was_not_infected = (1 - x_i[1:]) * (
-        1 - x_i[:-1]
-    )  # 1 if node i was not infected at time t, 0 otherwise
+    # 1 if node i was infected at time t, 0 otherwise
+    was_infected = x_i[1:] * (1 - x_i[:-1])
+
+    # 1 if node i was not infected at time t, 0 otherwise
+    was_not_infected = (1 - x_i[1:]) * (1 - x_i[:-1])
     ml = _count_mask(nus_i, was_not_infected, 0, n)
     nl = _count_mask(nus_i, was_infected, 0, n)
 
-    ml = ml[:n]
-    nl = nl[:n]
     return nl, ml
 
 
@@ -277,26 +266,22 @@ def infer_dynamics(x, A, p_gamma, p_c):
     if np.any(p_c <= 0) or np.any(p_gamma <= 0):
         raise Exception("Parameters in a beta distribution must be greater than 0.")
 
-    T = np.size(x, axis=0)
-    n = np.size(x, axis=1)
-
     # sample gamma
-    a = 0  # healing events
-    b = 0  # non-healing events
-    for t in range(T - 1):
-        # healing events
-        a += len(np.where(x[t + 1] - x[t] == -1)[0])
-        # non-healing events
-        b += len(np.where(x[t + 1] * x[t] == 1)[0])
+
+    # healing events
+    a = len(np.where(x[1:] * (1 - x[:-1]))[0])
+    b = len(np.where(x[1:] * x[:-1])[0])
 
     gamma = beta(a + p_gamma[0], b + p_gamma[1]).rvs()
 
     # sample c
     # These are the parameters for the beta distribution,
     # each entry corresponds to a number of infected neighbors
-    a = np.zeros(n)
-    b = np.zeros(n)
+    nl, ml = count_all_infection_events(x, A)
+    a = nl.sum(axis=0)
+    b = ml.sum(axis=0)
 
+    T, n = x.shape
     for t in range(T - 1):
         nus = A @ x[t]
 
