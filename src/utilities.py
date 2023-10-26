@@ -5,8 +5,6 @@ import numpy as np
 from src.contagion import *
 from src.inference import *
 
-# import xgi
-
 
 def to_imshow_orientation(A):
     return np.flipud(A.T)
