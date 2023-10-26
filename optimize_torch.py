@@ -1,17 +1,19 @@
-
 # %%
-import numpy as np
-import matplotlib.pyplot as plt
-from src import *
-import networkx as nx
-from scipy.stats import beta
-import time
-from numpy.linalg import eigh
 import cProfile
-import pstats
 import pdb
+import pstats
+import time
+
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+from numpy.linalg import eigh
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import eigs
+from scipy.stats import beta
+
+from src import *
+
 random.seed(8)
 
 n = 100000
@@ -37,9 +39,6 @@ c = sc(np.arange(n), b)
 x = contagion_process(A, gamma, c, x0, tmin=0, tmax=1000)
 
 
-
-
-
 def count_mask_torch(array, boolean_mask, my_axis):
     """
     Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
@@ -62,11 +61,14 @@ def count_mask_torch(array, boolean_mask, my_axis):
     boolean_mask = boolean_mask.to(torch.bool)
     array = array.to(torch.int)
 
-    masked_arr = torch.where(boolean_mask, array, n+1)#assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
-    counts = torch.zeros(n+2, dtype=torch.int)
-    counts = torch.bincount(masked_arr.flatten(), minlength=n+2)
+    masked_arr = torch.where(
+        boolean_mask, array, n + 1
+    )  # assign all values that fail the boolean mask to n+1, these should get removed beofre returning result
+    counts = torch.zeros(n + 2, dtype=torch.int)
+    counts = torch.bincount(masked_arr.flatten(), minlength=n + 2)
 
     return counts
+
 
 def count_local_infection_events_torch(i, x, A):
     n = x.shape[1]
@@ -77,8 +79,8 @@ def count_local_infection_events_torch(i, x, A):
     nus_i = torch.round(nus[i]).to(torch.int64)
     x_i = x[:, i]
 
-    was_infected = (x_i[1:]*(1-x_i[:-1]))
-    was_not_infected = (1-x_i[1:])*(1-x_i[:-1])
+    was_infected = x_i[1:] * (1 - x_i[:-1])
+    was_not_infected = (1 - x_i[1:]) * (1 - x_i[:-1])
 
     ml = count_mask_torch(nus_i, was_not_infected, 0)
     nl = count_mask_torch(nus_i, was_infected, 0)
@@ -89,12 +91,15 @@ def count_local_infection_events_torch(i, x, A):
     return nl, ml
 
 
-#%%
+# %%
 
 
 A_tensor = torch.tensor(A)
 x_tensor = torch.tensor(x)
 start_time = time.time()
-b = count_local_infection_events_torch(1,x_tensor,A_tensor)
-print("Time taken for count_local_infection_events vectorized sparse:", time.time() - start_time)
+b = count_local_infection_events_torch(1, x_tensor, A_tensor)
+print(
+    "Time taken for count_local_infection_events vectorized sparse:",
+    time.time() - start_time,
+)
 # %%

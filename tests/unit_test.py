@@ -2,20 +2,21 @@ import os
 import sys
 from pathlib import Path
 
-path=Path.cwd()
-parent=os.path.abspath(os.path.join(path, os.pardir))
+path = Path.cwd()
+parent = os.path.abspath(os.path.join(path, os.pardir))
 print(parent)
-src_dir = os.path.join(parent,"src")
+src_dir = os.path.join(parent, "src")
 print(src_dir)
-#sys.path.append(src_dir)
+# sys.path.append(src_dir)
 sys.path.append(parent)
 
-import numpy as np
 import matplotlib.pyplot as plt
-from src import *
 import networkx as nx
-from scipy.stats import beta
+import numpy as np
 from numpy.linalg import eigh
+from scipy.stats import beta
+
+from src import *
 
 """
 Generate Paramters for Test
@@ -43,17 +44,15 @@ p_rho = np.array([2, 5])
 rho0 = beta(p_rho[0], p_rho[1]).rvs()
 
 
-
-
-
 import time
+
 i = 1
 start_time = time.time()
-a = count_local_infection_events(i,x,A)
+a = count_local_infection_events(i, x, A)
 print("Time taken for count_local_infection_events:", time.time() - start_time)
 
 start_time = time.time()
-b = count_local_infection_events_loop(i,x,A)
+b = count_local_infection_events_loop(i, x, A)
 print("Time taken for count_local_infection_events2:", time.time() - start_time)
 
 
@@ -64,16 +63,21 @@ def dynamics_log_likelihood(nl, ml, p_c):
 
 
 def test_count_all_infection_events():
-    #count_all_infection_events(x, A)
-    assert np.array_equal(count_all_infection_events(x, A),count_all_infection_events_loop(x, A))
+    # count_all_infection_events(x, A)
+    assert np.array_equal(
+        count_all_infection_events(x, A), count_all_infection_events_loop(x, A)
+    )
+
 
 def test_count_local_infection_events():
-    assert np.array_equal(count_local_infection_events(1,x, A),count_local_infection_events_loop(1,x, A))
+    assert np.array_equal(
+        count_local_infection_events(1, x, A),
+        count_local_infection_events_loop(1, x, A),
+    )
+
 
 def ensure_infer_adjacency_matrix_runs():
     samples1, l = infer_adjacency_matrix(
-         x, A, rho0, p_c, nsamples=nsamples, burn_in=0, skip=10, return_likelihood=True
-     )
+        x, A, rho0, p_c, nsamples=nsamples, burn_in=0, skip=10, return_likelihood=True
+    )
     assert samples1 != 0
-
-

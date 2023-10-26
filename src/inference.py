@@ -4,10 +4,9 @@ import warnings
 import numpy as np
 from numba import jit
 from numpy import ndarray
+from scipy.sparse import csr_matrix
 from scipy.special import betaln, binom
 from scipy.stats import beta
-from scipy.sparse import csr_matrix
-import warnings
 
 warnings.filterwarnings("error")
 
