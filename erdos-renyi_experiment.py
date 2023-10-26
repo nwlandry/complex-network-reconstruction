@@ -1,10 +1,11 @@
-import numpy as np
 import json
-from src import *
-import networkx as nx
-from numpy.linalg import eigh
 import multiprocessing as mp
 import os
+
+import networkx as nx
+import numpy as np
+
+from src import *
 
 
 def single_inference(
@@ -45,7 +46,7 @@ for f in os.listdir(data_dir):
 n = 50
 
 n_processes = len(os.sched_getaffinity(0))
-realizations = 3
+realizations = 5
 probabilities = np.linspace(0.0, 1.0, 33)
 
 # MCMC parameters
@@ -64,20 +65,20 @@ cfs = [cf1, cf2, cf3]
 
 rho0 = 1.0
 gamma = 0.1
-b = gamma / 20  # quenched mean-field threshold
+b = 0.04
 
 tmax = 1000
 
 
 arglist = []
-for p in probabilities:
-    for i, cf in enumerate(cfs):
+for i, cf in enumerate(cfs):
+    for p in probabilities:
         c = cf(np.arange(n), b)
-        for k in range(realizations):
+        for r in range(realizations):
             A = erdos_renyi(n, p)
             arglist.append(
                 (
-                    f"{data_dir}/{p}-{i}-{k}",
+                    f"{data_dir}/{i}-{p}-{r}",
                     gamma,
                     c,
                     rho0,

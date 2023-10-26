@@ -2,10 +2,12 @@ import random
 import warnings
 
 import numpy as np
+from numba import jit
 from numpy import ndarray
-from scipy.sparse import csr_matrix
 from scipy.special import betaln, binom
 from scipy.stats import beta
+from scipy.sparse import csr_matrix
+import warnings
 
 warnings.filterwarnings("error")
 
@@ -46,12 +48,12 @@ def infer_adjacency_matrix(
         Exception("Matrix must be square!")
 
     nl, ml = count_all_infection_events(x, A)
-    l_dynamics = dynamics_log_likelihood(nl, ml, p_c)
+    l_dynamics = dynamics_log_posterior(nl, ml, p_c)
 
     num_entries = int(np.sum(A) / 2)
     max_entries = binom(n, 2)
 
-    l_adjacency = adjacency_log_likelihood(num_entries, max_entries, p_rho)
+    l_adjacency = adjacency_log_posterior(num_entries, max_entries, p_rho)
 
     samples = np.zeros((nsamples, n, n))
     accept = 0
@@ -81,10 +83,10 @@ def infer_adjacency_matrix(
         new_ml[i] = ml_i
         new_ml[j] = ml_j
 
-        new_l_dynamics = dynamics_log_likelihood(new_nl, new_ml, p_c)
+        new_l_dynamics = dynamics_log_posterior(new_nl, new_ml, p_c)
 
         # update likelihood of the incidence matrix given rho
-        new_l_adjacency = adjacency_log_likelihood(
+        new_l_adjacency = adjacency_log_posterior(
             num_entries + delta_entries, max_entries, p_rho
         )
 
@@ -238,26 +240,20 @@ def count_local_infection_events(i, x, A):
 
     ml = ml[:n]
     nl = nl[:n]
-
     return nl, ml
 
 
-def dynamics_log_likelihood(nl, ml, p_c):
-    a = np.sum(nl, axis=0)
-    b = np.sum(ml, axis=0)
-    return sum(b for b in betaln(a + p_c[0], b + p_c[1]))
+def dynamics_log_posterior(nl, ml, p_c):
+    a = nl.sum(axis=0)
+    b = ml.sum(axis=0)
+    return sum(betaln(a + p_c[0], b + p_c[1]))
 
 
-def adjacency_log_likelihood(num_entries, max_entries, p_rho):
-    rho = num_entries / max_entries
-    if rho == 0 or rho == 1:
-        return -np.inf
-    else:
-        return (num_entries + p_rho[0]) * np.log(rho) + (
-            max_entries - num_entries + p_rho[1]
-        ) * np.log(1 - rho)
+def adjacency_log_posterior(num_entries, max_entries, p_rho):
+    return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
 
 
+@jit(nopython=True)
 def compute_delta(a, b):
     if (a == -np.inf and b == -np.inf) or (a == np.inf and b == np.inf):
         return 0
@@ -265,6 +261,7 @@ def compute_delta(a, b):
         return a - b
 
 
+@jit(nopython=True)
 def update_adjacency_matrix(i, j, A):
     if A[i, j] == 0:
         A[i, j] = A[j, i] = 1

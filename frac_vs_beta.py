@@ -4,14 +4,14 @@ import os
 
 import networkx as nx
 import numpy as np
-from numpy.linalg import eigh
+
 from src import *
 
 
 def single_inference(
     fname, gamma, c, rho0, A, tmax, p_c, p_rho, nsamples, burn_in, skip
 ):
-    n = np.size(A, axis=0)
+    n = A.shape[0]
     x0 = np.zeros(n)
     x0[random.sample(range(n), int(round(rho0 * n)))] = 1
 
@@ -45,7 +45,7 @@ for f in os.listdir(data_dir):
 
 G = nx.karate_club_graph()
 A = nx.adjacency_matrix(G, weight=None).todense()
-n = np.size(A, axis=0)
+n = A.shape[0]
 
 n_processes = len(os.sched_getaffinity(0))
 realizations = 10
@@ -66,10 +66,8 @@ cc = lambda nu, tau, beta: beta * (nu >= tau)  # complex contagion
 rho0 = 1.0
 gamma = 0.1
 tau = 2
-nu = eigh(A)[0][-1]
-bc = gamma / nu  # quenched mean-field threshold
 
-beta = np.linspace(0, 2.0 * bc, nb)
+beta = np.linspace(0, 1.0, nb)
 frac = np.linspace(0, 1.0, nf)
 tmax = 1000
 
