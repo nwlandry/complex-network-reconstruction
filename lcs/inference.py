@@ -33,7 +33,7 @@ def infer_adjacency_matrix(
         p_c = np.array(p_c)
 
     if p_c is None:
-        p_c = np.ones((n, 2))
+        p_c = np.ones((2, n))
     elif np.any(np.array(p_c) <= 0):
         raise Exception("Parameters in a beta distribution must be greater than 0.")
 
