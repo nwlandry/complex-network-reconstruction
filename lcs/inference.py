@@ -23,10 +23,8 @@ def infer_adjacency_matrix(
     # form initial adjacency matrix
     if not isinstance(A0, ndarray):
         A0 = A0.todense()
-    # A = np.array(A0, dtype=int)
-    A = np.array(A0, dtype=np.float16)
-    x = np.array(x)
-    n, m = np.shape(A, dtype=np.float16)
+    A = np.array(A0, dtype=int)
+    n, m = A.shape
 
     if isinstance(p_rho, (list, tuple)):
         p_rho = np.array(p_rho)
@@ -49,6 +47,9 @@ def infer_adjacency_matrix(
 
     nl, ml = count_all_infection_events(x, A)
     l_dynamics = dynamics_log_posterior(nl, ml, p_c)
+
+    if sum(np.diag(A)) > 0:
+        raise Exception("Self-loops are not allowed.")
 
     num_entries = int(np.sum(A) / 2)
     max_entries = binom(n, 2)
