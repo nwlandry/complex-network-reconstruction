@@ -2,7 +2,6 @@ import os
 import sys
 from pathlib import Path
 
-
 path = Path.cwd()
 parent = os.path.abspath(os.path.join(path, os.pardir))
 print(parent)
@@ -13,12 +12,13 @@ import warnings
 
 warnings.filterwarnings("default")
 
+import time
+
 import networkx as nx
 import numpy as np
 from numpy.linalg import eigh
 from scipy.stats import beta
 
-import time
 from lcs import *
 
 """

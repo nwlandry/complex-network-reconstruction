@@ -16,13 +16,14 @@ def test_infer_adjacency_matrix(x4, A4):
 
 
 def test_count_all_infection_events(x4, A4):
-    # count_all_infection_events(x, A)
+    A4 = np.array(A4, dtype=float)
     assert np.array_equal(
         count_all_infection_events(x4, A4), count_all_infection_events_loop(x4, A4)
     )
 
 
 def test_count_local_infection_events(x4, A4):
+    A4 = np.array(A4, dtype=float)
     assert np.array_equal(
         count_local_infection_events(1, x4, A4),
         count_local_infection_events_loop(1, x4, A4),
