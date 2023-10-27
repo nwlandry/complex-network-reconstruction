@@ -4,7 +4,7 @@ import numpy as np
 from numpy import ndarray
 
 
-def contagion_process(A, gamma, c, s0, tmin=0, tmax=20, dt=1, random_seed=None):
+def contagion_process(A, gamma, c, x0, tmin=0, tmax=20, dt=1, random_seed=None):
     """A neighborhood-based contagion process on pairwise networks
 
     Parameters
@@ -15,7 +15,7 @@ def contagion_process(A, gamma, c, s0, tmin=0, tmax=20, dt=1, random_seed=None):
         The healing rate
     c : Numpy ndarray
         A 1d vector of the contagion rates. Should be N x 1.
-    s0 : Numpy ndarray
+    x0 : Numpy ndarray
         A 1D vector of the initial nodal states, either 0 or 1.
         Should be N x 1.
     tmin : int, optional
@@ -43,19 +43,18 @@ def contagion_process(A, gamma, c, s0, tmin=0, tmax=20, dt=1, random_seed=None):
     if random_seed is not None:
         random.seed(random_seed)
 
-    # infect nodes
     n, m = np.shape(A)
     if n != m:
         raise Exception("Matrix must be square!")
 
     T = int((tmax - tmin) / dt)
     x = np.zeros((T, n))
-    x[0] = s0.copy()
+    x[0] = x0.copy()
 
     for t in range(T - 1):
         x[t + 1] = x[t].copy()
 
-        # infect people by neighbors the rooms
+        # infect people via their neighborhood
         for i in range(n):
             if x[t, i] == 1 and random.random() <= gamma * dt:
                 x[t + 1, i] = 0

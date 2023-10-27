@@ -5,7 +5,7 @@ import os
 import networkx as nx
 import numpy as np
 
-from src import *
+from lcs import *
 
 
 def single_inference(

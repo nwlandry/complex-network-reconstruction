@@ -2,8 +2,8 @@ import random
 
 import numpy as np
 
-from src.contagion import *
-from src.inference import *
+from .contagion import *
+from .inference import *
 
 
 def to_imshow_orientation(A):
