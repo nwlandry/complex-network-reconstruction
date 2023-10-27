@@ -7,8 +7,6 @@ from numpy import ndarray
 from scipy.special import betaln, binom
 from scipy.stats import beta
 
-warnings.filterwarnings("error")
-
 
 def infer_adjacency_matrix(
     x,
