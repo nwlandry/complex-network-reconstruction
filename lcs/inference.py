@@ -219,6 +219,12 @@ def infer_dynamics(x, A, p_gamma, p_c):
     # Our priors are drawn from a beta distribution such that
     # the posteriors are also from a beta distribution
 
+    if isinstance(p_gamma, (list, tuple)):
+        p_gamma = np.array(p_gamma)
+
+    if isinstance(p_c, (list, tuple)):
+        p_c = np.array(p_c)
+
     if np.any(p_c <= 0) or np.any(p_gamma <= 0):
         raise Exception("Parameters in a beta distribution must be greater than 0.")
 

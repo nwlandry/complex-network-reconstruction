@@ -61,3 +61,9 @@ def nu_distribution(x, A):
         for i in range(n):
             mat[int(k[i]), int(nu[i, t])] += 1
     return mat
+
+
+def degrees(A):
+    if not isinstance(A, np.ndarray):
+        A = A.todense()
+    return A.sum(axis=0)
