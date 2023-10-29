@@ -98,7 +98,7 @@ data["l2"] = l2.tolist()
 
 datastring = json.dumps(data)
 
-fname = "Data/infer_dynamics.json"
+fname = "Data/infer_contagion_functions.json"
 
 with open(fname, "w") as output_file:
     output_file.write(datastring)
