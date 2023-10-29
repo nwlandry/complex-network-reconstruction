@@ -35,7 +35,7 @@ def infer_adjacency_matrix_and_dynamics(
     gamma = np.zeros(int(nsamples * nspa))
     cf = np.zeros((nsamples * nspa, n))
     for i in range(nsamples):
-        g, c = infer_dynamics(x, samples[0], p_gamma=None, p_c=None, nsamples=10)
+        g, c = infer_dynamics(x, samples[0], p_gamma=p_gamma, p_c=p_c, nsamples=10)
 
         gamma[i * nspa : (i + 1) * nspa] = g
         cf[i * nspa : (i + 1) * nspa, :] = c
@@ -144,7 +144,7 @@ def infer_adjacency_matrix(
     )
 
     if return_likelihood:
-        return samples, l_vals
+        return samples, np.array(l_vals)
     else:
         return samples
 

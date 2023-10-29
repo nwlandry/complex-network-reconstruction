@@ -32,7 +32,7 @@ x1 = contagion_process(A, gamma, c1, x0, tmin=0, tmax=1000, random_seed=None)
 p = beta(p_rho[0], p_rho[1]).rvs()
 A0 = erdos_renyi(n, p)
 
-samples1, gamma1, cf1, l1 = infer_adjacency_matrix_and_dynamics(
+A1_samples, gamma1_samples, c1_samples, l1 = infer_adjacency_matrix_and_dynamics(
     x1,
     A0,
     p_rho,
@@ -55,14 +55,14 @@ c2 = contagion_function(np.arange(n), b2)
 
 x2 = contagion_process(A, gamma, c2, x0, tmin=0, tmax=1000, random_seed=None)
 
-p_gamma = [1, 1]
+p_gamma = np.ones(2)
 p_c = np.ones((2, n))
-p_rho = [1, 1]
+p_rho = np.ones(2)
 
 p = beta(p_rho[0], p_rho[1]).rvs()
 A0 = erdos_renyi(n, p)
 
-samples2, gamma2, cf2, l2 = infer_adjacency_matrix_and_dynamics(
+A2_samples, gamma2_samples, c2_samples, l2 = infer_adjacency_matrix_and_dynamics(
     x2,
     A0,
     p_rho,
@@ -81,18 +81,18 @@ data = {}
 data["A"] = A.tolist()
 data["gamma"] = gamma
 data["c1"] = c1.tolist()
-data["c2"] = c1.tolist()
+data["c2"] = c2.tolist()
 data["p-rho"] = p_rho.tolist()
 data["p-gamma"] = p_gamma.tolist()
 data["p-c"] = p_c.tolist()
 data["x1"] = x1.tolist()
-data["x2"] = x1.tolist()
-data["samples1"] = samples1.tolist()
-data["samples2"] = samples2.tolist()
-data["gamma-samples1"] = gamma1.tolist()
-data["gamma-samples2"] = gamma2.tolist()
-data["c-samples1"] = cf1.tolist()
-data["c-samples2"] = cf2.tolist()
+data["x2"] = x2.tolist()
+data["A1-samples"] = A1_samples.tolist()
+data["A2-samples"] = A2_samples.tolist()
+data["gamma1-samples"] = gamma1_samples.tolist()
+data["gamma2-samples"] = gamma2_samples.tolist()
+data["c1-samples"] = c1_samples.tolist()
+data["c2-samples"] = c2_samples.tolist()
 data["l1"] = l1.tolist()
 data["l2"] = l2.tolist()
 
