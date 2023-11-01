@@ -59,7 +59,7 @@ def contagion_process(A, gamma, c, x0, tmin=0, tmax=20, dt=1, random_seed=None):
             if x[t, i] == 1 and random.random() <= gamma * dt:
                 x[t + 1, i] = 0
             elif x[t, i] == 0:
-                infected_nbrs = int(round(A[i] @ x[t]))
+                infected_nbrs = int(np.round(A[i] @ x[t]))
                 if random.random() <= c[infected_nbrs] * dt:
                     x[t + 1, i] = 1
     return x

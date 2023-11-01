@@ -17,7 +17,8 @@ def single_inference(
 
     x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
 
-    A0 = nx.adjacency_matrix(nx.fast_gnp_random_graph(n, 0.3))
+    p = beta(p_rho[0], p_rho[1]).rvs()
+    A0 = erdos_renyi(n, p)
 
     samples = infer_adjacency_matrix(
         x, A0, p_rho, p_c, nsamples=nsamples, burn_in=burn_in, skip=skip

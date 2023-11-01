@@ -8,6 +8,44 @@ from scipy.special import betaln, binom
 from scipy.stats import beta
 
 
+def infer_adjacency_matrix_and_dynamics(
+    x,
+    A0,
+    p_rho=None,
+    p_gamma=None,
+    p_c=None,
+    nsamples=1,
+    nspa=1,
+    burn_in=100,
+    skip=100,
+    return_likelihood=False,
+):
+    n = x.shape[1]
+    samples, l = infer_adjacency_matrix(
+        x,
+        A0,
+        p_rho=p_rho,
+        p_c=p_c,
+        nsamples=nsamples,
+        burn_in=burn_in,
+        skip=skip,
+        return_likelihood=True,
+    )
+
+    gamma = np.zeros(int(nsamples * nspa))
+    cf = np.zeros((nsamples * nspa, n))
+    for i in range(nsamples):
+        g, c = infer_dynamics(x, samples[0], p_gamma=p_gamma, p_c=p_c, nsamples=10)
+
+        gamma[i * nspa : (i + 1) * nspa] = g
+        cf[i * nspa : (i + 1) * nspa, :] = c
+
+    if return_likelihood:
+        return samples, gamma, cf, l
+    else:
+        return samples, gamma, cf
+
+
 def infer_adjacency_matrix(
     x,
     A0,
@@ -24,21 +62,8 @@ def infer_adjacency_matrix(
     A = np.array(A0, dtype=int)
     n, m = A.shape
 
-    if isinstance(p_rho, (list, tuple)):
-        p_rho = np.array(p_rho)
-
-    if isinstance(p_c, (list, tuple)):
-        p_c = np.array(p_c)
-
-    if p_c is None:
-        p_c = np.ones((2, n))
-    elif np.any(np.array(p_c) <= 0):
-        raise Exception("Parameters in a beta distribution must be greater than 0.")
-
-    if p_rho is None:
-        p_rho = np.ones(2)
-    elif np.any(p_rho <= 0):
-        raise Exception("Parameters in a beta distribution must be greater than 0.")
+    p_rho = _check_beta_parameters(p_rho, [2])
+    p_c = _check_beta_parameters(p_c, [2, n])
 
     if n != m:
         Exception("Matrix must be square!")
@@ -119,38 +144,39 @@ def infer_adjacency_matrix(
     )
 
     if return_likelihood:
-        return samples, l_vals
+        return samples, np.array(l_vals)
     else:
         return samples
 
 
-def _count_mask(array, boolean_mask, my_axis, max_val):
-    """
-    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
-    along the specified axis `my_axis`.
+def infer_dynamics(x, A, p_gamma=None, p_c=None, nsamples=1):
+    # Our priors are drawn from a beta distribution such that
+    # the posteriors are also from a beta distribution
+    n = A.shape[0]
 
-    Parameters
-    ----------
-    array : numpy.ndarray
-        The input array to count values from.
-    boolean_mask : numpy.ndarray
-        A boolean mask with the same shape as `array`, indicating which values to count.
-    my_axis : int
-        The axis along which to count values.
-    Returns
-    -------
-    numpy.ndarray
-        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
-    """
-    n = array.shape[0]
-    boolean_mask = boolean_mask.astype(int)
-    array = array.astype(int)
-    # assign all values that fail the boolean mask to n+1,
-    # these should get removed before returning result
-    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
-    return np.apply_along_axis(
-        np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val + 2
-    ).T
+    p_gamma = _check_beta_parameters(p_gamma, [2])
+    p_c = _check_beta_parameters(p_c, [2, n])
+
+    # sample gamma
+
+    # healing events
+    # count the places where the indicator is equal to 1
+    a = len(np.where(x[1:] * (1 - x[:-1]))[0])
+    b = len(np.where(x[1:] * x[:-1])[0])
+
+    gamma = beta(a + p_gamma[0], b + p_gamma[1]).rvs(size=nsamples)
+
+    # sample c
+    # These are the parameters for the beta distribution,
+    # each entry corresponds to a number of infected neighbors
+    nl, ml = count_all_infection_events(x, A)
+    a = nl.sum(axis=0)
+    b = ml.sum(axis=0)
+
+    c = np.zeros((nsamples, n))
+    for i in range(nsamples):
+        c[i] = beta(a + p_c[0], b + p_c[1]).rvs()
+    return gamma, c
 
 
 def count_all_infection_events(x, A):
@@ -213,33 +239,6 @@ def update_adjacency_matrix(i, j, A):
     else:
         A[i, j] = A[j, i] = 0
         return -1
-
-
-def infer_dynamics(x, A, p_gamma, p_c):
-    # Our priors are drawn from a beta distribution such that
-    # the posteriors are also from a beta distribution
-
-    if np.any(p_c <= 0) or np.any(p_gamma <= 0):
-        raise Exception("Parameters in a beta distribution must be greater than 0.")
-
-    # sample gamma
-
-    # healing events
-    # count the places where the indicator is equal to 1
-    a = len(np.where(x[1:] * (1 - x[:-1]))[0])
-    b = len(np.where(x[1:] * x[:-1])[0])
-
-    gamma = beta(a + p_gamma[0], b + p_gamma[1]).rvs()
-
-    # sample c
-    # These are the parameters for the beta distribution,
-    # each entry corresponds to a number of infected neighbors
-    nl, ml = count_all_infection_events(x, A)
-    a = nl.sum(axis=0)
-    b = ml.sum(axis=0)
-
-    c = beta(a + p_c[0], b + p_c[1]).rvs()
-    return gamma, c
 
 
 def infer_dyamics_loop(x, A, p_gamma, p_c):
@@ -324,3 +323,47 @@ def count_local_infection_events_loop(i, x, A):
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
         ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
+
+
+def _count_mask(array, boolean_mask, my_axis, max_val):
+    """
+    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
+    along the specified axis `my_axis`.
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        The input array to count values from.
+    boolean_mask : numpy.ndarray
+        A boolean mask with the same shape as `array`, indicating which values to count.
+    my_axis : int
+        The axis along which to count values.
+    Returns
+    -------
+    numpy.ndarray
+        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
+    """
+    n = array.shape[0]
+    boolean_mask = boolean_mask.astype(int)
+    array = array.astype(int)
+    # assign all values that fail the boolean mask to n+1,
+    # these should get removed before returning result
+    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
+    return np.apply_along_axis(
+        np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val + 2
+    ).T
+
+
+def _check_beta_parameters(p, size):
+    if isinstance(p, (list, tuple)):
+        p = np.array(p)
+
+    if p is None:
+        p = np.ones(size)
+    elif np.any(np.array(p) <= 0):
+        raise Exception("Parameters in a beta distribution must be greater than 0.")
+
+    if p.shape != tuple(size):
+        raise Exception("Parameters are in the wrong shape.")
+
+    return p
