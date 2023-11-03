@@ -41,16 +41,6 @@ def infections_per_node(x):
     return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
 
 
-def erdos_renyi(n, p):
-    A = np.zeros((n, n))
-
-    for i in range(n):
-        for j in range(i):
-            A[i, j] = A[j, i] = random.random() <= p
-
-    return A
-
-
 def nu_distribution(x, A):
     k = A.sum(axis=0)
     nu = A @ x.T
