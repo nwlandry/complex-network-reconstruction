@@ -1,6 +1,7 @@
 numpy
 scipy
-networkx
+networkx>=3.0
 matplotlib
 numba
 pytest
+xgi

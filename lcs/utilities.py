@@ -38,18 +38,13 @@ def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
 
 
-def infections_per_node(x):
-    return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
-
-
-def erdos_renyi(n, p):
-    A = np.zeros((n, n))
-
-    for i in range(n):
-        for j in range(i):
-            A[i, j] = A[j, i] = random.random() <= p
-
-    return A
+def infections_per_node(x, mode="mean"):
+    if mode == "mean":
+        return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
+    if mode == "median":
+        return np.median(np.sum(x[1:] - x[:-1] > 0, axis=0))
+    if mode == "max":
+        return np.max(np.sum(x[1:] - x[:-1] > 0, axis=0))
 
 
 def nu_distribution(x, A):
@@ -128,3 +123,17 @@ def hpd_grid(sample, alpha=0.05, roundto=2):
         y_hpd = y[(x > value[0]) & (x < value[1])]
         modes.append(round(x_hpd[np.argmax(y_hpd)], roundto))
     return hpd, x, y, modes
+
+
+def powerlaw(n, minval, maxval, r):
+    u = np.random.random(n)
+    return (minval**(1-r) + u*(maxval**(1-r) - minval**(1-r)))**(1/(1-r))
+
+
+def mean_power_law(minval, maxval, r):
+    if r == 1:
+        return -(minval - maxval) / (np.log(maxval) - np.log(minval))
+    elif r == 2:
+        return (np.log(maxval) - np.log(minval)) / (1/minval - 1/maxval)
+    else:
+        return (minval**(2-r)-maxval**(2-r))*(r-1)/((minval**(1-r)-maxval**(1-r))*(r-2))
