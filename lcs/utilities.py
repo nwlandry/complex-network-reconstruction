@@ -65,75 +65,21 @@ def degrees(A):
     return A.sum(axis=0)
 
 
-def hpd_grid(sample, alpha=0.05, roundto=2):
-    """Calculate highest posterior density (HPD) of array for given alpha.
-    The HPD is the minimum width Bayesian credible interval (BCI).
-    The function works for multimodal distributions, returning more than one mode
-
-    Parameters
-    ----------
-
-    sample : Numpy array or python list
-        An array containing MCMC samples
-    alpha : float
-        Desired probability of type I error (defaults to 0.05)
-    roundto: integer
-        Number of digits after the decimal point for the results
-
-    Returns
-    -------
-    hpd: array with the lower
-
-    References
-    ----------
-    Bayesian Analysis with Python (Second edition)
-    https://github.com/aloctavodia/BAP/blob/master/first_edition/code/Chp1/hpd.py
-    """
-    sample = np.asarray(sample)
-    sample = sample[~np.isnan(sample)]
-    # get upper and lower bounds
-    l = np.min(sample)
-    u = np.max(sample)
-    density = gaussian_kde(sample)
-    x = np.linspace(l, u, 2000)
-    y = density.evaluate(x)
-    xy_zipped = zip(x, y / np.sum(y))
-    xy = sorted(xy_zipped, key=lambda x: x[1], reverse=True)
-    xy_cum_sum = 0
-    hdv = []
-    for val in xy:
-        xy_cum_sum += val[1]
-        hdv.append(val[0])
-        if xy_cum_sum >= (1 - alpha):
-            break
-    hdv.sort()
-    diff = (u - l) / 20  # differences of 5%
-    hpd = []
-    hpd.append(round(min(hdv), roundto))
-    for i in range(1, len(hdv)):
-        if hdv[i] - hdv[i - 1] >= diff:
-            hpd.append(round(hdv[i - 1], roundto))
-            hpd.append(round(hdv[i], roundto))
-    hpd.append(round(max(hdv), roundto))
-    ite = iter(hpd)
-    hpd = list(zip(ite, ite))
-    modes = []
-    for value in hpd:
-        x_hpd = x[(x > value[0]) & (x < value[1])]
-        y_hpd = y[(x > value[0]) & (x < value[1])]
-        modes.append(round(x_hpd[np.argmax(y_hpd)], roundto))
-    return hpd, x, y, modes
-
-
 def powerlaw(n, minval, maxval, r):
     u = np.random.random(n)
-    return (minval**(1-r) + u*(maxval**(1-r) - minval**(1-r)))**(1/(1-r))
+    return (minval ** (1 - r) + u * (maxval ** (1 - r) - minval ** (1 - r))) ** (
+        1 / (1 - r)
+    )
 
 
 def mean_power_law(minval, maxval, r):
     if r == 1:
         return -(minval - maxval) / (np.log(maxval) - np.log(minval))
     elif r == 2:
-        return (np.log(maxval) - np.log(minval)) / (1/minval - 1/maxval)
+        return (np.log(maxval) - np.log(minval)) / (1 / minval - 1 / maxval)
     else:
-        return (minval**(2-r)-maxval**(2-r))*(r-1)/((minval**(1-r)-maxval**(1-r))*(r-2))
+        return (
+            (minval ** (2 - r) - maxval ** (2 - r))
+            * (r - 1)
+            / ((minval ** (1 - r) - maxval ** (1 - r)) * (r - 2))
+        )
