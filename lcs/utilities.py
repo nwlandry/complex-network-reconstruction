@@ -66,19 +66,29 @@ def degrees(A):
 
 def powerlaw(n, minval, maxval, r):
     u = np.random.random(n)
-    return (minval**(1-r) + u*(maxval**(1-r) - minval**(1-r)))**(1/(1-r))
+    return (minval ** (1 - r) + u * (maxval ** (1 - r) - minval ** (1 - r))) ** (
+        1 / (1 - r)
+    )
 
 
 def mean_power_law(minval, maxval, r):
     if r == 1:
-        return -(minval - maxval) / (np.log(maxval) - np.log(minval))
+        num = maxval - minval
+        den = np.log(maxval) - np.log(minval)
+        return num / den
     elif r == 2:
-        return (np.log(maxval) - np.log(minval)) / (1/minval - 1/maxval)
+        num = np.log(maxval) - np.log(minval)
+        den = 1 / minval - 1 / maxval
+        return num / den
     else:
-        return (minval**(2-r)-maxval**(2-r))*(r-1)/((minval**(1-r)-maxval**(1-r))*(r-2))
+        num = (minval ** (2 - r) - maxval ** (2 - r)) / (r - 2)
+        den = (minval ** (1 - r) - maxval ** (1 - r)) / (r - 1)
+        return num / den
 
 
-def match_contagion_rates(cf1, cf2, gamma, b, A, tmax, realizations=100, tol=0.01, max_iter=10, mode="mean"):
+def match_contagion_rates(
+    cf1, cf2, gamma, b, A, tmax, realizations=100, tol=0.01, max_iter=10, mode="mean"
+):
     n = A.shape[0]
     rho0 = 1
 
@@ -91,7 +101,7 @@ def match_contagion_rates(cf1, cf2, gamma, b, A, tmax, realizations=100, tol=0.0
     for _ in range(realizations):
         x = contagion_process(A, gamma, c1, x0, tmin=0, tmax=tmax)
         ipn_c1 += infections_per_node(x, mode) / realizations
-    
+
     blo = 0
     bhi = 1
     ipn_lo = 0
