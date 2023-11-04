@@ -76,3 +76,46 @@ def mean_power_law(minval, maxval, r):
         return (np.log(maxval) - np.log(minval)) / (1/minval - 1/maxval)
     else:
         return (minval**(2-r)-maxval**(2-r))*(r-1)/((minval**(1-r)-maxval**(1-r))*(r-2))
+
+
+def match_contagion_rates(cf1, cf2, gamma, b, A, tmax, realizations=100, tol=0.01, max_iter=10, mode="mean"):
+    n = A.shape[0]
+    rho0 = 1
+
+    x0 = np.zeros(n)
+    x0[list(random.sample(range(n), int(rho0 * n)))] = 1
+
+    c1 = cf1(np.arange(n), b)
+
+    ipn_c1 = 0
+    for _ in range(realizations):
+        x = contagion_process(A, gamma, c1, x0, tmin=0, tmax=tmax)
+        ipn_c1 += infections_per_node(x, mode) / realizations
+    
+    blo = 0
+    bhi = 1
+    ipn_lo = 0
+    ipn_hi = 0
+    c2_hi = cf2(np.arange(n), bhi)
+    for _ in range(realizations):
+        x = contagion_process(A, gamma, c2_hi, x0, tmin=0, tmax=tmax)
+        ipn_hi += infections_per_node(x, mode) / realizations
+
+    it = 0
+    bnew = (bhi - blo) / 2
+    while it < max_iter and bhi - blo > tol:
+        c2_new = cf2(np.arange(n), bnew)
+        ipn_new = 0
+        for _ in range(realizations):
+            x = contagion_process(A, gamma, c2_new, x0, tmin=0, tmax=tmax)
+            ipn_new += infections_per_node(x, mode) / realizations
+
+        if ipn_new > ipn_c1:
+            bhi = bnew
+        elif ipn_new < ipn_c1:
+            blo = bnew
+        bnew = (bhi - blo) / 2
+        it += 1
+        print(blo, bhi, ipn_new, ipn_c1)
+
+    return bnew, bhi - blo
