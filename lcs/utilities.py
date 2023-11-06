@@ -74,12 +74,14 @@ def powerlaw(n, minval, maxval, r):
 
 def mean_power_law(minval, maxval, r):
     if r == 1:
-        return -(minval - maxval) / (np.log(maxval) - np.log(minval))
+        num = maxval - minval
+        den = np.log(maxval) - np.log(minval)
+        return num / den
     elif r == 2:
-        return (np.log(maxval) - np.log(minval)) / (1 / minval - 1 / maxval)
+        num = np.log(maxval) - np.log(minval)
+        den = 1 / minval - 1 / maxval
+        return num / den
     else:
-        return (
-            (minval ** (2 - r) - maxval ** (2 - r))
-            * (r - 1)
-            / ((minval ** (1 - r) - maxval ** (1 - r)) * (r - 2))
-        )
+        num = (minval ** (2 - r) - maxval ** (2 - r)) / (r - 2)
+        den = (minval ** (1 - r) - maxval ** (1 - r)) / (r - 1)
+        return num / den
