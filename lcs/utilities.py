@@ -1,6 +1,7 @@
 import random
 
 import numpy as np
+from scipy.stats import gaussian_kde
 
 from .contagion import *
 from .inference import *
@@ -66,9 +67,9 @@ def degrees(A):
 
 def powerlaw(n, minval, maxval, r):
     u = np.random.random(n)
-    return (minval ** (1 - r) + u * (maxval ** (1 - r) - minval ** (1 - r))) ** (
-        1 / (1 - r)
-    )
+    a = minval ** (1 - r)
+    b = maxval ** (1 - r)
+    return (a + u * (b - a)) ** (1 / (1 - r))
 
 
 def mean_power_law(minval, maxval, r):
