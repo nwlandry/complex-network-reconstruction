@@ -5,8 +5,8 @@ from setuptools import setup
 
 __version__ = "0.0"
 
-if sys.version_info < (3, 8):
-    sys.exit("lcs requires Python 3.8 or later.")
+if sys.version_info < (3, 10):
+    sys.exit("lcs requires Python 3.10 or later.")
 
 name = "lcs"
 

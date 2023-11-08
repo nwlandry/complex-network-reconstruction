@@ -39,12 +39,15 @@ def hamming_distance(A1, A2):
 
 
 def infections_per_node(x, mode="mean"):
-    if mode == "mean":
-        return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
-    if mode == "median":
-        return np.median(np.sum(x[1:] - x[:-1] > 0, axis=0))
-    if mode == "max":
-        return np.max(np.sum(x[1:] - x[:-1] > 0, axis=0))
+    match mode:
+        case "mean":
+            return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
+        case "median":
+            return np.median(np.sum(x[1:] - x[:-1] > 0, axis=0))
+        case "max":
+            return np.max(np.sum(x[1:] - x[:-1] > 0, axis=0))
+        case _:
+            raise Exception("Invalid loss!")
 
 
 def nu_distribution(x, A):
@@ -65,7 +68,7 @@ def degrees(A):
     return A.sum(axis=0)
 
 
-def powerlaw(n, minval, maxval, r):
+def power_law(n, minval, maxval, r):
     u = np.random.random(n)
     a = minval ** (1 - r)
     b = maxval ** (1 - r)
@@ -87,46 +90,59 @@ def mean_power_law(minval, maxval, r):
         return num / den
 
 
-def match_contagion_rates(
-    cf1, cf2, gamma, b, A, tmax, realizations=100, tol=0.01, max_iter=10, mode="mean"
-):
+def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
     n = A.shape[0]
-    rho0 = 1
 
     x0 = np.zeros(n)
     x0[list(random.sample(range(n), int(rho0 * n)))] = 1
 
-    c1 = cf1(np.arange(n), b)
+    c = cf(np.arange(n), b)
 
-    ipn_c1 = 0
+    ipn = 0
     for _ in range(realizations):
-        x = contagion_process(A, gamma, c1, x0, tmin=0, tmax=tmax)
-        ipn_c1 += infections_per_node(x, mode) / realizations
+        x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
+        ipn += infections_per_node(x, mode) / realizations
+    return ipn - ipn_target
 
-    blo = 0
-    bhi = 1
-    ipn_lo = 0
-    ipn_hi = 0
-    c2_hi = cf2(np.arange(n), bhi)
-    for _ in range(realizations):
-        x = contagion_process(A, gamma, c2_hi, x0, tmin=0, tmax=tmax)
-        ipn_hi += infections_per_node(x, mode) / realizations
 
-    it = 0
-    bnew = (bhi - blo) / 2
-    while it < max_iter and bhi - blo > tol:
-        c2_new = cf2(np.arange(n), bnew)
-        ipn_new = 0
-        for _ in range(realizations):
-            x = contagion_process(A, gamma, c2_new, x0, tmin=0, tmax=tmax)
-            ipn_new += infections_per_node(x, mode) / realizations
+def robbins_monro_solve(
+    f,
+    x0,
+    a,
+    alpha,
+    max_iter=100,
+    tol=1e-3,
+    loss="function",
+    verbose=False,
+    return_values=True,
+):
+    x = x0
+    val = f(x0)
 
-        if ipn_new > ipn_c1:
-            bhi = bnew
-        elif ipn_new < ipn_c1:
-            blo = bnew
-        bnew = (bhi - blo) / 2
+    it = 1
+    xvec = [x]
+    fvec = [val]
+    diff = np.inf
+    while diff > tol and it <= max_iter:
+        a_n = a * it**-alpha
+        x -= a_n * val
+        x = np.clip(x, 0, 1)
+        val = f(x)
+        xvec.append(x)  # save results
+        fvec.append(val)
+        if it % 3 == 0:
+            match loss:
+                case "function":
+                    diff = abs(x - xvec[it - 2])
+                case "arg":
+                    diff = abs(val)
+                case _:
+                    raise Exception("Invalid loss type!")
+
+        if verbose:
+            print(it, diff)
         it += 1
-        print(blo, bhi, ipn_new, ipn_c1)
-
-    return bnew, bhi - blo
+    if return_values:
+        return x, xvec, fvec
+    else:
+        return x

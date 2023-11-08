@@ -57,9 +57,16 @@ def infer_adjacency_matrix(
     return_likelihood=False,
 ):
     # form initial adjacency matrix
-    if not isinstance(A0, ndarray):
-        A0 = A0.todense()
-    A = np.array(A0, dtype=int)
+    A = A0.copy()
+    if not isinstance(A, ndarray):
+        A = A.todense()
+
+    if A.dtype != "int":
+        A = np.array(A, dtype=int)
+
+    if x.dtype != "int":
+        x = np.array(x, dtype=int)
+
     n, m = A.shape
 
     p_rho = _check_beta_parameters(p_rho, [2])
@@ -152,6 +159,15 @@ def infer_adjacency_matrix(
 def infer_dynamics(x, A, p_gamma=None, p_c=None, nsamples=1):
     # Our priors are drawn from a beta distribution such that
     # the posteriors are also from a beta distribution
+    if not isinstance(A, ndarray):
+        A = A.todense()
+
+    if A.dtype != "int":
+        A = np.array(A, dtype=int)
+
+    if x.dtype != "int":
+        x = np.array(x, dtype=int)
+
     n = A.shape[0]
 
     p_gamma = _check_beta_parameters(p_gamma, [2])
@@ -182,7 +198,7 @@ def infer_dynamics(x, A, p_gamma=None, p_c=None, nsamples=1):
 def count_all_infection_events(x, A):
     n = x.shape[1]
 
-    nus = np.round(A @ x[:-1].T).astype(int)
+    nus = A @ x[:-1].T
 
     # 1 if node i was infected at time t, 0 otherwise
     was_infected = x[1:] * (1 - x[:-1])
@@ -198,7 +214,7 @@ def count_all_infection_events(x, A):
 
 def count_local_infection_events(i, x, A):
     n = x.shape[1]
-    nus_i = np.round(A[i] @ x[:-1].T).astype(int)
+    nus_i = A[i] @ x[:-1].T
     x_i = x[:, i]  # select node i from all time steps
 
     # 1 if node i was infected at time t, 0 otherwise
@@ -241,6 +257,50 @@ def update_adjacency_matrix(i, j, A):
         return -1
 
 
+def _count_mask(array, boolean_mask, axis, max_val):
+    """
+    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
+    along the specified axis `axis`.
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        The input array to count values from.
+    boolean_mask : numpy.ndarray
+        A boolean mask with the same shape as `array`, indicating which values to count.
+    axis : int
+        The axis along which to count values.
+    Returns
+    -------
+    numpy.ndarray
+        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
+    """
+    boolean_mask = boolean_mask.astype(int)
+    array = array.astype(int)
+    # assign all values that fail the boolean mask to n+1,
+    # these should get removed before returning result
+    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
+    return np.apply_along_axis(
+        np.bincount, axis=axis, arr=masked_arr, minlength=max_val + 2
+    ).T
+
+
+def _check_beta_parameters(p, size):
+    if isinstance(p, (list, tuple)):
+        p = np.array(p)
+
+    if p is None:
+        p = np.ones(size)
+    elif np.any(np.array(p) <= 0):
+        raise Exception("Parameters in a beta distribution must be greater than 0.")
+
+    if p.shape != tuple(size):
+        raise Exception("Parameters are in the wrong shape.")
+
+    return p
+
+
+############## EXTRA #####################
 def infer_dyamics_loop(x, A, p_gamma, p_c):
     T, n = x.shape
 
@@ -280,7 +340,6 @@ def infer_dyamics_loop(x, A, p_gamma, p_c):
     return gamma, c
 
 
-@jit(nopython=True)
 def count_all_infection_events_loop(x, A):
     """
     Counts the number of infection events between all pairs of nodes in a network over time.
@@ -297,20 +356,19 @@ def count_all_infection_events_loop(x, A):
     T = x.shape[0]
     n = x.shape[1]
 
-    nl = np.zeros((n, n))
+    nl = np.zeros((n, n), dtype=int)
     ml = np.zeros((n, n))
 
     for t in range(T - 1):
         nus = A.dot(x[t])
 
         for i, nu in enumerate(nus):
-            nu = int(round(nu))
+            nu = int(np.round(nu))
             nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
             ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
 
 
-@jit(nopython=True)
 def count_local_infection_events_loop(i, x, A):
     T = x.shape[0]
     n = x.shape[1]
@@ -319,51 +377,7 @@ def count_local_infection_events_loop(i, x, A):
     ml = np.zeros(n)
 
     for t in range(T - 1):
-        nu = int(round(A[i].dot(x[t])))
+        nu = int(np.round(A[i].dot(x[t])))
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
         ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
-
-
-def _count_mask(array, boolean_mask, my_axis, max_val):
-    """
-    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
-    along the specified axis `my_axis`.
-
-    Parameters
-    ----------
-    array : numpy.ndarray
-        The input array to count values from.
-    boolean_mask : numpy.ndarray
-        A boolean mask with the same shape as `array`, indicating which values to count.
-    my_axis : int
-        The axis along which to count values.
-    Returns
-    -------
-    numpy.ndarray
-        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
-    """
-    n = array.shape[0]
-    boolean_mask = boolean_mask.astype(int)
-    array = array.astype(int)
-    # assign all values that fail the boolean mask to n+1,
-    # these should get removed before returning result
-    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
-    return np.apply_along_axis(
-        np.bincount, axis=my_axis, arr=masked_arr, minlength=max_val + 2
-    ).T
-
-
-def _check_beta_parameters(p, size):
-    if isinstance(p, (list, tuple)):
-        p = np.array(p)
-
-    if p is None:
-        p = np.ones(size)
-    elif np.any(np.array(p) <= 0):
-        raise Exception("Parameters in a beta distribution must be greater than 0.")
-
-    if p.shape != tuple(size):
-        raise Exception("Parameters are in the wrong shape.")
-
-    return p
