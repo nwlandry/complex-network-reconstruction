@@ -280,7 +280,6 @@ def infer_dyamics_loop(x, A, p_gamma, p_c):
     return gamma, c
 
 
-@jit(nopython=True)
 def count_all_infection_events_loop(x, A):
     """
     Counts the number of infection events between all pairs of nodes in a network over time.
@@ -304,13 +303,12 @@ def count_all_infection_events_loop(x, A):
         nus = A.dot(x[t])
 
         for i, nu in enumerate(nus):
-            nu = int(round(nu))
+            nu = int(np.round(nu))
             nl[i, nu] += x[t + 1, i] * (1 - x[t, i])
             ml[i, nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
 
 
-@jit(nopython=True)
 def count_local_infection_events_loop(i, x, A):
     T = x.shape[0]
     n = x.shape[1]
@@ -319,7 +317,7 @@ def count_local_infection_events_loop(i, x, A):
     ml = np.zeros(n)
 
     for t in range(T - 1):
-        nu = int(round(A[i].dot(x[t])))
+        nu = int(np.round(A[i].dot(x[t])))
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
         ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
