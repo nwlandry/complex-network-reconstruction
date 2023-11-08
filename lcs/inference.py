@@ -257,6 +257,50 @@ def update_adjacency_matrix(i, j, A):
         return -1
 
 
+def _count_mask(array, boolean_mask, axis, max_val):
+    """
+    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
+    along the specified axis `axis`.
+
+    Parameters
+    ----------
+    array : numpy.ndarray
+        The input array to count values from.
+    boolean_mask : numpy.ndarray
+        A boolean mask with the same shape as `array`, indicating which values to count.
+    axis : int
+        The axis along which to count values.
+    Returns
+    -------
+    numpy.ndarray
+        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
+    """
+    boolean_mask = boolean_mask.astype(int)
+    array = array.astype(int)
+    # assign all values that fail the boolean mask to n+1,
+    # these should get removed before returning result
+    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
+    return np.apply_along_axis(
+        np.bincount, axis=axis, arr=masked_arr, minlength=max_val + 2
+    ).T
+
+
+def _check_beta_parameters(p, size):
+    if isinstance(p, (list, tuple)):
+        p = np.array(p)
+
+    if p is None:
+        p = np.ones(size)
+    elif np.any(np.array(p) <= 0):
+        raise Exception("Parameters in a beta distribution must be greater than 0.")
+
+    if p.shape != tuple(size):
+        raise Exception("Parameters are in the wrong shape.")
+
+    return p
+
+
+############## EXTRA #####################
 def infer_dyamics_loop(x, A, p_gamma, p_c):
     T, n = x.shape
 
@@ -337,46 +381,3 @@ def count_local_infection_events_loop(i, x, A):
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
         ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
-
-
-def _count_mask(array, boolean_mask, axis, max_val):
-    """
-    Count the occurrences of values in `array` that correspond to `True` values in `boolean_mask`,
-    along the specified axis `axis`.
-
-    Parameters
-    ----------
-    array : numpy.ndarray
-        The input array to count values from.
-    boolean_mask : numpy.ndarray
-        A boolean mask with the same shape as `array`, indicating which values to count.
-    axis : int
-        The axis along which to count values.
-    Returns
-    -------
-    numpy.ndarray
-        An array of counts, with shape `(n,)` where `n` is the number of unique values in `array`.
-    """
-    boolean_mask = boolean_mask.astype(int)
-    array = array.astype(int)
-    # assign all values that fail the boolean mask to n+1,
-    # these should get removed before returning result
-    masked_arr = np.where(boolean_mask, array.T, max_val + 1)
-    return np.apply_along_axis(
-        np.bincount, axis=axis, arr=masked_arr, minlength=max_val + 2
-    ).T
-
-
-def _check_beta_parameters(p, size):
-    if isinstance(p, (list, tuple)):
-        p = np.array(p)
-
-    if p is None:
-        p = np.ones(size)
-    elif np.any(np.array(p) <= 0):
-        raise Exception("Parameters in a beta distribution must be greater than 0.")
-
-    if p.shape != tuple(size):
-        raise Exception("Parameters are in the wrong shape.")
-
-    return p
