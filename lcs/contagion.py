@@ -40,7 +40,8 @@ def contagion_process(A, gamma, c, x0, tmin=0, tmax=20, dt=1, random_seed=None):
     if not isinstance(A, ndarray):
         A = A.todense()
 
-    A = np.array(A, dtype=int)
+    if A.dtype != "int":
+        A = np.array(A, dtype=int)
 
     if random_seed is not None:
         np.random.seed(random_seed)
