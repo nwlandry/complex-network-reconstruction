@@ -96,7 +96,7 @@ for p in probabilities:
         else:
             bscaled = b
         c = cf(np.arange(n), bscaled)
-
+        print(p, i)
         for r in range(realizations):
             A = erdos_renyi(n, p)
             arglist.append(

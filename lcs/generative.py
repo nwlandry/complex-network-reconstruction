@@ -10,7 +10,12 @@ def erdos_renyi(n, p, seed=None):
     if seed is not None:
         random.seed(seed)
 
-    A = np.zeros((n, n))
+    A = np.zeros((n, n), dtype=int)
+    if p == 0:
+        return A
+    if p == 1:
+        return A + 1
+    
     lp = math.log(1.0 - p)
     i = 1
     j = -1
