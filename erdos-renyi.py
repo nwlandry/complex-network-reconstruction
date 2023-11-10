@@ -8,23 +8,38 @@ import numpy as np
 from lcs import *
 
 
+def target_ipn(n, p, c, mode, rho0, tmax):
+    x0 = np.zeros(n)
+    x0[random.sample(range(n), int(round(rho0 * n)))] = 1
+    ipn = 0
+    for _ in range(1000):
+        A = erdos_renyi(n, p)
+        x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
+        ipn += infections_per_node(x, mode)
+    return ipn
+
+
 def single_inference(
-    fname, gamma, c, rho0, A, tmax, p_c, p_rho, nsamples, burn_in, skip
+    fname, gamma, c, b, rho0, A, tmax, p_c, p_rho, nsamples, burn_in, skip
 ):
     n = np.size(A, axis=0)
     x0 = np.zeros(n)
     x0[random.sample(range(n), int(round(rho0 * n)))] = 1
 
+    
+
     x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
-
-    A0 = nx.adjacency_matrix(nx.fast_gnp_random_graph(n, 0.3))
-
+    p = beta(p_rho[0], p_rho[1]).rvs()
+    A0 = erdos_renyi(n, p)
     samples = infer_adjacency_matrix(
         x, A0, p_rho, p_c, nsamples=nsamples, burn_in=burn_in, skip=skip
     )
+
+    # json dict
     data = {}
     data["gamma"] = gamma
     data["c"] = c.tolist()
+    data["b"] = b
     data["p-rho"] = p_rho.tolist()
     data["p-c"] = p_c.tolist()
     data["x"] = x.tolist()
@@ -37,7 +52,7 @@ def single_inference(
         output_file.write(datastring)
 
 
-data_dir = "Data/erdos-renyi_experiment"
+data_dir = "Data/erdos-renyi"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
@@ -66,21 +81,30 @@ cfs = [cf1, cf2, cf3]
 rho0 = 1.0
 gamma = 0.1
 b = 0.04
+mode = "max"
 
 tmax = 1000
 
 
 arglist = []
-for i, cf in enumerate(cfs):
-    for p in probabilities:
-        c = cf(np.arange(n), b)
+for p in probabilities:
+    ipn = target_ipn(n, p, cfs[0], mode, rho0, tmax)
+    for i, cf in enumerate(cfs):
+        if i != 0:
+            f = lambda b: ipn_func(b, ipn, cf, gamma, A, rho0, 1000, tmax, mode)
+            bscaled = robbins_monro_solve(f, 0.5)
+        else:
+            bscaled = b
+        c = cf(np.arange(n), bscaled)
+
         for r in range(realizations):
             A = erdos_renyi(n, p)
             arglist.append(
                 (
-                    f"{data_dir}/{i}-{p}-{r}",
+                    f"{data_dir}/{p}-{i}-{r}",
                     gamma,
                     c,
+                    bscaled,
                     rho0,
                     A,
                     tmax,

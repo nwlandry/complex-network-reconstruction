@@ -108,13 +108,13 @@ def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
 def robbins_monro_solve(
     f,
     x0,
-    a,
-    alpha,
+    a=0.01,
+    alpha=1,
     max_iter=100,
     tol=1e-3,
     loss="function",
     verbose=False,
-    return_values=True,
+    return_values=False,
 ):
     x = x0
     val = f(x0)
