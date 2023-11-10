@@ -88,7 +88,8 @@ tmax = 1000
 
 arglist = []
 for p in probabilities:
-    ipn = target_ipn(n, p, cfs[0], mode, rho0, tmax)
+    c = cfs[0](np.arange(n), b)
+    ipn = target_ipn(n, p, c, mode, rho0, tmax)
     for i, cf in enumerate(cfs):
         if i != 0:
             f = lambda b: ipn_func(b, ipn, cf, gamma, A, rho0, 1000, tmax, mode)
@@ -96,7 +97,8 @@ for p in probabilities:
         else:
             bscaled = b
         c = cf(np.arange(n), bscaled)
-        print(p, i)
+        print((p, i), flush=True)
+        
         for r in range(realizations):
             A = erdos_renyi(n, p)
             arglist.append(
