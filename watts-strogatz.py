@@ -7,12 +7,12 @@ import numpy as np
 from lcs import *
 
 
-def target_ipn(n, p, c, mode, rho0, tmax):
+def target_ipn(n, k, p, c, mode, rho0, tmax):
     x0 = np.zeros(n)
     x0[random.sample(range(n), int(round(rho0 * n)))] = 1
     ipn = 0
     for _ in range(1000):
-        A = erdos_renyi(n, p)
+        A = watts_strogatz(n, k, p)
         x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
         ipn += infections_per_node(x, mode)
     return ipn
@@ -56,9 +56,10 @@ for f in os.listdir(data_dir):
     os.remove(os.path.join(data_dir, f))
 
 n = 50
+k = 6
 
 n_processes = len(os.sched_getaffinity(0))
-realizations = 5
+realizations = 100
 probabilities = np.linspace(0.0, 1.0, 33)
 
 # MCMC parameters
@@ -86,7 +87,7 @@ tmax = 1000
 arglist = []
 for p in probabilities:
     c = cfs[0](np.arange(n), b)
-    ipn = target_ipn(n, p, c, mode, rho0, tmax)
+    ipn = target_ipn(n, k, p, c, mode, rho0, tmax)
     for i, cf in enumerate(cfs):
         if i != 0:
             f = lambda b: ipn_func(b, ipn, cf, gamma, A, rho0, 1000, tmax, mode)
@@ -97,7 +98,7 @@ for p in probabilities:
         print((p, i), flush=True)
 
         for r in range(realizations):
-            A = erdos_renyi(n, p)
+            A = watts_strogatz(n, k, p)
             arglist.append(
                 (
                     f"{data_dir}/{p}-{i}-{r}",

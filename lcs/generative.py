@@ -1,9 +1,9 @@
+import math
 import random
 
 import networkx as nx
 import numpy as np
 import xgi
-import math
 
 
 def erdos_renyi(n, p, seed=None):
@@ -15,7 +15,7 @@ def erdos_renyi(n, p, seed=None):
         return A
     if p == 1:
         return np.ones((n, n), dtype=int) - np.eye(n, dtype=int)
-    
+
     for i in range(n):
         for j in range(i):
             A[i, j] = A[j, i] = 1
