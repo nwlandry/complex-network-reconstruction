@@ -16,16 +16,8 @@ def erdos_renyi(n, p, seed=None):
     if p == 1:
         return np.ones((n, n), dtype=int) - np.eye(n, dtype=int)
     
-    lp = math.log(1.0 - p)
-    i = 1
-    j = -1
-    while i < n:
-        lr = math.log(1.0 - random.random())
-        i += 1 + int(lr / lp)
-        while j >= i and i < n:
-            j -= i
-            i += 1
-        if i < n:
+    for i in range(n):
+        for j in range(i):
             A[i, j] = A[j, i] = 1
     return A
 

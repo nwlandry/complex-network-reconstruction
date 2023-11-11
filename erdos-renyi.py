@@ -26,8 +26,6 @@ def single_inference(
     x0 = np.zeros(n)
     x0[random.sample(range(n), int(round(rho0 * n)))] = 1
 
-    
-
     x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
     p = beta(p_rho[0], p_rho[1]).rvs()
     A0 = erdos_renyi(n, p)
@@ -80,7 +78,7 @@ cfs = [cf1, cf2, cf3]
 
 rho0 = 1.0
 gamma = 0.1
-b = 0.04
+b = 0.02
 mode = "max"
 
 tmax = 1000
@@ -98,7 +96,7 @@ for p in probabilities:
             bscaled = b
         c = cf(np.arange(n), bscaled)
         print((p, i), flush=True)
-        
+
         for r in range(realizations):
             A = erdos_renyi(n, p)
             arglist.append(
