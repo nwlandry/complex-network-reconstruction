@@ -14,7 +14,7 @@ def erdos_renyi(n, p, seed=None):
     if p == 0:
         return A
     if p == 1:
-        return A + 1
+        return np.ones((n, n), dtype=int) - np.eye(n, dtype=int)
     
     lp = math.log(1.0 - p)
     i = 1
