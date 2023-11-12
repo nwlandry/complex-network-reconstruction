@@ -108,10 +108,10 @@ def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
 def robbins_monro_solve(
     f,
     x0,
-    a=0.01,
+    a=0.02,
     alpha=1,
     max_iter=100,
-    tol=1e-3,
+    tol=1e-2,
     loss="function",
     verbose=False,
     return_values=False,
@@ -119,10 +119,10 @@ def robbins_monro_solve(
     x = x0
     val = f(x0)
 
-    it = 1
     xvec = [x]
     fvec = [val]
     diff = np.inf
+    it = 1
     while diff > tol and it <= max_iter:
         a_n = a * it**-alpha
         x -= a_n * val
@@ -130,17 +130,16 @@ def robbins_monro_solve(
         val = f(x)
         xvec.append(x)  # save results
         fvec.append(val)
-        if it % 3 == 0:
-            match loss:
-                case "function":
-                    diff = abs(x - xvec[it - 2])
-                case "arg":
-                    diff = abs(val)
-                case _:
-                    raise Exception("Invalid loss type!")
+        match loss:
+            case "arg":
+                diff = abs(x - xvec[it - 1])
+            case "function":
+                diff = abs(val)
+            case _:
+                raise Exception("Invalid loss type!")
 
         if verbose:
-            print(it, diff)
+            print((it, x, diff), flush=True)
         it += 1
     if return_values:
         return x, xvec, fvec

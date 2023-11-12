@@ -7,14 +7,14 @@ import numpy as np
 from lcs import *
 
 
-def target_ipn(n, k, epsilon, c, mode, rho0, tmax):
+def target_ipn(n, k, epsilon, gamma, c, mode, rho0, tmax, realizations):
     x0 = np.zeros(n)
     x0[random.sample(range(n), int(round(rho0 * n)))] = 1
     ipn = 0
-    for _ in range(1000):
+    for _ in range(realizations):
         A = sbm(n, k, epsilon)
         x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
-        ipn += infections_per_node(x, mode)
+        ipn += infections_per_node(x, mode) / realizations
     return ipn
 
 
@@ -49,7 +49,7 @@ def single_inference(
         output_file.write(datastring)
 
 
-data_dir = "Data/erdos-renyi"
+data_dir = "Data/sbm"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
@@ -59,7 +59,7 @@ n = 50
 k = 6
 
 n_processes = len(os.sched_getaffinity(0))
-realizations = 100
+realizations = 10
 epsilon = np.linspace(0.0, 1.0, 33)
 
 # MCMC parameters
@@ -90,6 +90,7 @@ for e in epsilon:
     ipn = target_ipn(n, k, e, c, mode, rho0, tmax)
     for i, cf in enumerate(cfs):
         if i != 0:
+            A = sbm(n, k, e)
             f = lambda b: ipn_func(b, ipn, cf, gamma, A, rho0, 1000, tmax, mode)
             bscaled = robbins_monro_solve(f, 0.5)
         else:
