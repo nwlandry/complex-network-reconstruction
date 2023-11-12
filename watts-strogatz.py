@@ -56,11 +56,11 @@ for f in os.listdir(data_dir):
     os.remove(os.path.join(data_dir, f))
 
 n = 50
-k = 6
+k = 4
 
 n_processes = len(os.sched_getaffinity(0))
 realizations = 10
-probabilities = np.linspace(0.0, 1.0, 33)
+probabilities = np.logspace(-6, 0, 49)
 
 # MCMC parameters
 burn_in = 10000
@@ -91,8 +91,7 @@ for p in probabilities:
     for i, cf in enumerate(cfs):
         if i != 0:
             A = watts_strogatz(n, k, p)
-            f = lambda b: ipn_func(b, ipn, cf, gamma, A, rho0, 1000, tmax, mode)
-            bscaled = robbins_monro_solve(f, 0.5)
+            bscaled = fit_ipn(0.5, ipn, cf, gamma, A, rho0, tmax, mode)
         else:
             bscaled = b
         c = cf(np.arange(n), bscaled)

@@ -91,8 +91,7 @@ for e in epsilon:
     for i, cf in enumerate(cfs):
         if i != 0:
             A = sbm(n, k, e)
-            f = lambda b: ipn_func(b, ipn, cf, gamma, A, rho0, 1000, tmax, mode)
-            bscaled = robbins_monro_solve(f, 0.5)
+            bscaled = fit_ipn(0.5, ipn, cf, gamma, A, rho0, tmax, mode)
         else:
             bscaled = b
         c = cf(np.arange(n), bscaled)

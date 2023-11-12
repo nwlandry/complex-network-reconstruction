@@ -145,3 +145,16 @@ def robbins_monro_solve(
         return x, xvec, fvec
     else:
         return x
+
+
+def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 1, tmax, mode)
+    bscaled = robbins_monro_solve(f, b0, verbose=True)
+
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 10, tmax, mode)
+    bscaled = robbins_monro_solve(f, bscaled, verbose=True)
+
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 100, tmax, mode)
+    bscaled = robbins_monro_solve(f, bscaled, verbose=True)
+
+    return bscaled
