@@ -87,7 +87,7 @@ tmax = 1000
 arglist = []
 for e in epsilon:
     c = cfs[0](np.arange(n), b)
-    ipn = target_ipn(n, k, e, gamma, c, mode, rho0, tmax)
+    ipn = target_ipn(n, k, e, gamma, c, mode, rho0, tmax, 1000)
     for i, cf in enumerate(cfs):
         if i != 0:
             A = sbm(n, k, e)
