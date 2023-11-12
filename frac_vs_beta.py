@@ -79,7 +79,7 @@ for i, b in enumerate(beta):
         for k in range(realizations):
             arglist.append(
                 (
-                    f"Data/frac_vs_beta/{b}-{f}-{k}",
+                    f"Data/frac_vs_beta/{b}_{f}_{k}",
                     gamma,
                     c,
                     rho0,

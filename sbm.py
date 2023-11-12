@@ -101,7 +101,7 @@ for e in epsilon:
             A = sbm(n, k, e)
             arglist.append(
                 (
-                    f"{data_dir}/{e}-{i}-{r}",
+                    f"{data_dir}/{e}_{i}_{r}",
                     gamma,
                     c,
                     bscaled,

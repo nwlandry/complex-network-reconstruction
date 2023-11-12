@@ -100,7 +100,7 @@ for p in probabilities:
             A = erdos_renyi(n, p)
             arglist.append(
                 (
-                    f"{data_dir}/{p}-{i}-{r}",
+                    f"{data_dir}/{p}_{i}_{r}",
                     gamma,
                     c,
                     bscaled,

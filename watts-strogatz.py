@@ -56,7 +56,7 @@ for f in os.listdir(data_dir):
     os.remove(os.path.join(data_dir, f))
 
 n = 50
-k = 4
+k = 6
 
 n_processes = len(os.sched_getaffinity(0))
 realizations = 10
@@ -101,7 +101,7 @@ for p in probabilities:
             A = watts_strogatz(n, k, p)
             arglist.append(
                 (
-                    f"{data_dir}/{p}-{i}-{r}",
+                    f"{data_dir}/{p}_{i}_{r}",
                     gamma,
                     c,
                     bscaled,
