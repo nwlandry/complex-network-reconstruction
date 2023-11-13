@@ -15,7 +15,7 @@ frac = []
 data_dir = "Data/watts-strogatz/"
 
 for f in os.listdir(data_dir):
-    d = f.split(".json")[0].split("-")
+    d = f.split(".json")[0].split("_")
     try:
         p = float(d[0])
         c = int(d[1])
@@ -42,7 +42,7 @@ ps = np.zeros((len(clist), len(plist), len(rlist)))
 sps = np.zeros((len(clist), len(plist), len(rlist)))
 
 for f in os.listdir(data_dir):
-    d = f.split(".json")[0].split("-")
+    d = f.split(".json")[0].split("_")
     try:
         p = float(d[0])
         c = int(d[1])

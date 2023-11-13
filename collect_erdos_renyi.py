@@ -15,7 +15,7 @@ frac = []
 data_dir = "Data/erdos-renyi/"
 
 for f in os.listdir(data_dir):
-    d = f.split(".json")[0].split("-")
+    d = f.split(".json")[0].split("_")
     p = float(d[0])
     c = int(d[1])
     r = int(d[2])
@@ -37,7 +37,7 @@ ps = np.zeros((len(clist), len(plist), len(rlist)))
 sps = np.zeros((len(clist), len(plist), len(rlist)))
 
 for f in os.listdir(data_dir):
-    d = f.split(".json")[0].split("-")
+    d = f.split(".json")[0].split("_")
     p = float(d[0])
     c = int(d[1])
     r = int(d[2])
