@@ -44,8 +44,7 @@ os.makedirs(data_dir, exist_ok=True)
 for f in os.listdir(data_dir):
     os.remove(os.path.join(data_dir, f))
 
-G = nx.karate_club_graph()
-A = nx.adjacency_matrix(G, weight=None).todense()
+A = zkc()
 n = A.shape[0]
 
 n_processes = len(os.sched_getaffinity(0))
