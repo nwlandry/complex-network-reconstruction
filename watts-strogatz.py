@@ -63,7 +63,7 @@ realizations = 10
 probabilities = np.logspace(-6, 0, 49)
 
 # MCMC parameters
-burn_in = 10000
+burn_in = 100000
 nsamples = 100
 skip = 1500
 p_c = np.ones((2, n))

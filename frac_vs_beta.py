@@ -54,7 +54,7 @@ nf = 33
 nb = 33
 
 # MCMC parameters
-burn_in = 10000
+burn_in = 100000
 nsamples = 1000
 skip = 2000
 p_c = np.ones((2, n))

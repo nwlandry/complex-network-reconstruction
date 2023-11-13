@@ -1,10 +1,12 @@
-import math
 import random
 
 import networkx as nx
 import numpy as np
 import xgi
 
+def zkc():
+    G = nx.karate_club_graph()
+    return nx.adjacency_matrix(G).todense()
 
 def erdos_renyi(n, p, seed=None):
     if seed is not None:
