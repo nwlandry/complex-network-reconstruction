@@ -8,6 +8,7 @@ def test_contagion_process(A4):
         A4, 0.1, np.zeros(n), np.ones(n), tmin=0, tmax=5, dt=1, random_seed=None
     )
     assert infections_per_node(x) == 0
+    assert x.shape == (5, n)
 
     x = contagion_process(
         A4, 1, np.zeros(n), np.ones(n), tmin=0, tmax=5, dt=1, random_seed=None

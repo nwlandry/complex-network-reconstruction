@@ -18,7 +18,7 @@ def erdos_renyi(n, p, seed=None):
 
     for i in range(n):
         for j in range(i):
-            A[i, j] = A[j, i] = 1
+            A[i, j] = A[j, i] = random.random() <= p
     return A
 
 

@@ -13,6 +13,7 @@ def test_infer_adjacency_matrix(x4, A4):
         return_likelihood=False,
     )
     assert samples.shape == (5, 10, 10)
+
     mean_diag = np.diag(samples.mean(axis=0))
     assert np.all(mean_diag == np.zeros(10))
 
