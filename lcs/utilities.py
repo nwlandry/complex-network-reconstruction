@@ -12,7 +12,7 @@ def to_imshow_orientation(A):
 
 
 def posterior_similarity(A, samples):
-    meanA = np.mean(samples, axis=0)
+    meanA = samples.mean(axis=0)
     num = np.sum(np.abs(A - meanA))
     den = np.sum(np.abs(A + meanA))
     if den > 0:
@@ -23,7 +23,7 @@ def posterior_similarity(A, samples):
 
 def samplewise_posterior_similarity(A, samples):
     ps = 0
-    n = np.size(samples, axis=0)
+    n = samples.shape[0]
     for i in range(n):
         num = np.sum(np.abs(A - samples[i]))
         den = np.sum(np.abs(A + samples[i]))
@@ -41,11 +41,11 @@ def hamming_distance(A1, A2):
 def infections_per_node(x, mode="mean"):
     match mode:
         case "mean":
-            return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
+            return np.mean((x[1:] - x[:-1] > 0).sum(axis=0))
         case "median":
-            return np.median(np.sum(x[1:] - x[:-1] > 0, axis=0))
+            return np.median((x[1:] - x[:-1] > 0).sum(axis=0))
         case "max":
-            return np.max(np.sum(x[1:] - x[:-1] > 0, axis=0))
+            return np.max((x[1:] - x[:-1] > 0).sum(axis=0))
         case _:
             raise Exception("Invalid loss!")
 
