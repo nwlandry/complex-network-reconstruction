@@ -33,9 +33,9 @@ clist = sorted(clist)
 plist = sorted(plist)
 rlist = sorted(rlist)
 
-c_dict = dict(zip(clist, range(len(clist))))
-p_dict = dict(zip(plist, range(len(plist))))
-r_dict = dict(zip(rlist, range(len(rlist))))
+c_dict = {c: i for i, c in enumerate(clist)}
+p_dict = {p: i for i, p in enumerate(plist)}
+r_dict = {r: i for i, r in enumerate(rlist)}
 
 
 ps = np.zeros((len(clist), len(plist), len(rlist)))
