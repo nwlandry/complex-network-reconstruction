@@ -43,5 +43,4 @@ def sbm(n, k, epsilon, seed=None):
 
 
 def projected_bipartite(k, s, seed=None):
-    H = xgi.chung_lu_hypergraph(k, s, seed)
-    return xgi.adjacency_matrix(H, sparse=False)
+    return 0

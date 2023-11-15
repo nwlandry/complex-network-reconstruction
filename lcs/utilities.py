@@ -38,7 +38,7 @@ def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
 
 
-def score(samples, A):
+def fraction_of_correct_entries(samples, A):
     n = A.shape[0]
     nsamples = samples.shape[0]
     num = (np.sum(samples == A) - nsamples * n) / 2
@@ -46,14 +46,13 @@ def score(samples, A):
     return num / den
 
 
-def f_score(samples, A):
-    nsamples = samples.shape[0]
-    f = 0
-    for i in range(nsamples):
-        precision = np.sum(samples[i] * A) / np.sum(samples[i])
-        recall = np.sum(samples[i] * A) / np.sum(A)
-        f += 2 * precision * recall / (precision + recall) / nsamples
-    return f
+def f_score(samples, A, threshold):
+    Q = samples.mean(axis=0) >= threshold
+    tp = np.sum(Q * A)
+    fn = np.sum((1 - Q) * A)
+    fp = np.sum(Q * (1 - A))
+
+    return 2 * tp / (2 * tp + fn + fp)
 
 
 def infections_per_node(x, mode="mean"):
