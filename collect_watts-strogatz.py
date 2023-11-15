@@ -64,8 +64,8 @@ for f in os.listdir(data_dir):
     A = np.array(data["A"])
     samples = np.array(data["samples"])
 
-    ps[i, j, k] = posterior_similarity(A, samples)
-    sps[i, j, k] = samplewise_posterior_similarity(A, samples)
+    ps[i, j, k] = posterior_similarity(samples, A)
+    sps[i, j, k] = samplewise_posterior_similarity(samples, A)
 
 data = {}
 data["p"] = plist

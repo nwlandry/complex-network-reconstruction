@@ -11,7 +11,7 @@ def to_imshow_orientation(A):
     return np.flipud(A.T)
 
 
-def posterior_similarity(A, samples):
+def posterior_similarity(samples, A):
     meanA = samples.mean(axis=0)
     num = np.sum(np.abs(A - meanA))
     den = np.sum(np.abs(A + meanA))
@@ -21,7 +21,7 @@ def posterior_similarity(A, samples):
         return 1
 
 
-def samplewise_posterior_similarity(A, samples):
+def samplewise_posterior_similarity(samples, A):
     ps = 0
     n = samples.shape[0]
     for i in range(n):
@@ -36,6 +36,24 @@ def samplewise_posterior_similarity(A, samples):
 
 def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
+
+
+def score(samples, A):
+    n = A.shape[0]
+    nsamples = samples.shape[0]
+    num = (np.sum(samples == A) - nsamples * n) / 2
+    den = nsamples * n * (n - 1) / 2
+    return num / den
+
+
+def f_score(samples, A):
+    nsamples = samples.shape[0]
+    f = 0
+    for i in range(nsamples):
+        precision = np.sum(samples[i] * A) / np.sum(samples[i])
+        recall = np.sum(samples[i] * A) / np.sum(A)
+        f += 2 * precision * recall / (precision + recall) / nsamples
+    return f
 
 
 def infections_per_node(x, mode="mean"):
