@@ -11,8 +11,8 @@ def to_imshow_orientation(A):
     return np.flipud(A.T)
 
 
-def posterior_similarity(A, samples):
-    meanA = np.mean(samples, axis=0)
+def posterior_similarity(samples, A):
+    meanA = samples.mean(axis=0)
     num = np.sum(np.abs(A - meanA))
     den = np.sum(np.abs(A + meanA))
     if den > 0:
@@ -21,9 +21,9 @@ def posterior_similarity(A, samples):
         return 1
 
 
-def samplewise_posterior_similarity(A, samples):
+def samplewise_posterior_similarity(samples, A):
     ps = 0
-    n = np.size(samples, axis=0)
+    n = samples.shape[0]
     for i in range(n):
         num = np.sum(np.abs(A - samples[i]))
         den = np.sum(np.abs(A + samples[i]))
@@ -38,14 +38,31 @@ def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
 
 
+def fraction_of_correct_entries(samples, A):
+    n = A.shape[0]
+    nsamples = samples.shape[0]
+    num = (np.sum(samples == A) - nsamples * n) / 2
+    den = nsamples * n * (n - 1) / 2
+    return num / den
+
+
+def f_score(samples, A, threshold):
+    Q = samples.mean(axis=0) >= threshold
+    tp = np.sum(Q * A)
+    fn = np.sum((1 - Q) * A)
+    fp = np.sum(Q * (1 - A))
+
+    return 2 * tp / (2 * tp + fn + fp)
+
+
 def infections_per_node(x, mode="mean"):
     match mode:
         case "mean":
-            return np.mean(np.sum(x[1:] - x[:-1] > 0, axis=0))
+            return np.mean((x[1:] - x[:-1] > 0).sum(axis=0))
         case "median":
-            return np.median(np.sum(x[1:] - x[:-1] > 0, axis=0))
+            return np.median((x[1:] - x[:-1] > 0).sum(axis=0))
         case "max":
-            return np.max(np.sum(x[1:] - x[:-1] > 0, axis=0))
+            return np.max((x[1:] - x[:-1] > 0).sum(axis=0))
         case _:
             raise Exception("Invalid loss!")
 
@@ -108,21 +125,21 @@ def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
 def robbins_monro_solve(
     f,
     x0,
-    a,
-    alpha,
+    a=0.02,
+    alpha=1,
     max_iter=100,
-    tol=1e-3,
+    tol=1e-2,
     loss="function",
     verbose=False,
-    return_values=True,
+    return_values=False,
 ):
     x = x0
     val = f(x0)
 
-    it = 1
     xvec = [x]
     fvec = [val]
     diff = np.inf
+    it = 1
     while diff > tol and it <= max_iter:
         a_n = a * it**-alpha
         x -= a_n * val
@@ -130,19 +147,31 @@ def robbins_monro_solve(
         val = f(x)
         xvec.append(x)  # save results
         fvec.append(val)
-        if it % 3 == 0:
-            match loss:
-                case "function":
-                    diff = abs(x - xvec[it - 2])
-                case "arg":
-                    diff = abs(val)
-                case _:
-                    raise Exception("Invalid loss type!")
+        match loss:
+            case "arg":
+                diff = abs(x - xvec[it - 1])
+            case "function":
+                diff = abs(val)
+            case _:
+                raise Exception("Invalid loss type!")
 
         if verbose:
-            print(it, diff)
+            print((it, x, diff), flush=True)
         it += 1
     if return_values:
         return x, xvec, fvec
     else:
         return x
+
+
+def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 1, tmax, mode)
+    bscaled = robbins_monro_solve(f, b0, verbose=True)
+
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 10, tmax, mode)
+    bscaled = robbins_monro_solve(f, bscaled, verbose=True)
+
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 100, tmax, mode)
+    bscaled = robbins_monro_solve(f, bscaled, verbose=True)
+
+    return bscaled

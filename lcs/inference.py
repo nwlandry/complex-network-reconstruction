@@ -20,6 +20,50 @@ def infer_adjacency_matrix_and_dynamics(
     skip=100,
     return_likelihood=False,
 ):
+    """A function to infer both the adjacency matrix and the contagion dynamics.
+
+    Parameters
+    ----------
+    x : numpy ndarray
+        A T x N matrix of zeros (susceptible) and ones (infected)
+    A0 : numpy ndarray
+        An N x N adjacency matrix to initialize the MCMC algorithm.
+    p_rho : list or ndarray, optional
+        A 2-array specifying the parameters of the beta distribution
+        for the prior on rho, by default None. If None, it assumes a
+        uniform prior.
+    p_gamma : list or ndarray, optional
+        A 2-array specifying the parameters of the beta distribution
+        for the gamma prior, by default None. If None, it assumes a
+        uniform prior.
+    p_c : list of lists or ndarray, optional
+        A 2 x N array of the priors on each entry in the c vector, by default None.
+        If None, it assumes a uniform prior.
+    nsamples : int, optional
+        The number of adjacency matrix samples desired, by default 1
+    nspa : int, optional
+        The number of dynamics samples per adjacency matrix, by default 1
+    burn_in : int, optional
+        The number of iterations before storing the first sample, by default 100
+    skip : int, optional
+        The number of iterations between each sample, by default 100
+    return_likelihood : bool, optional
+        Whether to return the log posterior, by default False
+
+    Returns
+    -------
+    samples, gamma, cf
+        (1) `samples` is an S x N x N array where S is the number of samples
+        (2) `gamma` is an 1D array of size S*D, where D is the number of dynamics
+        samples per adjacency matrix.
+        (3) `cf` is a 2D array of size S*D x N, where is row is a sampled contagion
+        vector.
+    if return_likelihood is True, also returns a list of log posterior values.
+
+    Notes
+    -----
+    We assume beta priors for conjugacy.
+    """
     n = x.shape[1]
     samples, l = infer_adjacency_matrix(
         x,
@@ -56,6 +100,40 @@ def infer_adjacency_matrix(
     skip=100,
     return_likelihood=False,
 ):
+    """A function to infer the adjacency matrix.
+
+    Parameters
+    ----------
+    x : numpy ndarray
+        A T x N matrix of zeros (susceptible) and ones (infected)
+    A0 : numpy ndarray
+        An N x N adjacency matrix to initialize the MCMC algorithm.
+    p_rho : list or ndarray, optional
+        A 2-array specifying the parameters of the beta distribution
+        for the prior on rho, by default None. If None, it assumes a
+        uniform prior.
+    p_c : list of lists or ndarray, optional
+        A 2 x N array of the priors on each entry in the c vector, by default None.
+        If None, it assumes a uniform prior.
+    nsamples : int, optional
+        The number of adjacency matrix samples desired, by default 1
+    burn_in : int, optional
+        The number of iterations before storing the first sample, by default 100
+    skip : int, optional
+        The number of iterations between each sample, by default 100
+    return_likelihood : bool, optional
+        Whether to return the log posterior, by default False
+
+    Returns
+    -------
+    samples
+        An S x N x N array where S is the number of samples
+    if return_likelihood is True, also returns a list of log posterior values.
+
+    Notes
+    -----
+    We assume beta priors for conjugacy.
+    """
     # form initial adjacency matrix
     A = A0.copy()
     if not isinstance(A, ndarray):
@@ -121,9 +199,7 @@ def infer_adjacency_matrix(
             num_entries + delta_entries, max_entries, p_rho
         )
 
-        delta = compute_delta(new_l_dynamics, l_dynamics) + compute_delta(
-            new_l_adjacency, l_adjacency
-        )
+        delta = (new_l_dynamics - l_dynamics) + (new_l_adjacency - l_adjacency)
 
         if np.log(random.random()) <= min(delta, 0):
             nl = new_nl
@@ -157,8 +233,39 @@ def infer_adjacency_matrix(
 
 
 def infer_dynamics(x, A, p_gamma=None, p_c=None, nsamples=1):
-    # Our priors are drawn from a beta distribution such that
-    # the posteriors are also from a beta distribution
+    """A function to infer the contagion dynamics.
+
+    Parameters
+    ----------
+    x : numpy ndarray
+        A T x N matrix of zeros (susceptible) and ones (infected)
+    A : numpy ndarray
+        An N x N adjacency matrix
+    p_gamma : list or ndarray, optional
+        A 2-array specifying the parameters of the beta distribution
+        for the gamma prior, by default None. If None, it assumes a
+        uniform prior.
+    p_c : list of lists or ndarray, optional
+        A 2 x N array of the priors on each entry in the c vector, by default None.
+        If None, it assumes a uniform prior.
+    nsamples : int, optional
+        The number of samples of the dynamics desired, by default 1
+    return_likelihood : bool, optional
+        Whether to return the log posterior, by default False
+
+    Returns
+    -------
+    gamma, cf
+        `gamma` is an 1D array of size S*D, where D is the number of dynamics
+        samples per adjacency matrix.
+        `cf` is a 2D array of size S*D x N, where is row is a sampled contagion
+        vector.
+    if return_likelihood is True, also returns a list of log posterior values.
+
+    Notes
+    -----
+    We assume beta priors for conjugacy.
+    """
     if not isinstance(A, ndarray):
         A = A.todense()
 
@@ -196,6 +303,25 @@ def infer_dynamics(x, A, p_gamma=None, p_c=None, nsamples=1):
 
 
 def count_all_infection_events(x, A):
+    """counts all the infection and non-infection events
+
+    Parameters
+    ----------
+    x : numpy ndarray
+        A T x N matrix of zeros (susceptible) and ones (infected)
+    A : numpy ndarray
+        An N x N adjacency matrix
+
+    Returns
+    -------
+    nl, ml
+        (1) `ml` is an N x N matrix where the rows indicate node labels
+        and the columns indicate the nu value. This matrix stores non-infection
+        events.
+        (2) `nl` is an N x N matrix where the rows indicate node labels
+        and the columns indicate the nu value. This matrix stores infection
+        events.
+    """
     n = x.shape[1]
 
     nus = A @ x[:-1].T
@@ -213,7 +339,26 @@ def count_all_infection_events(x, A):
 
 
 def count_local_infection_events(i, x, A):
-    n = x.shape[1]
+    """counts all the infection and non-infection events
+
+    Parameters
+    ----------
+    i : int
+        The node index in question
+    x : numpy ndarray
+        A T x N matrix of zeros (susceptible) and ones (infected)
+    A : numpy ndarray
+        An N x N adjacency matrix
+
+    Returns
+    -------
+    nl, ml
+        (1) `ml` is an 1 x N matrix where the entries indicate the nu values
+        for node i. This matrix stores non-infection events.
+        (2) `nl` is an 1 x N matrix where the entries indicate the nu values
+        for node i. This matrix stores infection events.
+    """
+    n = A.shape[0]
     nus_i = A[i] @ x[:-1].T
     x_i = x[:, i]  # select node i from all time steps
 
@@ -230,25 +375,66 @@ def count_local_infection_events(i, x, A):
 
 
 def dynamics_log_posterior(nl, ml, p_c):
+    """Computes the portion of the log posterior from the dynamics
+
+    Parameters
+    ----------
+    nl : numpy ndarray
+        An N x N matrix of nu counts for each node
+    ml : numpy ndarray
+        An N x N matrix of nu counts for each node
+    p_c : numpy ndarray
+        2 x N array of beta parameters for the prior on the contagion
+        vector.
+
+    Returns
+    -------
+    float
+        The log of this portion of the posterior distribution.
+    """
     a = nl.sum(axis=0)
     b = ml.sum(axis=0)
     return sum(betaln(a + p_c[0], b + p_c[1]))
 
 
 def adjacency_log_posterior(num_entries, max_entries, p_rho):
+    """Computes the portion of the log posterior from the adjacency matrix
+
+    Parameters
+    ----------
+    num_entries : int
+        The number of non-zero entries in the lower triangle of the adjacency matrix
+    max_entries : int
+        The maximum number of entries in the lower triangle of the adjacency matrix.
+    p_rho : numpy ndarray
+        A 2-array specifying the parameters for the prior on rho.
+
+    Returns
+    -------
+    float
+        The log posterior value from the adjacency matrix portion.
+    """
     return betaln(num_entries + p_rho[0], max_entries - num_entries + p_rho[1])
 
 
 @jit(nopython=True)
-def compute_delta(a, b):
-    if (a == -np.inf and b == -np.inf) or (a == np.inf and b == np.inf):
-        return 0
-    else:
-        return a - b
-
-
-@jit(nopython=True)
 def update_adjacency_matrix(i, j, A):
+    """Flips an edge in the adjacency matrix
+
+    Parameters
+    ----------
+    i : int
+        row index
+    j : int
+        column index
+    A : numpy ndarray
+        The adjacency matrix
+
+    Returns
+    -------
+    int
+        -1 if an edge is removed, +1 if an edge is added.
+    """
     if A[i, j] == 0:
         A[i, j] = A[j, i] = 1
         return 1
@@ -286,6 +472,29 @@ def _count_mask(array, boolean_mask, axis, max_val):
 
 
 def _check_beta_parameters(p, size):
+    """Checks that the parameters for a beta distribution are in the right format.
+
+    Parameters
+    ----------
+    p : numpy ndarray
+        The parameters of a beta distribution. If p is None,
+        this function constructs an array of ones which corresponds
+        to a uniform prior.
+    size : numpy ndarray
+        a 2-array specifying the size that p should be.
+
+    Returns
+    -------
+    p
+        An array of the specified size.
+
+    Raises
+    ------
+    Exception
+        If the parameters are not positive.
+    Exception
+        If p is of the wrong shape.
+    """
     if isinstance(p, (list, tuple)):
         p = np.array(p)
 

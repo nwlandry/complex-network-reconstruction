@@ -67,8 +67,8 @@ for f in os.listdir(data_dir):
 
     ipn[i, j, k] = infections_per_node(x)
 
-    psmat[i, j, k] = posterior_similarity(A, samples)
-    spsmat[i, j, k] = samplewise_posterior_similarity(A, samples)
+    psmat[i, j, k] = posterior_similarity(samples, A)
+    spsmat[i, j, k] = samplewise_posterior_similarity(samples, A)
     it += 1
     print(it, flush=True)
 

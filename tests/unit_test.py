@@ -24,8 +24,7 @@ from lcs import *
 """
 Generate Paramters for Test
 """
-G = nx.karate_club_graph()
-A = nx.adjacency_matrix(G).todense()
+A = zkc()
 A = np.array(A, dtype=float)
 n = np.size(A, axis=0)
 x0 = np.zeros(n)

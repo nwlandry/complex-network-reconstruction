@@ -5,12 +5,31 @@ import numpy as np
 import xgi
 
 
+def zkc():
+    G = nx.karate_club_graph()
+    return nx.adjacency_matrix(G).todense()
+
+
 def erdos_renyi(n, p, seed=None):
-    return nx.adjacency_matrix(nx.fast_gnp_random_graph(n, p, seed)).todense()
+    if seed is not None:
+        random.seed(seed)
+
+    A = np.zeros((n, n), dtype=int)
+    if p == 0:
+        return A
+    if p == 1:
+        return np.ones((n, n), dtype=int) - np.eye(n, dtype=int)
+
+    for i in range(n):
+        for j in range(i):
+            A[i, j] = A[j, i] = random.random() <= p
+    return A
 
 
 def watts_strogatz(n, k, p, seed=None):
-    return nx.adjacency_matrix(nx.watts_strogatz_graph(n, k, p, seed)).todense()
+    G = nx.watts_strogatz_graph(n, k, p, seed)
+    G.add_nodes_from(range(n))
+    return nx.adjacency_matrix(G).todense()
 
 
 def sbm(n, k, epsilon, seed=None):
@@ -18,11 +37,10 @@ def sbm(n, k, epsilon, seed=None):
     # ratio of inter- to intra-community edges
     p_in = (1 + epsilon) * p
     p_out = (1 - epsilon) * p
-    return nx.adjacency_matrix(
-        nx.planted_partition_graph(2, int(n / 2), p_in, p_out, seed=seed)
-    ).todense()
+    G = nx.planted_partition_graph(2, int(n / 2), p_in, p_out, seed=seed)
+    G.add_nodes_from(range(n))
+    return nx.adjacency_matrix(G).todense()
 
 
 def projected_bipartite(k, s, seed=None):
-    H = xgi.chung_lu_hypergraph(k, s, seed)
-    return xgi.adjacency_matrix(H, sparse=False)
+    return 0

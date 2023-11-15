@@ -6,8 +6,7 @@ from scipy.stats import beta
 
 from lcs import *
 
-G = nx.karate_club_graph()
-A = nx.adjacency_matrix(G, weight=None).todense()
+A = zkc()
 n = A.shape[0]
 
 p_gamma = [1, 1]
@@ -39,7 +38,7 @@ A1_samples, gamma1_samples, c1_samples, l1 = infer_adjacency_matrix_and_dynamics
     p_gamma,
     p_c,
     nsamples=1000,
-    burn_in=30000,
+    burn_in=100000,
     skip=1000,
     nspa=10,
     return_likelihood=True,
@@ -69,7 +68,7 @@ A2_samples, gamma2_samples, c2_samples, l2 = infer_adjacency_matrix_and_dynamics
     p_gamma,
     p_c,
     nsamples=1000,
-    burn_in=30000,
+    burn_in=100000,
     skip=1000,
     nspa=10,
     return_likelihood=True,
