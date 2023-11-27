@@ -3,6 +3,7 @@ import random
 import networkx as nx
 import numpy as np
 import xgi
+from scipy.stats import rv_discrete
 
 
 def zkc():
@@ -41,6 +42,11 @@ def sbm(n, k, epsilon, seed=None):
     G.add_nodes_from(range(n))
     return nx.adjacency_matrix(G).todense()
 
+
+def delta_dist(x_prime):  
+	return rv_discrete(name = 'custom',values = ([x_prime],[1.]))
+
+
 def generate_hypergraph_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
     """
     generate_hypergraph_bipartite_edge_list(): generates a hypergraph in the style of Newman's model in "Community Structure in social and biological networks" 
@@ -57,6 +63,9 @@ def generate_hypergraph_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,see
     #generate rng with seed 
     if seed is not None:
         rng = np.random.default_rng(seed)
+    else:
+        rng = np.random.default_rng()
+
 
     chairs = []
     butts = []
@@ -74,8 +83,8 @@ def generate_hypergraph_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,see
     chairs = [chair + N_inds for chair in chairs]
 
     # shuffle the lists    
-    rng.shuffle(chairs,seed = seed)
-    rng.shuffle(butts,seed = seed)
+    rng.shuffle(chairs)
+    rng.shuffle(butts)
 
     # generate edge_list 
     edge_list = list(zip(chairs, butts))
@@ -97,10 +106,11 @@ def bipartite_graph(edge_list):
     return B
 
 
-def generate_clustered_unipartite(n_groups,n_ind,p_dist,g_dist,**kwargs):
-    edge_list,vertex_attributes = generate_hypergraph_bipartite_edge_list(10,100,my_p_dist,my_g_dist,**kwargs)#generate bipartite graph
-    u = unipartite_projection(edge_list)#project to unipartite
-    return u 
+def clustered_unipartite(n_groups,n_ind,my_p_dist,my_g_dist,**kwargs):
+	edge_list,vertex_attributes = generate_hypergraph_bipartite_edge_list(10,100,my_p_dist,my_g_dist,**kwargs)#generate bipartite graph
+	B = bipartite_graph(edge_list)#project to unipartite
+	u = nx.projected_graph(B,0)
+	return nx.adjacency_matrix(u).to_dense()
 
 
 

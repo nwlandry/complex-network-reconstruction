@@ -49,7 +49,7 @@ def single_inference(
         output_file.write(datastring)
 
 
-data_dir = "Data/watts-strogatz"
+data_dir = "Data/clustering"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
@@ -84,8 +84,28 @@ mode = "max"
 tmax = 1000
 
 
+#paramters for bipartite clustering
+N = 200#the number of nodes in the network
+clique_number = 2#the number ofj:w
+
+
+clique_size = N//clique_number#the number of nodes per clique
+clique_membership = 1#the number of cliques per node
+
+p_dist = delta_dist(clique_number)
+g_dist = delta_dist(clique_size)
+
+#clustered_unipartite(clique_number,N,p_dist,g_dist)
+
+edge_list,vertex_attributes = generate_hypergraph_bipartite_edge_list(10,100,p_dist,g_dist)
+
+
 arglist = []
 for p in probabilities:
+
+
+
+
     c = cfs[0](np.arange(n), b)
     ipn = target_ipn(n, k, p, gamma, c, mode, rho0, tmax, 1000)
     for i, cf in enumerate(cfs):
