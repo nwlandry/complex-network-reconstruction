@@ -5,9 +5,10 @@ Created on Thu Mar  4 10:11:05 2021
 @author: John Meluso
 """
 
+import os
+
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
-import os
 
 
 def set_fonts(extra_params={}):

@@ -5,7 +5,7 @@ from pathlib import Path
 path = Path.cwd()
 parent = os.path.abspath(os.path.join(path, os.pardir))
 print(parent)
-src_dir = os.path.join(parent, "src")
+src_dir = os.path.join(parent, "lcs")
 print(src_dir)
 sys.path.append(parent)
 import warnings
