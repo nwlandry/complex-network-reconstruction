@@ -5,9 +5,14 @@ import numpy as np
 from scipy.stats import rv_discrete
 
 
-def zkc():
-    G = nx.karate_club_graph()
-    return nx.adjacency_matrix(G).todense()
+def zkc(format="adjacency"):
+    match format:
+        case "adjacency":
+            G = nx.karate_club_graph()
+            return nx.adjacency_matrix(G, weight=None).todense()
+        case "edgelist":
+            G = nx.karate_club_graph()
+            return [[i, j] for i, j in G.edges]
 
 
 def erdos_renyi(n, p, seed=None):
