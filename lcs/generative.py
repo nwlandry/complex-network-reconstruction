@@ -2,7 +2,7 @@ import random
 
 import networkx as nx
 import numpy as np
-import xgi
+from scipy.stats import rv_discrete
 
 
 def zkc():
