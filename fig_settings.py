@@ -12,7 +12,7 @@ import os
 
 def set_fonts(extra_params={}):
     params = {
-        "font.family": "Times New Roman",
+        "font.family": "Sans-Serif",
         "font.sans-serif": ["Tahoma", "DejaVu Sans", "Lucida Grande", "Verdana"],
         "mathtext.fontset": "cm",
         "legend.fontsize": 10,
