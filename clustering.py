@@ -63,12 +63,12 @@ os.makedirs(data_dir, exist_ok=True)
 for f in os.listdir(data_dir):
     os.remove(os.path.join(data_dir, f))
 
-n = 50
+n = 100
 k = 6
 
 n_processes = len(os.sched_getaffinity(0))
 print("n processes: ",n_processes)
-realizations = 1
+realizations = 10
 clique_numbers= np.arange(1,20)
 
 # MCMC parameters
@@ -92,21 +92,13 @@ mode = "max"
 
 tmax = 1000
 
-
-#paramters for bipartite clustering
-clique_number = 2#the number ofj:w
-
-
-
-
 A = gen_clustered_clique_number(n,3)
 
 arglist = []
 for clique_number in clique_numbers:
 
     c = cfs[0](np.arange(n), b)
-    #ipn = target_ipn(n,clique_number, gamma, c, mode, rho0, tmax, 1000)
-    ipn = target_ipn(n,clique_number, gamma, c, mode, rho0, tmax, 1)
+    ipn = target_ipn(n,clique_number, gamma, c, mode, rho0, tmax, 1000)
     for i, cf in enumerate(cfs):
         if i != 0:
             A = gen_clustered_clique_number(n,clique_number)
