@@ -37,6 +37,42 @@ def watts_strogatz(n, k, p, seed=None):
     return nx.adjacency_matrix(G).todense()
 
 
+def watts_strogatz_edge_swap(n, k, p, seed=None):
+    if seed is not None:
+        random.seed(seed)
+
+    A = np.zeros((n, n))
+    node1 = []
+    node2 = []
+
+    nodes = list(range(n))
+    for j in range(1, k // 2 + 1):
+        targets = nodes[j:] + nodes[0:j]  # first j nodes are now last in list
+        node1.extend(nodes)
+        node2.extend(targets)
+
+    node1 = np.array(node1)
+    node2 = np.array(node2)
+
+    m = node1.shape[0]
+    idx = np.random.permutation(range(m))
+
+    node1 = node1[idx]
+    node2 = node2[idx]
+
+    for i in range(0, m, 2):
+        if random.random() <= p:
+            u = node2[i]
+            v = node2[i + 1]
+
+            node2[i] = v
+            node2[i + 1] = u
+
+    for i, j in zip(node1, node2):
+        A[i, j] = A[j, i] = 1
+    return A
+
+
 def sbm(n, k, epsilon, seed=None):
     p = k / (n - 1)
     # ratio of inter- to intra-community edges

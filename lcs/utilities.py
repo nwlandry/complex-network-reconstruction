@@ -1,10 +1,42 @@
 import random
 
 import numpy as np
-from scipy.stats import gaussian_kde
+import json
 
 from .contagion import *
 from .inference import *
+from .generative import erdos_renyi
+
+
+def single_inference(
+    fname, gamma, c, b, rho0, A, tmax, p_c, p_rho, nsamples, burn_in, skip
+):
+    n = np.size(A, axis=0)
+    x0 = np.zeros(n)
+    x0[random.sample(range(n), int(round(rho0 * n)))] = 1
+
+    x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
+    p = beta(p_rho[0], p_rho[1]).rvs()
+    A0 = erdos_renyi(n, p)
+    samples = infer_adjacency_matrix(
+        x, A0, p_rho, p_c, nsamples=nsamples, burn_in=burn_in, skip=skip
+    )
+
+    # json dict
+    data = {}
+    data["gamma"] = gamma
+    data["c"] = c.tolist()
+    data["b"] = b
+    data["p-rho"] = p_rho.tolist()
+    data["p-c"] = p_c.tolist()
+    data["x"] = x.tolist()
+    data["A"] = A.tolist()
+    data["samples"] = samples.tolist()
+
+    datastring = json.dumps(data)
+
+    with open(fname, "w") as output_file:
+        output_file.write(datastring)
 
 
 def to_imshow_orientation(A):
