@@ -47,9 +47,9 @@ def delta_dist(x_prime):
     return rv_discrete(name = 'custom',values = ([x_prime],[1.]))
 
 
-def generate_hypergraph_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
+def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
     """
-    generate_hypergraph_bipartite_edge_list(): generates a hypergraph in the style of Newman's model in "Community Structure in social and biological networks"
+    generate_bipartite_edge_list(): generates a hypergraph in the style of Newman's model in "Community Structure in social and biological networks"
     inputs:
         N_groups: the number of groups or cliques to create
         N_inds: the number of individuals to create(may be less than this total)
@@ -110,7 +110,7 @@ def bipartite_graph(edge_list):
 
 
 def clustered_unipartite(n_groups,n_ind,my_p_dist,my_g_dist,**kwargs):
-    edge_list,vertex_attributes = generate_hypergraph_bipartite_edge_list(n_groups,n_ind,my_p_dist,my_g_dist)
+    edge_list,vertex_attributes = generate_bipartite_edge_list(n_groups,n_ind,my_p_dist,my_g_dist)
     projected_nodes = [k for k,v in vertex_attributes.items() if v == 1]#identify ndes to project graph onto
     B = bipartite_graph(edge_list)
     U = nx.projected_graph(B,projected_nodes)#create unipartite projection
