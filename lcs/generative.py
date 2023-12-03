@@ -51,13 +51,13 @@ def delta_dist(x_prime):
     return rv_discrete(name="custom", values=([x_prime], [1.0]))
 
 
-def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist, seed=None):
+def generate_bipartite_edge_list(n_groups, n_inds, p_dist, g_dist, seed=None):
     """
     generate_bipartite_edge_list(): generates a hypergraph in the style of Newman's model in "Community Structure in social and biological networks"
 
     inputs:
-        N_groups: the number of groups or cliques to create
-        N_inds: the number of individuals to create(may be less than this total)
+        n_groups: the number of groups or cliques to create
+        n_inds: the number of individuals to create(may be less than this total)
         p_dist: The distribution of clique sizes, must be from numpy.random
         g_dist: The distribution of number of cliques belonged to per individual
         seed: seed for pseudorandom number generator
@@ -76,23 +76,18 @@ def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist, seed=None):
 
     # generate chairs
 
-    for i in range(1, N_inds + 1):
+    for i in range(1, n_inds + 1):
         g_m = g_dist.rvs() + 1  # select the number of butts in clique i
-        butts.extend([i]*p_n)  # add g_m butts to individuals
+        butts.extend([i] * g_m)  # add g_m butts to individuals
 
-    for i in range(1, N_groups + 1):
+    for i in range(1, n_groups + 1):
         p_n = p_dist.rvs()  # select the number of chairs in clique i
-
-        # p_n = int(p_n if len(chairs) + p_n <= len(butts) else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
         p_n = int(
-            p_n if i < N_groups else len(butts) - len(chairs)
+            p_n if i < n_groups else len(butts) - len(chairs)
         )  # pull a random length or select a length to make the two lists equal if we are bout to go over
         print(p_n)
-        chairs.extend(
-			[i] * p_n
-        )  # add p_n chairs belonging to clique i
-        # chairs.extend([chairs[-1] for i in range(len(butts) - len(chairs))])
-    chairs = [chair + N_inds for chair in chairs]
+        chairs.extend([i] * p_n)  # add p_n chairs belonging to clique i
+    chairs = [chair + n_inds for chair in chairs]
 
     # shuffle the lists
     rng.shuffle(chairs)

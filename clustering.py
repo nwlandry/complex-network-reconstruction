@@ -6,21 +6,23 @@ import numpy as np
 
 from lcs import *
 
-def gen_clustered_clique_number(n,clique_number):
-    clique_size = n//clique_number#the number of nodes per clique
-    clique_membership = 0#the number of cliques per node
+
+def gen_clustered_clique_number(n, clique_number):
+    clique_size = n // clique_number  # the number of nodes per clique
+    clique_membership = 0  # the number of cliques per node
 
     p_dist = delta_dist(clique_size)
     g_dist = delta_dist(clique_membership)
-    A = clustered_unipartite(clique_number,n,p_dist,g_dist)
+    A = clustered_unipartite(clique_number, n, p_dist, g_dist)
     return A
 
-def target_ipn(n,clique_number, gamma, c, mode, rho0, tmax, realizations):
+
+def target_ipn(n, clique_number, gamma, c, mode, rho0, tmax, realizations):
     x0 = np.zeros(n)
     x0[random.sample(range(n), int(round(rho0 * n)))] = 1
     ipn = 0
     for _ in range(realizations):
-        A = gen_clustered_clique_number(n,clique_number)
+        A = gen_clustered_clique_number(n, clique_number)
         x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
         ipn += infections_per_node(x, mode) / realizations
     return ipn
@@ -67,9 +69,9 @@ n = 100
 k = 6
 
 n_processes = len(os.sched_getaffinity(0))
-print("n processes: ",n_processes)
+print("n processes: ", n_processes)
 realizations = 10
-clique_numbers= np.arange(1,20)
+clique_numbers = np.arange(1, 20)
 
 # MCMC parameters
 burn_in = 100000
@@ -92,16 +94,15 @@ mode = "max"
 
 tmax = 1000
 
-A = gen_clustered_clique_number(n,3)
+A = gen_clustered_clique_number(n, 3)
 
 arglist = []
 for clique_number in clique_numbers:
-
     c = cfs[0](np.arange(n), b)
-    ipn = target_ipn(n,clique_number, gamma, c, mode, rho0, tmax, 1000)
+    ipn = target_ipn(n, clique_number, gamma, c, mode, rho0, tmax, 1000)
     for i, cf in enumerate(cfs):
         if i != 0:
-            A = gen_clustered_clique_number(n,clique_number)
+            A = gen_clustered_clique_number(n, clique_number)
             bscaled = fit_ipn(0.5, ipn, cf, gamma, A, rho0, tmax, mode)
         else:
             bscaled = b
@@ -109,23 +110,23 @@ for clique_number in clique_numbers:
         print((clique_number, i), flush=True)
 
         for r in range(realizations):
-            A = gen_clustered_clique_number(n,clique_number)
+            A = gen_clustered_clique_number(n, clique_number)
             arglist.append(
-    (
-        f"{data_dir}/{clique_number}_{i}_{r}",
-        gamma,
-        c,
-        bscaled,
-        rho0,
-        A,
-        tmax,
-        p_c,
-        p_rho,
-        nsamples,
-        burn_in,
-        skip,
-    )
-)
+                (
+                    f"{data_dir}/{clique_number}_{i}_{r}",
+                    gamma,
+                    c,
+                    bscaled,
+                    rho0,
+                    A,
+                    tmax,
+                    p_c,
+                    p_rho,
+                    nsamples,
+                    burn_in,
+                    skip,
+                )
+            )
 
 with mp.Pool(processes=n_processes) as pool:
     pool.starmap(single_inference, arglist)
