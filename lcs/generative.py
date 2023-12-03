@@ -2,7 +2,6 @@ import random
 
 import networkx as nx
 import numpy as np
-import xgi
 from scipy.stats import rv_discrete
 
 
@@ -44,10 +43,10 @@ def sbm(n, k, epsilon, seed=None):
 
 
 def delta_dist(x_prime):
-    return rv_discrete(name = 'custom',values = ([x_prime],[1.]))
+    return rv_discrete(name="custom", values=([x_prime], [1.0]))
 
 
-def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
+def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist, seed=None):
     """
     generate_bipartite_edge_list(): generates a hypergraph in the style of Newman's model in "Community Structure in social and biological networks"
     inputs:
@@ -60,12 +59,11 @@ def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
         edge_list: the edge list for a bi-partite graph. The first n-indices represent the clique edges and the rest represent individuals
     """
 
-    #generate rng with seed
+    # generate rng with seed
     if seed is not None:
         rng = np.random.default_rng(seed)
     else:
         rng = np.random.default_rng()
-
 
     chairs = []
     butts = []
@@ -78,11 +76,15 @@ def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
 
     for i in range(1, N_groups + 1):
         p_n = p_dist.rvs()  # select the number of chairs in clique i
-        #p_n = int(p_n if len(chairs) + p_n <= len(butts) else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
-        p_n = int(p_n if i < N_groups else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
+        # p_n = int(p_n if len(chairs) + p_n <= len(butts) else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
+        p_n = int(
+            p_n if i < N_groups else len(butts) - len(chairs)
+        )  # pull a random length or select a length to make the two lists equal if we are bout to go over
         print(p_n)
-        chairs.extend([i for _ in range(int(p_n))])  # add p_n chairs belonging to clique i
-        #chairs.extend([chairs[-1] for i in range(len(butts) - len(chairs))])
+        chairs.extend(
+            [i for _ in range(int(p_n))]
+        )  # add p_n chairs belonging to clique i
+        # chairs.extend([chairs[-1] for i in range(len(butts) - len(chairs))])
     chairs = [chair + N_inds for chair in chairs]
 
     # shuffle the lists
@@ -102,16 +104,20 @@ def generate_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,seed = None):
 def bipartite_graph(edge_list):
     B = nx.Graph()
     a = np.vstack(edge_list)
-    node_list1,node_list2 = np.unique(a[:,1]),np.unique(a[:,0])
-    B.add_nodes_from(node_list1,bipartite=0)
-    B.add_nodes_from(node_list2,bipartite=1)
+    node_list1, node_list2 = np.unique(a[:, 1]), np.unique(a[:, 0])
+    B.add_nodes_from(node_list1, bipartite=0)
+    B.add_nodes_from(node_list2, bipartite=1)
     B.add_edges_from(edge_list)
     return B
 
 
-def clustered_unipartite(n_groups,n_ind,my_p_dist,my_g_dist,**kwargs):
-    edge_list,vertex_attributes = generate_bipartite_edge_list(n_groups,n_ind,my_p_dist,my_g_dist)
-    projected_nodes = [k for k,v in vertex_attributes.items() if v == 1]#identify ndes to project graph onto
+def clustered_unipartite(n_groups, n_ind, my_p_dist, my_g_dist, **kwargs):
+    edge_list, vertex_attributes = generate_bipartite_edge_list(
+        n_groups, n_ind, my_p_dist, my_g_dist
+    )
+    projected_nodes = [
+        k for k, v in vertex_attributes.items() if v == 1
+    ]  # identify ndes to project graph onto
     B = bipartite_graph(edge_list)
-    U = nx.projected_graph(B,projected_nodes)#create unipartite projection
+    U = nx.projected_graph(B, projected_nodes)  # create unipartite projection
     return nx.adjacency_matrix(U).todense()
