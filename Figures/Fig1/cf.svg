@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="460.8pt" height="345.6pt" viewBox="0 0 460.8 345.6" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2023-11-29T16:08:06.008017</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.6.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 345.6 
+L 460.8 345.6 
+L 460.8 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 57.6 307.584 
+L 414.72 307.584 
+L 414.72 41.472 
+L 57.6 41.472 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m29a6131fa9" d="M 0 0 
+L 0 3.5 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m29a6131fa9" x="73.832727" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <!-- 0 -->
+      <g transform="translate(70.557102 323.702125) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-30" d="M 3234 2328 
+Q 3234 1075 2870 489 
+Q 2506 -97 1747 -97 
+Q 978 -97 618 500 
+Q 259 1097 259 2322 
+Q 259 3581 623 4164 
+Q 988 4747 1747 4747 
+Q 2516 4747 2875 4144 
+Q 3234 3541 3234 2328 
+z
+M 2434 909 
+Q 2525 1141 2562 1494 
+Q 2600 1847 2600 2328 
+Q 2600 2806 2562 3159 
+Q 2525 3513 2431 3747 
+Q 2338 3984 2173 4107 
+Q 2009 4231 1747 4231 
+Q 1488 4231 1320 4107 
+Q 1153 3984 1056 3741 
+Q 963 3503 928 3140 
+Q 894 2778 894 2322 
+Q 894 1834 923 1506 
+Q 953 1178 1053 919 
+Q 1144 678 1311 548 
+Q 1478 419 1747 419 
+Q 2006 419 2173 542 
+Q 2341 666 2434 909 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-30"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="114.414545" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <!-- 2 -->
+      <g transform="translate(111.13892 323.702125) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-32" d="M 3213 0 
+L 341 0 
+L 341 653 
+Q 650 947 925 1215 
+Q 1200 1484 1463 1775 
+Q 1994 2359 2187 2711 
+Q 2381 3063 2381 3438 
+Q 2381 3631 2320 3778 
+Q 2259 3925 2153 4022 
+Q 2044 4116 1900 4162 
+Q 1756 4209 1584 4209 
+Q 1419 4209 1248 4167 
+Q 1078 4125 922 4063 
+Q 791 4009 669 3934 
+Q 547 3859 472 3806 
+L 438 3806 
+L 438 4469 
+Q 631 4566 976 4658 
+Q 1322 4750 1631 4750 
+Q 2281 4750 2650 4404 
+Q 3019 4059 3019 3469 
+Q 3019 3197 2955 2965 
+Q 2891 2734 2778 2538 
+Q 2663 2334 2500 2134 
+Q 2338 1934 2156 1741 
+Q 1863 1422 1502 1078 
+Q 1141 734 925 534 
+L 3213 534 
+L 3213 0 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-32"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="154.996364" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <!-- 4 -->
+      <g transform="translate(151.720739 323.702125) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-34" d="M 3334 1600 
+L 2781 1600 
+L 2781 0 
+L 2181 0 
+L 2181 1600 
+L 125 1600 
+L 125 2256 
+L 2206 4653 
+L 2781 4653 
+L 2781 2100 
+L 3334 2100 
+L 3334 1600 
+z
+M 2181 2100 
+L 2181 3919 
+L 613 2100 
+L 2181 2100 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-34"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="195.578182" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <!-- 6 -->
+      <g transform="translate(192.302557 323.702125) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-36" d="M 3284 1509 
+Q 3284 1150 3165 847 
+Q 3047 544 2847 341 
+Q 2638 125 2378 14 
+Q 2119 -97 1806 -97 
+Q 1491 -97 1233 9 
+Q 975 116 778 325 
+Q 538 578 402 1001 
+Q 266 1425 266 2044 
+Q 266 2650 391 3139 
+Q 516 3628 775 3991 
+Q 1028 4344 1428 4542 
+Q 1828 4741 2353 4741 
+Q 2509 4741 2643 4725 
+Q 2778 4709 2881 4675 
+L 2881 4078 
+L 2853 4078 
+Q 2769 4125 2609 4164 
+Q 2450 4203 2269 4203 
+Q 1688 4203 1330 3811 
+Q 972 3419 906 2647 
+Q 1128 2803 1362 2887 
+Q 1597 2972 1875 2972 
+Q 2147 2972 2351 2917 
+Q 2556 2863 2778 2697 
+Q 3034 2503 3159 2206 
+Q 3284 1909 3284 1509 
+z
+M 2650 1484 
+Q 2650 1772 2575 1965 
+Q 2500 2159 2331 2297 
+Q 2209 2397 2054 2428 
+Q 1900 2459 1738 2459 
+Q 1519 2459 1312 2393 
+Q 1106 2328 906 2203 
+Q 900 2134 897 2070 
+Q 894 2006 894 1909 
+Q 894 1425 989 1128 
+Q 1084 831 1225 678 
+Q 1359 531 1501 472 
+Q 1644 413 1809 413 
+Q 2184 413 2417 681 
+Q 2650 950 2650 1484 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-36"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="236.16" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <!-- 8 -->
+      <g transform="translate(232.884375 323.702125) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-38" d="M 2534 3569 
+Q 2534 3881 2325 4090 
+Q 2116 4300 1744 4300 
+Q 1403 4300 1186 4112 
+Q 969 3925 969 3606 
+Q 969 3375 1080 3215 
+Q 1191 3056 1413 2928 
+Q 1509 2875 1707 2781 
+Q 1906 2688 2069 2634 
+Q 2341 2844 2437 3064 
+Q 2534 3284 2534 3569 
+z
+M 2622 1238 
+Q 2622 1525 2509 1694 
+Q 2397 1863 2075 2038 
+Q 1969 2097 1792 2165 
+Q 1616 2234 1394 2328 
+Q 1134 2156 996 1904 
+Q 859 1653 859 1331 
+Q 859 909 1114 634 
+Q 1369 359 1753 359 
+Q 2147 359 2384 595 
+Q 2622 831 2622 1238 
+z
+M 1747 -106 
+Q 1400 -106 1115 -3 
+Q 831 100 631 294 
+Q 434 481 332 739 
+Q 231 997 231 1284 
+Q 231 1663 432 1980 
+Q 634 2297 1019 2484 
+L 1019 2503 
+Q 675 2703 509 2940 
+Q 344 3178 344 3534 
+Q 344 4059 741 4409 
+Q 1138 4759 1747 4759 
+Q 2381 4759 2764 4426 
+Q 3147 4094 3147 3575 
+Q 3147 3263 2964 2956 
+Q 2781 2650 2438 2478 
+L 2438 2459 
+Q 2844 2269 3053 1997 
+Q 3263 1725 3263 1297 
+Q 3263 700 2830 297 
+Q 2397 -106 1747 -106 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-38"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="276.741818" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <!-- 10 -->
+      <g transform="translate(270.190568 323.702125) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-31" d="M 2975 0 
+L 706 0 
+L 706 475 
+L 1550 475 
+L 1550 3594 
+L 706 3594 
+L 706 4019 
+Q 1184 4019 1411 4155 
+Q 1638 4291 1666 4669 
+L 2150 4669 
+L 2150 475 
+L 2975 475 
+L 2975 0 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-31"/>
+       <use xlink:href="#Tahoma-30" x="54.589844"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="317.323636" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <!-- 12 -->
+      <g transform="translate(310.772386 323.702125) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-31"/>
+       <use xlink:href="#Tahoma-32" x="54.589844"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="357.905455" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <!-- 14 -->
+      <g transform="translate(351.354205 323.702125) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-31"/>
+       <use xlink:href="#Tahoma-34" x="54.589844"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_9">
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#m29a6131fa9" x="398.487273" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <!-- 16 -->
+      <g transform="translate(391.936023 323.702125) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-31"/>
+       <use xlink:href="#Tahoma-36" x="54.589844"/>
+      </g>
+     </g>
+    </g>
+    <g id="text_10">
+     <!-- $\nu$ -->
+     <g transform="translate(233.16 339.23525) scale(0.12 -0.12)">
+      <defs>
+       <path id="Cmmi10-ba" d="M 403 0 
+Q 325 0 325 84 
+L 872 2259 
+Q 897 2369 903 2431 
+Q 903 2534 488 2534 
+Q 422 2534 422 2619 
+Q 425 2634 436 2675 
+Q 447 2716 464 2737 
+Q 481 2759 513 2759 
+L 1375 2828 
+Q 1453 2828 1453 2747 
+L 825 238 
+Q 1331 406 1757 765 
+Q 2184 1125 2479 1612 
+Q 2775 2100 2906 2625 
+Q 2931 2716 3006 2772 
+Q 3081 2828 3175 2828 
+Q 3259 2828 3312 2778 
+Q 3366 2728 3366 2644 
+Q 3366 2541 3281 2330 
+Q 3197 2119 3116 1953 
+Q 2863 1450 2444 1031 
+Q 2181 769 1879 566 
+Q 1578 363 1250 220 
+Q 922 78 556 0 
+L 403 0 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#Cmmi10-ba" transform="translate(0 0.8125)"/>
+     </g>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_10">
+      <defs>
+       <path id="m34616a30c7" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="295.488" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <!-- 0.0 -->
+      <g transform="translate(33.86375 300.047062) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-2e" d="M 1341 0 
+L 594 0 
+L 594 891 
+L 1341 891 
+L 1341 0 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-30" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="260.267269" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <!-- 0.1 -->
+      <g transform="translate(33.86375 264.826332) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-31" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="225.046538" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <!-- 0.2 -->
+      <g transform="translate(33.86375 229.605601) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-32" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="189.825807" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <!-- 0.3 -->
+      <g transform="translate(33.86375 194.38487) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-33" d="M 1597 4209 
+Q 1428 4209 1259 4168 
+Q 1091 4128 928 4063 
+Q 778 4000 667 3931 
+Q 556 3863 469 3803 
+L 431 3803 
+L 431 4463 
+Q 634 4572 982 4661 
+Q 1331 4750 1647 4750 
+Q 1963 4750 2198 4686 
+Q 2434 4622 2625 4488 
+Q 2831 4338 2936 4125 
+Q 3041 3913 3041 3628 
+Q 3041 3244 2787 2953 
+Q 2534 2663 2181 2584 
+L 2181 2541 
+Q 2328 2513 2495 2444 
+Q 2663 2375 2806 2241 
+Q 2950 2106 3040 1895 
+Q 3131 1684 3131 1381 
+Q 3131 1066 3023 802 
+Q 2916 538 2719 334 
+Q 2516 122 2228 12 
+Q 1941 -97 1575 -97 
+Q 1225 -97 881 -12 
+Q 538 72 303 191 
+L 303 850 
+L 347 850 
+Q 544 706 875 575 
+Q 1206 444 1538 444 
+Q 1728 444 1920 505 
+Q 2113 566 2241 703 
+Q 2366 841 2431 1006 
+Q 2497 1172 2497 1425 
+Q 2497 1678 2423 1840 
+Q 2350 2003 2219 2097 
+Q 2088 2191 1908 2227 
+Q 1728 2263 1519 2263 
+L 1253 2263 
+L 1253 2781 
+L 1459 2781 
+Q 1881 2781 2145 2981 
+Q 2409 3181 2409 3563 
+Q 2409 3738 2340 3864 
+Q 2272 3991 2166 4066 
+Q 2047 4147 1903 4178 
+Q 1759 4209 1597 4209 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-33" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="154.605076" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <!-- 0.4 -->
+      <g transform="translate(33.86375 159.164139) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-34" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="119.384345" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <!-- 0.5 -->
+      <g transform="translate(33.86375 123.943408) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-35" d="M 3159 1481 
+Q 3159 1144 3051 856 
+Q 2944 569 2750 359 
+Q 2553 147 2261 25 
+Q 1969 -97 1606 -97 
+Q 1272 -97 948 -23 
+Q 625 50 388 169 
+L 388 828 
+L 431 828 
+Q 503 775 637 708 
+Q 772 641 934 581 
+Q 1119 516 1272 480 
+Q 1425 444 1616 444 
+Q 1803 444 1981 511 
+Q 2159 578 2288 728 
+Q 2403 866 2464 1050 
+Q 2525 1234 2525 1484 
+Q 2525 1731 2458 1890 
+Q 2391 2050 2263 2153 
+Q 2128 2272 1933 2320 
+Q 1738 2369 1497 2369 
+Q 1244 2369 987 2330 
+Q 731 2291 578 2256 
+L 578 4653 
+L 3131 4653 
+L 3131 4106 
+L 1181 4106 
+L 1181 2869 
+Q 1294 2881 1403 2887 
+Q 1513 2894 1603 2894 
+Q 1959 2894 2206 2834 
+Q 2453 2775 2681 2603 
+Q 2913 2428 3036 2165 
+Q 3159 1903 3159 1481 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-35" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="84.163614" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <!-- 0.6 -->
+      <g transform="translate(33.86375 88.722677) scale(0.12 -0.12)">
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-36" x="84.863281"/>
+      </g>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#m34616a30c7" x="57.6" y="48.942883" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_18">
+      <!-- 0.7 -->
+      <g transform="translate(34.14875 53.501946) scale(0.12 -0.12)">
+       <defs>
+        <path id="Tahoma-37" d="M 3263 3956 
+L 1250 0 
+L 584 0 
+L 2716 4106 
+L 309 4106 
+L 309 4653 
+L 3263 4653 
+L 3263 3956 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#Tahoma-30"/>
+       <use xlink:href="#Tahoma-2e" x="54.589844"/>
+       <use xlink:href="#Tahoma-37" x="82.488281"/>
+      </g>
+     </g>
+    </g>
+    <g id="text_19">
+     <!-- $c(\nu)$ -->
+     <g transform="translate(26.86375 184.788) rotate(-90) scale(0.12 -0.12)">
+      <defs>
+       <path id="Cmmi10-63" d="M 750 763 
+Q 750 484 892 290 
+Q 1034 97 1300 97 
+Q 1681 97 2032 272 
+Q 2384 447 2606 756 
+Q 2625 775 2656 775 
+Q 2688 775 2720 739 
+Q 2753 703 2753 672 
+Q 2753 647 2741 634 
+Q 2506 306 2109 117 
+Q 1713 -72 1288 -72 
+Q 981 -72 747 73 
+Q 513 219 384 462 
+Q 256 706 256 1013 
+Q 256 1444 497 1869 
+Q 738 2294 1138 2561 
+Q 1538 2828 1978 2828 
+Q 2266 2828 2495 2689 
+Q 2725 2550 2725 2278 
+Q 2725 2103 2623 1979 
+Q 2522 1856 2350 1856 
+Q 2247 1856 2176 1920 
+Q 2106 1984 2106 2088 
+Q 2106 2238 2215 2344 
+Q 2325 2450 2472 2450 
+L 2484 2450 
+Q 2409 2559 2267 2611 
+Q 2125 2663 1972 2663 
+Q 1597 2663 1315 2342 
+Q 1034 2022 892 1576 
+Q 750 1131 750 763 
+z
+" transform="scale(0.015625)"/>
+       <path id="Cmr10-28" d="M 1984 -1588 
+Q 1628 -1306 1370 -942 
+Q 1113 -578 948 -165 
+Q 784 247 703 697 
+Q 622 1147 622 1600 
+Q 622 2059 703 2509 
+Q 784 2959 951 3375 
+Q 1119 3791 1378 4153 
+Q 1638 4516 1984 4788 
+Q 1984 4800 2016 4800 
+L 2075 4800 
+Q 2094 4800 2109 4783 
+Q 2125 4766 2125 4744 
+Q 2125 4716 2113 4703 
+Q 1800 4397 1592 4047 
+Q 1384 3697 1257 3301 
+Q 1131 2906 1075 2482 
+Q 1019 2059 1019 1600 
+Q 1019 -434 2106 -1491 
+Q 2125 -1509 2125 -1544 
+Q 2125 -1559 2108 -1579 
+Q 2091 -1600 2075 -1600 
+L 2016 -1600 
+Q 1984 -1600 1984 -1588 
+z
+" transform="scale(0.015625)"/>
+       <path id="Cmr10-29" d="M 416 -1600 
+Q 359 -1600 359 -1544 
+Q 359 -1516 372 -1503 
+Q 1466 -434 1466 1600 
+Q 1466 3634 384 4691 
+Q 359 4706 359 4744 
+Q 359 4766 376 4783 
+Q 394 4800 416 4800 
+L 475 4800 
+Q 494 4800 506 4788 
+Q 966 4425 1272 3906 
+Q 1578 3388 1720 2800 
+Q 1863 2213 1863 1600 
+Q 1863 1147 1786 708 
+Q 1709 269 1542 -157 
+Q 1375 -584 1119 -945 
+Q 863 -1306 506 -1588 
+Q 494 -1600 475 -1600 
+L 416 -1600 
+z
+" transform="scale(0.015625)"/>
+      </defs>
+      <use xlink:href="#Cmmi10-63"/>
+      <use xlink:href="#Cmr10-28" transform="translate(43.212891 0)"/>
+      <use xlink:href="#Cmmi10-ba" transform="translate(82.03125 0)"/>
+      <use xlink:href="#Cmr10-29" transform="translate(131.445312 0)"/>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_18">
+    <path d="M 73.832727 295.488 
+L 94.123636 270.833488 
+L 114.414545 247.904793 
+L 134.705455 226.581105 
+L 154.996364 206.750076 
+L 175.287273 188.307219 
+L 195.578182 171.155362 
+L 215.869091 155.204135 
+L 236.16 140.369494 
+L 256.450909 126.573278 
+L 276.741818 113.742797 
+L 297.032727 101.810449 
+L 317.323636 90.713366 
+L 337.614545 80.393079 
+L 357.905455 70.795212 
+L 378.196364 61.869195 
+L 398.487273 53.568 
+" clip-path="url(#p258c4a5e54)" style="fill: none; stroke: #1f77b4; stroke-width: 1.5; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_19">
+    <path d="M 73.832727 295.488 
+L 94.123636 295.488 
+L 114.414545 225.046538 
+L 134.705455 225.046538 
+L 154.996364 225.046538 
+L 175.287273 225.046538 
+L 195.578182 225.046538 
+L 215.869091 225.046538 
+L 236.16 225.046538 
+L 256.450909 225.046538 
+L 276.741818 225.046538 
+L 297.032727 225.046538 
+L 317.323636 225.046538 
+L 337.614545 225.046538 
+L 357.905455 225.046538 
+L 378.196364 225.046538 
+L 398.487273 225.046538 
+" clip-path="url(#p258c4a5e54)" style="fill: none; stroke: #ff7f0e; stroke-width: 1.5; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 57.6 307.584 
+L 57.6 41.472 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 414.72 307.584 
+L 414.72 41.472 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 57.6 307.584 
+L 414.72 307.584 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 57.6 41.472 
+L 414.72 41.472 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p258c4a5e54">
+   <rect x="57.6" y="41.472" width="357.12" height="266.112"/>
+  </clipPath>
+ </defs>
+</svg>
