@@ -78,10 +78,11 @@ def generate_hypergraph_bipartite_edge_list(N_groups, N_inds, p_dist, g_dist,see
 
     for i in range(1, N_groups + 1):
         p_n = p_dist.rvs()  # select the number of chairs in clique i
-        p_n = int(p_n if len(chairs) + p_n <= len(butts) else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
+        #p_n = int(p_n if len(chairs) + p_n <= len(butts) else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
+        p_n = int(p_n if i < N_groups else len(butts) - len(chairs))  # pull a random length or select a length to make the two lists equal if we are bout to go over
         print(p_n)
         chairs.extend([i for _ in range(int(p_n))])  # add p_n chairs belonging to clique i
-        chairs.extend([chairs[-1] for i in range(len(butts) - len(chairs))])
+        #chairs.extend([chairs[-1] for i in range(len(butts) - len(chairs))])
     chairs = [chair + N_inds for chair in chairs]
 
     # shuffle the lists
