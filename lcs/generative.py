@@ -123,3 +123,31 @@ def clustered_unipartite(n_groups, n_ind, my_p_dist, my_g_dist, **kwargs):
     B = bipartite_graph(edge_list)
     U = nx.projected_graph(B, projected_nodes)  # create unipartite projection
     return nx.adjacency_matrix(U).todense()
+
+
+def truncated_power_law_configuration(n, x_min, x_max, r, seed=None):
+    """
+    Generates a bipartite graph with a truncated power-law degree distribution.
+
+    Parameters:
+    - n (int): Number of nodes in the graph.
+    - x_min (int): Minimum degree value.
+    - x_max (int): Maximum degree value.
+    - r (float): Power-law exponent.
+    - seed (int, optional): Seed for the random number generator.
+
+    Returns:
+    - G (networkx.Graph): Graph with the specified degree distribution.
+    """
+
+    if seed is not None:
+        random.seed(seed)
+
+    degree_sequence = np.round(power_law(n, x_min, x_max, r)).astype(int)
+    if np.sum(degree_sequence) % 2 == 1:
+        degree_sequence = np.append(degree_sequence, 1)
+
+    G = nx.configuration_model(degree_sequence)
+    G = nx.Graph(G)
+    G.remove_edges_from(nx.selfloop_edges(G))
+    return G
