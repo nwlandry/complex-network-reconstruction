@@ -1,62 +1,57 @@
 import json
+import multiprocessing as mp
 import os
 
 import numpy as np
 
 from lcs import *
 
-plist = set()
-clist = set()
-rlist = set()
-beta = []
-frac = []
-
-
 data_dir = "Data/watts-strogatz/"
 
-for f in os.listdir(data_dir):
-    d = f.split(".json")[0].split("_")
-    try:
-        p = float(d[0])
-        c = int(d[1])
-        r = int(d[2])
-    except:
-        p = float(d[0] + "-" + d[1])
-        c = int(d[2])
+
+def collect_parameters(dir):
+    plist = set()
+    blist = set()
+    clist = set()
+    rlist = set()
+
+    for f in os.listdir(dir):
+        d = f.split(".json")[0].split("_")
+
+        c = int(d[0])
+        b = float(d[1])
+        p = float(d[2])
         r = int(d[3])
 
-    plist.add(p)
-    clist.add(c)
-    rlist.add(r)
+        plist.add(p)
+        blist.add(b)
+        clist.add(c)
+        rlist.add(r)
 
-clist = sorted(clist)
-plist = sorted(plist)
-rlist = sorted(rlist)
+    clist = sorted(clist)
+    blist = sorted(blist)
+    plist = sorted(plist)
+    rlist = sorted(rlist)
 
-c_dict = {c: i for i, c in enumerate(clist)}
-p_dict = {p: i for i, p in enumerate(plist)}
-r_dict = {r: i for i, r in enumerate(rlist)}
+    c_dict = {c: i for i, c in enumerate(clist)}
+    b_dict = {b: i for i, b in enumerate(blist)}
+    p_dict = {p: i for i, p in enumerate(plist)}
+    r_dict = {r: i for i, r in enumerate(rlist)}
+
+    return c_dict, b_dict, p_dict, r_dict
 
 
-ps = np.zeros((len(clist), len(plist), len(rlist)))
-sps = np.zeros((len(clist), len(plist), len(rlist)))
-
-for f in os.listdir(data_dir):
-    d = f.split(".json")[0].split("_")
-    try:
-        p = float(d[0])
-        c = int(d[1])
-        r = int(d[2])
-    except:
-        p = float(d[0] + "-" + d[1])
-        c = int(d[2])
-        r = int(d[3])
+def get_metrics(fname, i, j, k, l):
+    d = fname.split(".json")[0].split("_")
+    c = int(d[0])
+    b = float(d[1])
+    p = float(d[2])
+    r = int(d[3])
 
     i = c_dict[c]
-    j = p_dict[p]
-    k = r_dict[r]
-
-    fname = os.path.join(data_dir, f)
+    j = b_dict[b]
+    k = p_dict[p]
+    l = r_dict[r]
 
     with open(fname, "r") as file:
         data = json.loads(file.read())
@@ -64,13 +59,47 @@ for f in os.listdir(data_dir):
     A = np.array(data["A"])
     samples = np.array(data["samples"])
 
-    ps[i, j, k] = posterior_similarity(samples, A)
-    sps[i, j, k] = samplewise_posterior_similarity(samples, A)
+    ps = posterior_similarity(samples, A)
+    sps = samplewise_posterior_similarity(samples, A)
+    fc = fraction_of_correct_entries(samples, A)
+    print((i, j, k, l), flush=True)
+    
+    return i, j, k, l, ps, sps, fc
+
+
+# get number of available cores
+n_processes = len(os.sched_getaffinity(0))
+
+c_dict, b_dict, p_dict, r_dict = collect_parameters(data_dir)
+
+n_c = len(c_dict)
+n_b = len(b_dict)
+n_p = len(p_dict)
+n_r = len(r_dict)
+
+ps = np.zeros((n_c, n_b, n_p, n_r))
+sps = np.zeros((n_c, n_b, n_p, n_r))
+fce = np.zeros((n_c, n_b, n_p, n_r))
+
+arglist = []
+for f in os.listdir(data_dir):
+    fname = os.path.join(data_dir, f)
+    arglist.append((fname, c_dict, b_dict, p_dict, r_dict))
+
+with mp.Pool(processes=n_processes) as pool:
+    data = pool.starmap(get_metrics, arglist)
+
+for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
+    ps[i, j, k, l] = pos_sim
+    sps[i, j, k, l] = s_pos_sim
+    fce[i, j, k, l] = frac_corr
 
 data = {}
-data["p"] = plist
+data["beta"] = list(b_dict.values())
+data["p"] = list(p_dict.values())
 data["sps"] = sps.tolist()
 data["ps"] = ps.tolist()
+data["fce"] = fce.tolist()
 datastring = json.dumps(data)
 
 with open("Data/watts-strogatz.json", "w") as output_file:

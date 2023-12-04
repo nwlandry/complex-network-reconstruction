@@ -1,11 +1,11 @@
+import json
 import random
 
 import numpy as np
-import json
 
 from .contagion import *
-from .inference import *
 from .generative import erdos_renyi
+from .inference import *
 
 
 def single_inference(

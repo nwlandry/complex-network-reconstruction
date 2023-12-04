@@ -6,7 +6,6 @@ import numpy as np
 
 from lcs import *
 
-
 data_dir = "Data/watts-strogatz"
 os.makedirs(data_dir, exist_ok=True)
 

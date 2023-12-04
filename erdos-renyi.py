@@ -6,7 +6,6 @@ import numpy as np
 
 from lcs import *
 
-
 data_dir = "Data/erdos-renyi"
 os.makedirs(data_dir, exist_ok=True)
 
