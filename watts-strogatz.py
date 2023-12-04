@@ -27,6 +27,7 @@ n_p = 33
 n_b = 33
 
 n = 100
+k = 6
 p_list = np.logspace(-6, 0, 49)
 beta_list = np.linspace(0.0, 1.0, n_b)
 rho0 = 1.0
@@ -48,7 +49,7 @@ for i, cf in enumerate(cfs):
         c = cf(np.arange(n), b)
         for p in p_list:
             for r in range(realizations):
-                A = watts_strogatz(n, p)
+                A = watts_strogatz(n, k, p)
                 arglist.append(
                     (
                         f"{data_dir}/{i}_{b}_{p}_{r}",
