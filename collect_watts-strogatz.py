@@ -41,8 +41,9 @@ def collect_parameters(dir):
     return c_dict, b_dict, p_dict, r_dict
 
 
-def get_metrics(fname, i, j, k, l):
-    d = fname.split(".json")[0].split("_")
+def get_metrics(f, dir, i, j, k, l):
+    fname = os.path.join(dir, f)
+    d = f.split(".json")[0].split("_")
     c = int(d[0])
     b = float(d[1])
     p = float(d[2])
@@ -63,7 +64,7 @@ def get_metrics(fname, i, j, k, l):
     sps = samplewise_posterior_similarity(samples, A)
     fc = fraction_of_correct_entries(samples, A)
     print((i, j, k, l), flush=True)
-    
+
     return i, j, k, l, ps, sps, fc
 
 
@@ -83,8 +84,7 @@ fce = np.zeros((n_c, n_b, n_p, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
-    fname = os.path.join(data_dir, f)
-    arglist.append((fname, c_dict, b_dict, p_dict, r_dict))
+    arglist.append((f, data_dir, c_dict, b_dict, p_dict, r_dict))
 
 with mp.Pool(processes=n_processes) as pool:
     data = pool.starmap(get_metrics, arglist)
