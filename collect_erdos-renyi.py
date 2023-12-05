@@ -6,7 +6,7 @@ import numpy as np
 
 from lcs import *
 
-data_dir = "Data/watts-strogatz/"
+data_dir = "Data/erdos-renyi/"
 
 
 def collect_parameters(dir):
@@ -97,5 +97,5 @@ data["ps"] = ps.tolist()
 data["fce"] = fce.tolist()
 datastring = json.dumps(data)
 
-with open("Data/watts-strogatz.json", "w") as output_file:
+with open("Data/erdos-renyi.json", "w") as output_file:
     output_file.write(datastring)

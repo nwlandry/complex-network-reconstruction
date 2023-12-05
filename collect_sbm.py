@@ -6,13 +6,13 @@ import numpy as np
 
 from lcs import *
 
-data_dir = "Data/watts-strogatz/"
+data_dir = "Data/sbm/"
 
 
 def collect_parameters(dir):
     clist = set()
     blist = set()
-    plist = set()
+    elist = set()
     rlist = set()
 
     for f in os.listdir(dir):
@@ -20,33 +20,33 @@ def collect_parameters(dir):
 
         c = int(d[0])
         b = float(d[1])
-        p = float(d[2])
+        e = float(d[2])
         r = int(d[3])
 
         clist.add(c)
         blist.add(b)
-        plist.add(p)
+        elist.add(e)
         rlist.add(r)
 
     c_dict = {c: i for i, c in enumerate(sorted(clist))}
     b_dict = {b: i for i, b in enumerate(sorted(blist))}
-    p_dict = {p: i for i, p in enumerate(sorted(plist))}
+    e_dict = {e: i for i, e in enumerate(sorted(elist))}
     r_dict = {r: i for i, r in enumerate(sorted(rlist))}
 
-    return c_dict, b_dict, p_dict, r_dict
+    return c_dict, b_dict, e_dict, r_dict
 
 
-def get_metrics(f, dir, c_dict, b_dict, p_dict, r_dict):
+def get_metrics(f, dir, c_dict, b_dict, e_dict, r_dict):
     fname = os.path.join(dir, f)
     d = f.split(".json")[0].split("_")
     c = int(d[0])
     b = float(d[1])
-    p = float(d[2])
+    e = float(d[2])
     r = int(d[3])
 
     i = c_dict[c]
     j = b_dict[b]
-    k = p_dict[p]
+    k = e_dict[e]
     l = r_dict[r]
 
     with open(fname, "r") as file:
@@ -66,20 +66,20 @@ def get_metrics(f, dir, c_dict, b_dict, p_dict, r_dict):
 # get number of available cores
 n_processes = len(os.sched_getaffinity(0))
 
-c_dict, b_dict, p_dict, r_dict = collect_parameters(data_dir)
+c_dict, b_dict, e_dict, r_dict = collect_parameters(data_dir)
 
 n_c = len(c_dict)
 n_b = len(b_dict)
-n_p = len(p_dict)
+n_e = len(e_dict)
 n_r = len(r_dict)
 
-ps = np.zeros((n_c, n_b, n_p, n_r))
-sps = np.zeros((n_c, n_b, n_p, n_r))
-fce = np.zeros((n_c, n_b, n_p, n_r))
+ps = np.zeros((n_c, n_b, n_e, n_r))
+sps = np.zeros((n_c, n_b, n_e, n_r))
+fce = np.zeros((n_c, n_b, n_e, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
-    arglist.append((f, data_dir, c_dict, b_dict, p_dict, r_dict))
+    arglist.append((f, data_dir, c_dict, b_dict, e_dict, r_dict))
 
 with mp.Pool(processes=n_processes) as pool:
     data = pool.starmap(get_metrics, arglist)
@@ -91,11 +91,11 @@ for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
 
 data = {}
 data["beta"] = list(b_dict.values())
-data["p"] = list(p_dict.values())
+data["epsilon"] = list(e_dict.values())
 data["sps"] = sps.tolist()
 data["ps"] = ps.tolist()
 data["fce"] = fce.tolist()
 datastring = json.dumps(data)
 
-with open("Data/watts-strogatz.json", "w") as output_file:
+with open("Data/sbm.json", "w") as output_file:
     output_file.write(datastring)
