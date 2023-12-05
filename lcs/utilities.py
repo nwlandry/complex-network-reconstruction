@@ -2,6 +2,7 @@ import json
 import random
 
 import numpy as np
+from scipy.stats import rv_discrete
 
 from .contagion import *
 from .generative import erdos_renyi
@@ -137,6 +138,10 @@ def mean_power_law(minval, maxval, r):
         num = (minval ** (2 - r) - maxval ** (2 - r)) / (r - 2)
         den = (minval ** (1 - r) - maxval ** (1 - r)) / (r - 1)
         return num / den
+
+
+def delta_dist(x_prime):
+    return rv_discrete(name="custom", values=([x_prime], [1.0]))
 
 
 def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):

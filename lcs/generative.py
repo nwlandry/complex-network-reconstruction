@@ -2,7 +2,6 @@ import random
 
 import networkx as nx
 import numpy as np
-from scipy.stats import rv_discrete
 
 
 def zkc(format="adjacency"):
@@ -81,10 +80,6 @@ def sbm(n, k, epsilon, seed=None):
     G = nx.planted_partition_graph(2, int(n / 2), p_in, p_out, seed=seed)
     G.add_nodes_from(range(n))
     return nx.adjacency_matrix(G).todense()
-
-
-def delta_dist(x_prime):
-    return rv_discrete(name="custom", values=([x_prime], [1.0]))
 
 
 def generate_bipartite_edge_list(n_groups, n_inds, p_dist, g_dist, seed=None):
