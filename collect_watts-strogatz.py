@@ -28,15 +28,10 @@ def collect_parameters(dir):
         clist.add(c)
         rlist.add(r)
 
-    clist = sorted(clist)
-    blist = sorted(blist)
-    plist = sorted(plist)
-    rlist = sorted(rlist)
-
-    c_dict = {c: i for i, c in enumerate(clist)}
-    b_dict = {b: i for i, b in enumerate(blist)}
-    p_dict = {p: i for i, p in enumerate(plist)}
-    r_dict = {r: i for i, r in enumerate(rlist)}
+    c_dict = {c: i for i, c in enumerate(sorted(clist))}
+    b_dict = {b: i for i, b in enumerate(sorted(blist))}
+    p_dict = {p: i for i, p in enumerate(sorted(plist))}
+    r_dict = {r: i for i, r in enumerate(sorted(rlist))}
 
     return c_dict, b_dict, p_dict, r_dict
 
