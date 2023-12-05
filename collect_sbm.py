@@ -90,8 +90,8 @@ for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
     fce[i, j, k, l] = frac_corr
 
 data = {}
-data["beta"] = list(b_dict.values())
-data["epsilon"] = list(e_dict.values())
+data["beta"] = list(b_dict)
+data["epsilon"] = list(e_dict)
 data["sps"] = sps.tolist()
 data["ps"] = ps.tolist()
 data["fce"] = fce.tolist()
