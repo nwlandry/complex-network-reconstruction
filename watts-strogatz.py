@@ -1,8 +1,7 @@
-import json
-import multiprocessing as mp
 import os
 
 import numpy as np
+from joblib import Parallel, delayed
 
 from lcs import *
 
@@ -65,6 +64,4 @@ for i, cf in enumerate(cfs):
                         skip,
                     )
                 )
-
-with mp.Pool(processes=n_processes) as pool:
-    pool.starmap(single_inference, arglist)
+Parallel(n_jobs=n_processes)(delayed(single_inference)(*arg) for arg in arglist)

@@ -7,3 +7,4 @@ pytest
 xgi
 arviz
 seaborn
+joblib
