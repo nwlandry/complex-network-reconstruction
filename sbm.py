@@ -45,9 +45,9 @@ p_rho = np.array([1, 1])
 arglist = []
 for i, cf in enumerate(cfs):
     for b in beta_list:
-        c = cf(np.arange(n), b)
         for e in epsilon_list:
             for r in range(realizations):
+                c = cf(np.arange(n), b)
                 A = sbm(n, k, e)
                 arglist.append(
                     (
@@ -58,8 +58,8 @@ for i, cf in enumerate(cfs):
                         rho0,
                         A,
                         tmax,
-                        p_c,
-                        p_rho,
+                        p_c.copy(),
+                        p_rho.copy(),
                         nsamples,
                         burn_in,
                         skip,
