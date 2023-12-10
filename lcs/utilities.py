@@ -122,7 +122,7 @@ def power_law(n, minval, maxval, r):
     u = np.random.random(n)
     a = minval ** (1 - r)
     b = maxval ** (1 - r)
-    return (a + u * (b - a)) ** (1 / (1 - r))
+    return np.round((a + u * (b - a)) ** (1 / (1 - r))).astype(int)
 
 
 def mean_power_law(minval, maxval, r):

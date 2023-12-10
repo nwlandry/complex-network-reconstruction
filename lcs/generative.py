@@ -1,7 +1,10 @@
 import random
+from itertools import chain
 
 import networkx as nx
 import numpy as np
+
+chaini = chain.from_iterable
 
 
 def zkc(format="adjacency"):
@@ -154,3 +157,43 @@ def clustered_unipartite(n_groups, n_ind, my_p_dist, my_g_dist, **kwargs):
     B = bipartite_graph(edge_list)
     U = nx.projected_graph(B, projected_nodes)  # create unipartite projection
     return nx.adjacency_matrix(U).todense()
+
+
+def truncated_power_law_configuration(n, kmin, kmax, r, seed=None):
+    """
+    Generates a bipartite graph with a truncated power-law degree distribution.
+
+    Parameters:
+    - n (int): Number of nodes in the graph.
+    - kmin (int): Minimum degree value.
+    - kmax (int): Maximum degree value.
+    - r (float): Power-law exponent.
+    - seed (int, optional): Seed for the random number generator.
+
+    Returns:
+    - G (networkx.Graph): Graph with the specified degree distribution.
+    """
+    from .utilities import power_law
+
+    if seed is not None:
+        random.seed(seed)
+
+    degree_sequence = power_law(n, kmin, kmax, r)
+    if np.sum(degree_sequence) % 2 == 1:
+        fixed = False
+        while not fixed:
+            i = random.randrange(n)
+            if degree_sequence[i] < kmax:
+                degree_sequence[i] += 1
+                fixed = True
+
+    stublist = list(chaini([i] * d for i, d in enumerate(degree_sequence)))
+
+    # algo copied from networkx
+    half = len(stublist) // 2
+    random.shuffle(stublist)
+
+    A = np.zeros((n, n), dtype=int)
+    A[stublist, stublist[half:] + stublist[:half]] = 1
+    np.fill_diagonal(A, 0)
+    return A
