@@ -139,7 +139,8 @@ def truncated_power_law_configuration(n, x_min, x_max, r, seed=None):
     Returns:
     - G (networkx.Graph): Graph with the specified degree distribution.
     """
-
+    from .utilities import power_law
+    
     if seed is not None:
         random.seed(seed)
 
