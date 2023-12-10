@@ -118,25 +118,25 @@ def degrees(A):
     return A.sum(axis=0)
 
 
-def power_law(n, minval, maxval, r):
+def power_law(n, minval, maxval, p):
     u = np.random.random(n)
-    a = minval ** (1 - r)
-    b = maxval ** (1 - r)
-    return np.round((a + u * (b - a)) ** (1 / (1 - r))).astype(int)
+    a = minval ** (1 - p)
+    b = maxval ** (1 - p)
+    return np.round((a + u * (b - a)) ** (1 / (1 - p))).astype(int)
 
 
-def mean_power_law(minval, maxval, r):
-    if r == 1:
+def mean_power_law(minval, maxval, p):
+    if p == 1:
         num = maxval - minval
         den = np.log(maxval) - np.log(minval)
         return num / den
-    elif r == 2:
+    elif p == 2:
         num = np.log(maxval) - np.log(minval)
         den = 1 / minval - 1 / maxval
         return num / den
     else:
-        num = (minval ** (2 - r) - maxval ** (2 - r)) / (r - 2)
-        den = (minval ** (1 - r) - maxval ** (1 - r)) / (r - 1)
+        num = (minval ** (2 - p) - maxval ** (2 - p)) / (p - 2)
+        den = (minval ** (1 - p) - maxval ** (1 - p)) / (p - 1)
         return num / den
 
 
