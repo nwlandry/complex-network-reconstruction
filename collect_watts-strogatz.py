@@ -84,7 +84,6 @@ n_r = len(r_dict)
 ps = np.zeros((n_c, n_b, n_p, n_r))
 sps = np.zeros((n_c, n_b, n_p, n_r))
 fce = np.zeros((n_c, n_b, n_p, n_r))
-cmat = np.zeros((n_c, n_b, n_p, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
@@ -92,11 +91,10 @@ for f in os.listdir(data_dir):
 
 data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
-for i, j, k, l, pos_sim, s_pos_sim, frac_corr, c in data:
+for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
     ps[i, j, k, l] = pos_sim
     sps[i, j, k, l] = s_pos_sim
     fce[i, j, k, l] = frac_corr
-    cmat[i, j, k, l] = c
 
 data = {}
 data["beta"] = list(b_dict)
@@ -104,7 +102,6 @@ data["p"] = list(p_dict)
 data["sps"] = sps.tolist()
 data["ps"] = ps.tolist()
 data["fce"] = fce.tolist()
-data["c"] = cmat.tolist()
 datastring = json.dumps(data)
 
 with open("Data/watts-strogatz.json", "w") as output_file:
