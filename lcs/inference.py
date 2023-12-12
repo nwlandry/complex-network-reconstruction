@@ -210,13 +210,13 @@ def infer_adjacency_matrix(
         else:
             update_adjacency_matrix(i, j, A)
 
-        if return_likelihood:
-            l_vals.append(l_dynamics + l_adjacency)
         if it >= burn_in:
             if s_i >= skip:
                 samples[sample_num, :, :] = A.copy()
                 sample_num += 1
                 s_i = 1
+                if return_likelihood:
+                    l_vals.append(l_dynamics + l_adjacency)
             else:
                 s_i += 1
 
