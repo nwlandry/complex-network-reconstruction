@@ -221,5 +221,5 @@ def target_ipn(A, gamma, c, mode, rho0, tmax, realizations):
     ipn = 0
     for _ in range(realizations):
         x = contagion_process(A, gamma, c, x0, tmax=tmax)
-        ipn = infections_per_node(x, mode) / realizations
+        ipn += infections_per_node(x, mode) / realizations
     return ipn

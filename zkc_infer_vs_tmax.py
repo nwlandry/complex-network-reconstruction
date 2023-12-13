@@ -5,7 +5,7 @@ from joblib import Parallel, delayed
 
 from lcs import *
 
-data_dir = "Data/inference-vs-tmax"
+data_dir = "Data/infer_vs_tmax"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
@@ -28,7 +28,7 @@ rho0 = 1
 # MCMC parameters
 burn_in = 250000
 nsamples = 100
-skip = 1500
+skip = 2000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 
@@ -44,7 +44,8 @@ cf2 = lambda nu, b: b * (nu >= 2)
 c1 = cf1(np.arange(n), b1)
 
 ipn = target_ipn(A, gamma, c1, "max", rho0, 1000, 1000)
-b2 = fit_ipn(0.5, ipn, cf2, gamma, A, rho0, tmax, "max")
+print(f"IPN to match is {ipn}")
+b2 = fit_ipn(0.5, ipn, cf2, gamma, A, rho0, 1000, "max")
 
 c2 = cf2(np.arange(n), b2)
 
@@ -53,17 +54,17 @@ bs = [b1, b2]
 
 arglist = []
 for i, c in enumerate(cs):
-    for t in tmax:
+    for tm in tmax:
         for r in range(realizations):
             arglist.append(
                 (
-                    f"{data_dir}/{i}_{t}_{r}",
+                    f"{data_dir}/{i}_{tm}_{r}",
                     gamma,
                     c,
                     bs[i],
                     rho0,
                     A,
-                    tmax,
+                    tm,
                     p_c.copy(),
                     p_rho.copy(),
                     nsamples,
