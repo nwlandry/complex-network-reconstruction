@@ -5,7 +5,7 @@ from joblib import Parallel, delayed
 
 from lcs import *
 
-data_dir = "Data/infer_vs_tmax"
+data_dir = "Data/zkc_infer_vs_tmax"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):

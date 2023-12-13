@@ -1,11 +1,11 @@
-import multiprocessing as mp
 import os
 
 import numpy as np
+from joblib import Parallel, delayed
 
 from lcs import *
 
-data_dir = "Data/frac_vs_beta"
+data_dir = "Data/zkc_frac_vs_beta"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
@@ -45,7 +45,7 @@ for i, b in enumerate(beta):
             c = f * sc(np.arange(n), b) + (1 - f) * cc(np.arange(n), tau, b)
             arglist.append(
                 (
-                    f"Data/frac_vs_beta/{b}_{f}_{k}",
+                    f"{data_dir}/{b}_{f}_{k}",
                     gamma,
                     c,
                     rho0,
@@ -59,5 +59,4 @@ for i, b in enumerate(beta):
                 )
             )
 
-with mp.Pool(processes=n_processes) as pool:
-    pool.starmap(single_inference, arglist)
+Parallel(n_jobs=n_processes)(delayed(single_inference)(*arg) for arg in arglist)

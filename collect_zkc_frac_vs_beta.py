@@ -6,7 +6,7 @@ from joblib import Parallel, delayed
 
 from lcs import *
 
-data_dir = "Data/frac_vs_beta/"
+data_dir = "Data/zkc_frac_vs_beta/"
 param_separator = "-"
 
 
@@ -91,5 +91,5 @@ data["fce"] = fce.tolist()
 
 datastring = json.dumps(data)
 
-with open("Data/frac_vs_beta.json", "w") as output_file:
+with open("Data/zkc_frac_vs_beta.json", "w") as output_file:
     output_file.write(datastring)
