@@ -1,8 +1,8 @@
 import json
-import multiprocessing as mp
 import os
 
 import numpy as np
+from joblib import Parallel, delayed
 
 from lcs import *
 
@@ -81,8 +81,7 @@ arglist = []
 for f in os.listdir(data_dir):
     arglist.append((f, data_dir, c_dict, b_dict, p_dict, r_dict))
 
-with mp.Pool(processes=n_processes) as pool:
-    data = pool.starmap(get_metrics, arglist)
+data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
 for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
     ps[i, j, k, l] = pos_sim

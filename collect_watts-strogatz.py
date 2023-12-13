@@ -1,8 +1,8 @@
 import json
-import multiprocessing as mp
 import os
 
 import numpy as np
+from joblib import Parallel, delayed
 
 from lcs import *
 
@@ -60,7 +60,15 @@ def get_metrics(f, dir, c_dict, b_dict, p_dict, r_dict):
     fc = fraction_of_correct_entries(samples, A)
     print((i, j, k, l), flush=True)
 
-    return i, j, k, l, ps, sps, fc
+    c = np.array(data["c"])
+    if np.all(c[:3] == 0):
+        ctype = 2
+    elif np.all(c[:2] == 0):
+        ctype = 1
+    else:
+        ctype = 0
+
+    return i, j, k, l, ps, sps, fc, ctype
 
 
 # get number of available cores
@@ -81,8 +89,7 @@ arglist = []
 for f in os.listdir(data_dir):
     arglist.append((f, data_dir, c_dict, b_dict, p_dict, r_dict))
 
-with mp.Pool(processes=n_processes) as pool:
-    data = pool.starmap(get_metrics, arglist)
+data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
 for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
     ps[i, j, k, l] = pos_sim

@@ -1,8 +1,7 @@
-import json
-import multiprocessing as mp
 import os
 
 import numpy as np
+from joblib import Parallel, delayed
 
 from lcs import *
 
@@ -25,7 +24,7 @@ realizations = 10
 n_p = 33
 n_b = 33
 
-n = 100
+n = 50
 k = 6
 p_list = np.logspace(-6, 0, 49)
 beta_list = np.linspace(0.0, 1.0, n_b)
@@ -35,7 +34,7 @@ gamma = 0.1
 tmax = 1000
 
 # MCMC parameters
-burn_in = 100000
+burn_in = 250000
 nsamples = 100
 skip = 1500
 p_c = np.ones((2, n))
@@ -45,9 +44,9 @@ p_rho = np.array([1, 1])
 arglist = []
 for i, cf in enumerate(cfs):
     for b in beta_list:
-        c = cf(np.arange(n), b)
         for p in p_list:
             for r in range(realizations):
+                c = cf(np.arange(n), b)
                 A = watts_strogatz(n, k, p)
                 arglist.append(
                     (
@@ -58,13 +57,11 @@ for i, cf in enumerate(cfs):
                         rho0,
                         A,
                         tmax,
-                        p_c,
-                        p_rho,
+                        p_c.copy(),
+                        p_rho.copy(),
                         nsamples,
                         burn_in,
                         skip,
                     )
                 )
-
-with mp.Pool(processes=n_processes) as pool:
-    pool.starmap(single_inference, arglist)
+Parallel(n_jobs=n_processes)(delayed(single_inference)(*arg) for arg in arglist)

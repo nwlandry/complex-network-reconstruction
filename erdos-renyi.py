@@ -1,8 +1,7 @@
-import json
-import multiprocessing as mp
 import os
 
 import numpy as np
+from joblib import Parallel, delayed
 
 from lcs import *
 
@@ -45,9 +44,9 @@ p_rho = np.array([1, 1])
 arglist = []
 for i, cf in enumerate(cfs):
     for b in beta_list:
-        c = cf(np.arange(n), b)
         for p in p_list:
             for r in range(realizations):
+                c = cf(np.arange(n), b)
                 A = erdos_renyi(n, p)
                 arglist.append(
                     (
@@ -58,13 +57,12 @@ for i, cf in enumerate(cfs):
                         rho0,
                         A,
                         tmax,
-                        p_c,
-                        p_rho,
+                        p_c.copy(),
+                        p_rho.copy(),
                         nsamples,
                         burn_in,
                         skip,
                     )
                 )
 
-with mp.Pool(processes=n_processes) as pool:
-    pool.starmap(single_inference, arglist)
+Parallel(n_jobs=n_processes)(delayed(single_inference)(*arg) for arg in arglist)
