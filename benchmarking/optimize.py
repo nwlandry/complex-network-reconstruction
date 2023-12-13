@@ -1,16 +1,9 @@
 # %%
-import cProfile
-import pdb
-import pstats
 import time
 
-import matplotlib.pyplot as plt
-import networkx as nx
 import numpy as np
-from numpy.linalg import eigh
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import eigs
-from scipy.stats import beta
 
 from lcs import *
 
@@ -211,7 +204,7 @@ print("Time taken for count_all_infection_events2:", time.time() - start_time)
 
 # %%
 
-from numba import njit, prange, types
+from numba import prange
 
 
 def count_mask(array, boolean_mask, my_axis):

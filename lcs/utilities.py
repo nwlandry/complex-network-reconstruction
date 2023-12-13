@@ -118,27 +118,108 @@ def degrees(A):
     return A.sum(axis=0)
 
 
-def power_law(n, minval, maxval, r):
+def power_law(n, minval, maxval, alpha):
     u = np.random.random(n)
-    a = minval ** (1 - r)
-    b = maxval ** (1 - r)
-    return (a + u * (b - a)) ** (1 / (1 - r))
+    a = minval ** (1 - alpha)
+    b = maxval ** (1 - alpha)
+    return np.round((a + u * (b - a)) ** (1 / (1 - alpha))).astype(int)
 
 
-def mean_power_law(minval, maxval, r):
-    if r == 1:
+def mean_power_law(minval, maxval, alpha):
+    if alpha == 1:
         num = maxval - minval
         den = np.log(maxval) - np.log(minval)
         return num / den
-    elif r == 2:
+    elif alpha == 2:
         num = np.log(maxval) - np.log(minval)
         den = 1 / minval - 1 / maxval
         return num / den
     else:
-        num = (minval ** (2 - r) - maxval ** (2 - r)) / (r - 2)
-        den = (minval ** (1 - r) - maxval ** (1 - r)) / (r - 1)
+        num = (minval ** (2 - alpha) - maxval ** (2 - alpha)) / (alpha - 2)
+        den = (minval ** (1 - alpha) - maxval ** (1 - alpha)) / (alpha - 1)
         return num / den
 
 
 def delta_dist(x_prime):
     return rv_discrete(name="custom", values=([x_prime], [1.0]))
+
+
+def robbins_monro_solve(
+    f,
+    x0,
+    a=0.02,
+    alpha=1,
+    max_iter=100,
+    tol=1e-2,
+    loss="function",
+    verbose=False,
+    return_values=False,
+):
+    x = x0
+    val = f(x0)
+
+    xvec = [x]
+    fvec = [val]
+    diff = np.inf
+    it = 1
+    while diff > tol and it <= max_iter:
+        a_n = a * it**-alpha
+        x -= a_n * val
+        x = np.clip(x, 0, 1)
+        val = f(x)
+        xvec.append(x)  # save results
+        fvec.append(val)
+        match loss:
+            case "arg":
+                diff = abs(x - xvec[it - 1])
+            case "function":
+                diff = abs(val)
+            case _:
+                raise Exception("Invalid loss type!")
+
+        if verbose:
+            print((it, x, diff), flush=True)
+        it += 1
+    if return_values:
+        return x, xvec, fvec
+    else:
+        return x
+
+
+def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
+    n = A.shape[0]
+
+    x0 = np.zeros(n)
+    x0[list(random.sample(range(n), int(rho0 * n)))] = 1
+
+    c = cf(np.arange(n), b)
+
+    ipn = 0
+    for _ in range(realizations):
+        x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
+        ipn += infections_per_node(x, mode) / realizations
+    return ipn - ipn_target
+
+
+def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 1, tmax, mode)
+    bscaled = robbins_monro_solve(f, b0, verbose=True)
+
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 10, tmax, mode)
+    bscaled = robbins_monro_solve(f, bscaled, verbose=True)
+
+    f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 100, tmax, mode)
+    bscaled = robbins_monro_solve(f, bscaled, verbose=True)
+
+    return bscaled
+
+
+def target_ipn(A, gamma, c, mode, rho0, tmax, realizations):
+    n = A.shape[0]
+    x0 = np.zeros(n)
+    x0[random.sample(range(n), int(round(rho0 * n)))] = 1
+    ipn = 0
+    for _ in range(realizations):
+        x = contagion_process(A, gamma, c, x0, tmax=tmax)
+        ipn += infections_per_node(x, mode) / realizations
+    return ipn
