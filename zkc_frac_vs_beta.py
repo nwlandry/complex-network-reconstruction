@@ -22,7 +22,7 @@ nb = 33
 # MCMC parameters
 burn_in = 100000
 nsamples = 1000
-skip = 2000
+skip = 10000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 

@@ -32,7 +32,7 @@ beta_list = np.linspace(0.0, 1.0, n_b)
 rho0 = 1.0
 gamma = 0.1
 
-tmax = 4000
+tmax = 2000
 
 # MCMC parameters
 burn_in = 100000
