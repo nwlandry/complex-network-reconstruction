@@ -13,7 +13,7 @@ def single_inference(
 ):
     n = np.size(A, axis=0)
     x0 = np.zeros(n)
-    x0[random.sample(range(n), int(round(rho0 * n)))] = 1
+    x0[random.sample(range(n), round(rho0 * n))] = 1
 
     x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
 

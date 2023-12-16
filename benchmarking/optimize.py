@@ -297,7 +297,7 @@ def count_local_infection_events_multi(i, x, A):
     for t in prange(T - 1):
         nu = A[i].dot(x[t])
 
-        nu = int(round(nu))
+        nu = round(nu)
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
         ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
@@ -314,7 +314,7 @@ def count_local_infection_events(i, x, A):
     for t in range(T - 1):
         nu = A[i].dot(x[t])
 
-        nu = int(round(nu))
+        nu = round(nu)
         nl[nu] += x[t + 1, i] * (1 - x[t, i])
         ml[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
     return nl, ml
