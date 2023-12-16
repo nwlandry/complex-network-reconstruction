@@ -39,13 +39,13 @@ frac = np.linspace(0, 1.0, nf)
 tmax = 1000
 
 arglist = []
-for i, b in enumerate(beta):
-    for j, f in enumerate(frac):
-        for k in range(realizations):
+for f in frac:
+    for b in beta:
+        for r in range(realizations):
             c = f * sc(np.arange(n), b) + (1 - f) * cc(np.arange(n), tau, b)
             arglist.append(
                 (
-                    f"{data_dir}/{b}_{f}_{k}",
+                    f"{data_dir}/{f}_{b}_{r}",
                     gamma,
                     c,
                     rho0,
