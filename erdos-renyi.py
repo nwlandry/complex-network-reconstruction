@@ -25,18 +25,18 @@ realizations = 10
 n_p = 33
 n_b = 33
 
-n = 100
+n = 50
 p_list = np.linspace(0.0, 1.0, n_p)
 beta_list = np.linspace(0.0, 1.0, n_b)
 rho0 = 1.0
 gamma = 0.1
 
-tmax = 1000
+tmax = 4000
 
 # MCMC parameters
 burn_in = 100000
 nsamples = 100
-skip = 1500
+skip = 10000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 
