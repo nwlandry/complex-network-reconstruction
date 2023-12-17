@@ -5,18 +5,7 @@ from joblib import Parallel, delayed
 
 from lcs import *
 
-
-def gen_clustered_clique_number(n, clique_number):
-    clique_size = n // clique_number  # the number of nodes per clique
-    clique_membership = 0  # the number of cliques per node
-
-    p_dist = delta_dist(clique_size)
-    g_dist = delta_dist(clique_membership)
-    A = clustered_unipartite(clique_number, n, p_dist, g_dist)
-    return A
-
-
-data_dir = "Data/clustering"
+data_dir = "Data/clustered_network"
 os.makedirs(data_dir, exist_ok=True)
 
 for f in os.listdir(data_dir):
@@ -33,18 +22,20 @@ cf3 = lambda nu, b: b * (nu >= 3)  # complex contagion, tau=3
 cfs = [cf1, cf2, cf3]
 
 realizations = 10
-n_c = 33
+n_c = 20
 n_b = 33
 
 n = 50
-k = 6
-clique_number = np.arange(1, n_c)
+k = 2  # each node belongs to two cliques
+clique_size = np.arange(1, n_c)
 beta_list = np.linspace(0.0, 1.0, n_b)
+
+k1 = k * np.ones(n)
 
 rho0 = 1.0
 gamma = 0.1
 
-tmax = 4000
+tmax = 2000
 
 # MCMC parameters
 burn_in = 100000
@@ -58,9 +49,11 @@ arglist = []
 for i, cf in enumerate(cfs):
     for b in beta_list:
         c = cf(np.arange(n), b)
-        for s in clique_number:
+        for s in clique_size:
+            num_cliques = round(sum(k1) / s)
+            k2 = s * np.ones(num_cliques)
             for r in range(realizations):
-                A = gen_clustered_clique_number(n, clique_number)
+                A = clustered_network(k1, k2)
                 arglist.append(
                     (
                         f"{data_dir}/{i}_{b}_{s}_{r}",
