@@ -103,12 +103,12 @@ def clustered_network(k1, k2, seed=None):
     k1 = np.array(k1, dtype=int)
     k2 = np.array(k2, dtype=int)
 
-    if sum(k1) > sum(k2):
-        missing = (k1 - k2).sum()
-        k1[random.sample(range(n1), missing)] += 1
-    if sum(k1) < sum(k2):
-        missing = (k2 - k1).sum()
+    if k1.sum() > k2.sum():
+        missing = k1.sum() - k2.sum()
         k2[random.sample(range(n2), missing)] += 1
+    elif k2.sum() > k1.sum():
+        missing = k2.sum() - k1.sum()
+        k1[random.sample(range(n1), missing)] += 1
 
     stublist1 = list(chaini([i] * d for i, d in enumerate(k1)))
     stublist2 = list(chaini([i] * d for i, d in enumerate(k2)))
