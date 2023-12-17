@@ -124,7 +124,7 @@ def clustered_network(k1, k2, seed=None):
     return A
 
 
-def truncated_power_law_configuration(n, kmin, kmax, p, seed=None):
+def truncated_power_law_configuration(n, kmin, kmax, alpha, seed=None):
     """
     Generates a bipartite graph with a truncated power-law degree distribution.
 
@@ -132,7 +132,7 @@ def truncated_power_law_configuration(n, kmin, kmax, p, seed=None):
     - n (int): Number of nodes in the graph.
     - kmin (int): Minimum degree value.
     - kmax (int): Maximum degree value.
-    - p (float): Power-law exponent.
+    - alpha (float): Power-law exponent.
     - seed (int, optional): Seed for the random number generator.
 
     Returns:
@@ -143,7 +143,7 @@ def truncated_power_law_configuration(n, kmin, kmax, p, seed=None):
     if seed is not None:
         random.seed(seed)
 
-    k = power_law(n, kmin, kmax, p)
+    k = power_law(n, kmin, kmax, alpha)
     if np.sum(k) % 2 == 1:
         fixed = False
         while not fixed:
