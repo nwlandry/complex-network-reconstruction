@@ -2,6 +2,8 @@ import json
 import random
 
 import numpy as np
+from scipy.sparse import csr_array
+from scipy.sparse.csgraph import reverse_cuthill_mckee
 from scipy.stats import rv_discrete
 
 from .contagion import *
@@ -42,6 +44,14 @@ def single_inference(
 
 def to_imshow_orientation(A):
     return np.flipud(A.T)
+
+
+def prettify_matrix(A):
+    idx = reverse_cuthill_mckee(csr_array(A), symmetric_mode=True)
+    Ap = A.copy()
+    Ap = Ap[idx]
+    Ap = Ap[:, idx]
+    return Ap
 
 
 def posterior_similarity(samples, A):
