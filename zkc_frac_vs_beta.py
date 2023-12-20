@@ -48,6 +48,7 @@ for f in frac:
                     f"{data_dir}/{f}_{b}_{r}",
                     gamma,
                     c,
+                    b,
                     rho0,
                     A.copy(),
                     tmax,
