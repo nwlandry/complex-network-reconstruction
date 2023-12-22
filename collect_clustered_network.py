@@ -30,7 +30,7 @@ def collect_parameters(dir):
 
     c_dict = {c: i for i, c in enumerate(sorted(clist))}
     b_dict = {b: i for i, b in enumerate(sorted(blist))}
-    s_dict = {s: i for i, a in enumerate(sorted(slist))}
+    s_dict = {s: i for i, s in enumerate(sorted(slist))}
     r_dict = {r: i for i, r in enumerate(sorted(rlist))}
 
     return c_dict, b_dict, s_dict, r_dict
