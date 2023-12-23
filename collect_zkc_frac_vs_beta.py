@@ -7,7 +7,6 @@ from joblib import Parallel, delayed
 from lcs import *
 
 data_dir = "Data/zkc_frac_vs_beta/"
-param_separator = "-"
 
 
 def collect_parameters(dir):
@@ -16,7 +15,7 @@ def collect_parameters(dir):
     rlist = set()
 
     for f in os.listdir(dir):
-        d = f.split(".json")[0].split(param_separator)
+        d = f.split(".json")[0].split("_")
 
         b = float(d[0])
         f = float(d[1])
@@ -35,7 +34,7 @@ def collect_parameters(dir):
 
 def get_metrics(f, dir, b_dict, f_dict, r_dict):
     fname = os.path.join(dir, f)
-    d = f.split(".json")[0].split(param_separator)
+    d = f.split(".json")[0].split("_")
     b = float(d[0])
     f = float(d[1])
     r = int(d[2])
