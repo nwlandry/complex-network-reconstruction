@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2023-12-13T15:38:24.079939</dc:date>
+    <dc:date>2023-12-27T13:45:22.836081</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -30,32 +30,32 @@ z
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 103.104 307.584 
-L 369.216 307.584 
-L 369.216 41.472 
-L 103.104 41.472 
+    <path d="M 78.943294 314.84 
+L 381.856706 314.84 
+L 381.856706 11.926588 
+L 78.943294 11.926588 
 z
 " style="fill: #ffffff"/>
    </g>
-   <g clip-path="url(#p7b93275b81)">
+   <g clip-path="url(#p6e78668ed5)">
     <image xlink:href="data:image/png;base64,
-iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAABI0lEQVR4nM1Y2xaDIAxLOfz/L3cPG5xYCzi55oXpoNcERVFVFRHUoKqwc1Q1/xaRPIfHFnhe5MUlB979Xthgg3fTLnhSMW+s2Upz0rUAyKusAS9Ar3IjIF+bd6M2iKd9f4vQa2AEXwAglgzb7GdWAzAcWeGwhMDOVwaR1fJTUthVAZv8TTWz5NnCjaxbOZIwSopvEHcHkPzHXa3gIIABO+so3MgKrFXORb6rnNZwDEeOqMhRqjmiIsBBHFmyj/Ajn0eGu4/MBr/B53PNTId2Y6zRQNxX+MnwTgiBL2Y49Ox6uU8lq6rW20FB5kBmdIgdlSpzkW+tLT0t4+RaiYbWUbK3UpYnpcQCa7pk6B8H9rxieZLawf8DtI+0SPXk+8ibFifbH3cvz13fE48wAAAAAElFTkSuQmCC" id="imagee27f150e11" transform="matrix(7.852941 0 0 7.852941 103.104 40.584)" style="image-rendering:crisp-edges;image-rendering:pixelated" width="34" height="34"/>
+iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAABI0lEQVR4nM1Y2xaDIAxLOfz/L3cPG5xYCzi55oXpoNcERVFVFRHUoKqwc1Q1/xaRPIfHFnhe5MUlB979Xthgg3fTLnhSMW+s2Upz0rUAyKusAS9Ar3IjIF+bd6M2iKd9f4vQa2AEXwAglgzb7GdWAzAcWeGwhMDOVwaR1fJTUthVAZv8TTWz5NnCjaxbOZIwSopvEHcHkPzHXa3gIIABO+so3MgKrFXORb6rnNZwDEeOqMhRqjmiIsBBHFmyj/Ajn0eGu4/MBr/B53PNTId2Y6zRQNxX+MnwTgiBL2Y49Ox6uU8lq6rW20FB5kBmdIgdlSpzkW+tLT0t4+RaiYbWUbK3UpYnpcQCa7pk6B8H9rxieZLawf8DtI+0SPXk+8ibFifbH3cvz13fE48wAAAAAElFTkSuQmCC" id="image1d5765f911" transform="matrix(8.911765 0 0 8.911765 78.943294 11.84)" style="image-rendering:crisp-edges;image-rendering:pixelated" width="34" height="34"/>
    </g>
    <g id="matplotlib.axis_1">
     <g id="xtick_1">
      <g id="line2d_1">
       <defs>
-       <path id="md4e7f67ff7" d="M 0 0 
+       <path id="m46db8f646e" d="M 0 0 
 L 0 3.5 
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#md4e7f67ff7" x="107.017412" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m46db8f646e" x="83.397903" y="314.84" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_1">
       <!-- 0 -->
-      <g transform="translate(103.741787 323.702125) scale(0.12 -0.12)">
+      <g transform="translate(80.122278 330.958125) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-30" d="M 3234 2328 
 Q 3234 1075 2870 489 
@@ -94,12 +94,12 @@ z
     <g id="xtick_2">
      <g id="line2d_2">
       <g>
-       <use xlink:href="#md4e7f67ff7" x="185.285647" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m46db8f646e" x="172.490083" y="314.84" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_2">
       <!-- 10 -->
-      <g transform="translate(178.734397 323.702125) scale(0.12 -0.12)">
+      <g transform="translate(165.938833 330.958125) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-31" d="M 2975 0 
 L 706 0 
@@ -125,12 +125,12 @@ z
     <g id="xtick_3">
      <g id="line2d_3">
       <g>
-       <use xlink:href="#md4e7f67ff7" x="263.553882" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m46db8f646e" x="261.582263" y="314.84" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_3">
       <!-- 20 -->
-      <g transform="translate(257.002632 323.702125) scale(0.12 -0.12)">
+      <g transform="translate(255.031013 330.958125) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-32" d="M 3213 0 
 L 341 0 
@@ -172,12 +172,12 @@ z
     <g id="xtick_4">
      <g id="line2d_4">
       <g>
-       <use xlink:href="#md4e7f67ff7" x="341.822118" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m46db8f646e" x="350.674443" y="314.84" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_4">
       <!-- 30 -->
-      <g transform="translate(335.270868 323.702125) scale(0.12 -0.12)">
+      <g transform="translate(344.123193 330.958125) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-33" d="M 1597 4209 
 Q 1428 4209 1259 4168 
@@ -239,17 +239,17 @@ z
     <g id="ytick_1">
      <g id="line2d_5">
       <defs>
-       <path id="m13b498909d" d="M 0 0 
+       <path id="mb6c39a42a5" d="M 0 0 
 L -3.5 0 
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#m13b498909d" x="103.104" y="45.385412" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb6c39a42a5" x="78.943294" y="16.381197" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_5">
       <!-- 0 -->
-      <g transform="translate(89.55275 49.944474) scale(0.12 -0.12)">
+      <g transform="translate(65.392044 20.94026) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-30"/>
       </g>
      </g>
@@ -257,12 +257,12 @@ L -3.5 0
     <g id="ytick_2">
      <g id="line2d_6">
       <g>
-       <use xlink:href="#m13b498909d" x="103.104" y="123.653647" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb6c39a42a5" x="78.943294" y="105.473377" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_6">
       <!-- 10 -->
-      <g transform="translate(83.0015 128.21271) scale(0.12 -0.12)">
+      <g transform="translate(58.840794 110.03244) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-31"/>
        <use xlink:href="#Tahoma-30" x="54.589844"/>
       </g>
@@ -271,12 +271,12 @@ L -3.5 0
     <g id="ytick_3">
      <g id="line2d_7">
       <g>
-       <use xlink:href="#m13b498909d" x="103.104" y="201.921882" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb6c39a42a5" x="78.943294" y="194.565557" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_7">
       <!-- 20 -->
-      <g transform="translate(83.0015 206.480945) scale(0.12 -0.12)">
+      <g transform="translate(58.840794 199.12462) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-32"/>
        <use xlink:href="#Tahoma-30" x="54.589844"/>
       </g>
@@ -285,12 +285,12 @@ L -3.5 0
     <g id="ytick_4">
      <g id="line2d_8">
       <g>
-       <use xlink:href="#m13b498909d" x="103.104" y="280.190118" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb6c39a42a5" x="78.943294" y="283.657737" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_8">
       <!-- 30 -->
-      <g transform="translate(83.0015 284.74918) scale(0.12 -0.12)">
+      <g transform="translate(58.840794 288.2168) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-33"/>
        <use xlink:href="#Tahoma-30" x="54.589844"/>
       </g>
@@ -298,30 +298,30 @@ L -3.5 0
     </g>
    </g>
    <g id="patch_3">
-    <path d="M 103.104 307.584 
-L 103.104 41.472 
+    <path d="M 78.943294 314.84 
+L 78.943294 11.926588 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_4">
-    <path d="M 369.216 307.584 
-L 369.216 41.472 
+    <path d="M 381.856706 314.84 
+L 381.856706 11.926588 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_5">
-    <path d="M 103.104 307.584 
-L 369.216 307.584 
+    <path d="M 78.943294 314.84 
+L 381.856706 314.84 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_6">
-    <path d="M 103.104 41.472 
-L 369.216 41.472 
+    <path d="M 78.943294 11.926588 
+L 381.856706 11.926588 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="p7b93275b81">
-   <rect x="103.104" y="41.472" width="266.112" height="266.112"/>
+  <clipPath id="p6e78668ed5">
+   <rect x="78.943294" y="11.926588" width="302.913412" height="302.913412"/>
   </clipPath>
  </defs>
 </svg>
