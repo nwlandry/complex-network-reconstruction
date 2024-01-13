@@ -85,81 +85,46 @@ def sbm(n, k, epsilon, seed=None):
     return nx.adjacency_matrix(G).todense()
 
 
-def generate_bipartite_edge_list(n_groups, n_inds, p_dist, g_dist, seed=None):
+def clustered_network(k1, k2, seed=None):
     """
-    generate_bipartite_edge_list(): generates a hypergraph in the style of Newman's model in "Community Structure in social and biological networks"
-
     inputs:
-        n_groups: the number of groups or cliques to create
-        n_inds: the number of individuals to create(may be less than this total)
-        p_dist: The distribution of clique sizes, must be from numpy.random
-        g_dist: The distribution of number of cliques belonged to per individual
+        k1: the number of cliques to which each node belongs
+        k2: the clique sizes
         seed: seed for pseudorandom number generator
     output:
-        edge_list: the edge list for a bi-partite graph. The first n-indices represent the clique edges and the rest represent individuals
+        A : an adjacency matrix with multiedges and loops removed.
     """
-
-    # generate rng with seed
     if seed is not None:
-        rng = np.random.default_rng(seed)
-    else:
-        rng = np.random.default_rng()
+        random.seed(seed)
 
-    chairs = []
-    butts = []
+    n1 = len(k1)
+    n2 = len(k2)
 
-    # generate chairs
+    k1 = np.array(k1, dtype=int)
+    k2 = np.array(k2, dtype=int)
 
-    for i in range(1, n_inds + 1):
-        g_m = g_dist.rvs() + 1  # select the number of butts in clique i
-        butts.extend([i] * g_m)  # add g_m butts to individuals
+    if k1.sum() > k2.sum():
+        missing = k1.sum() - k2.sum()
+        k2[random.sample(range(n2), missing)] += 1
+    elif k2.sum() > k1.sum():
+        missing = k2.sum() - k1.sum()
+        k1[random.sample(range(n1), missing)] += 1
 
-    for i in range(1, n_groups + 1):
-        p_n = p_dist.rvs()  # select the number of chairs in clique i
-        p_n = int(
-            p_n if i < n_groups else len(butts) - len(chairs)
-        )  # pull a random length or select a length to make the two lists equal if we are bout to go over
-        print(p_n)
-        chairs.extend([i] * p_n)  # add p_n chairs belonging to clique i
-    chairs = [chair + n_inds for chair in chairs]
+    stublist1 = list(chaini([i] * d for i, d in enumerate(k1)))
+    stublist2 = list(chaini([i] * d for i, d in enumerate(k2)))
 
     # shuffle the lists
-    rng.shuffle(chairs)
-    rng.shuffle(butts)
+    random.shuffle(stublist1)
+    random.shuffle(stublist2)
 
-    # generate edge_list
-    edge_list = list(zip(chairs, butts))
-    edge_list = [(int(edge[0]), int(edge[1])) for edge in edge_list]
-
-    # create vertex meta_data, if the index is a clique, give it a 0, if the vertex is in individual give it a 1
-    vertex_attributes = {i: 1 if i <= max(butts) else 2 for i in set(chairs + butts)}
-
-    return edge_list, vertex_attributes
+    I = np.zeros((n1, n2))
+    I[stublist1, stublist2] = 1
+    A = I @ I.T > 0
+    np.fill_diagonal(A, 0)
+    return A
 
 
-def bipartite_graph(edge_list):
-    B = nx.Graph()
-    a = np.vstack(edge_list)
-    node_list1, node_list2 = np.unique(a[:, 1]), np.unique(a[:, 0])
-    B.add_nodes_from(node_list1, bipartite=0)
-    B.add_nodes_from(node_list2, bipartite=1)
-    B.add_edges_from(edge_list)
-    return B
-
-
-def clustered_unipartite(n_groups, n_ind, my_p_dist, my_g_dist, **kwargs):
-    edge_list, vertex_attributes = generate_bipartite_edge_list(
-        n_groups, n_ind, my_p_dist, my_g_dist
-    )
-    projected_nodes = [
-        k for k, v in vertex_attributes.items() if v == 1
-    ]  # identify ndes to project graph onto
-    B = bipartite_graph(edge_list)
-    U = nx.projected_graph(B, projected_nodes)  # create unipartite projection
-    return nx.adjacency_matrix(U).todense()
-
-
-def truncated_power_law_configuration(n, kmin, kmax, p, seed=None):
+def truncated_power_law_configuration(n, kmin, kmax, alpha, seed=None):
     """
     Generates a bipartite graph with a truncated power-law degree distribution.
 
@@ -167,7 +132,7 @@ def truncated_power_law_configuration(n, kmin, kmax, p, seed=None):
     - n (int): Number of nodes in the graph.
     - kmin (int): Minimum degree value.
     - kmax (int): Maximum degree value.
-    - p (float): Power-law exponent.
+    - alpha (float): Power-law exponent.
     - seed (int, optional): Seed for the random number generator.
 
     Returns:
@@ -178,16 +143,16 @@ def truncated_power_law_configuration(n, kmin, kmax, p, seed=None):
     if seed is not None:
         random.seed(seed)
 
-    degree_sequence = power_law(n, kmin, kmax, p)
-    if np.sum(degree_sequence) % 2 == 1:
+    k = power_law(n, kmin, kmax, alpha, seed=seed)
+    if np.sum(k) % 2 == 1:
         fixed = False
         while not fixed:
             i = random.randrange(n)
-            if degree_sequence[i] < kmax:
-                degree_sequence[i] += 1
+            if k[i] < kmax:
+                k[i] += 1
                 fixed = True
 
-    stublist = list(chaini([i] * d for i, d in enumerate(degree_sequence)))
+    stublist = list(chaini([i] * d for i, d in enumerate(k)))
 
     # algo copied from networkx
     half = len(stublist) // 2

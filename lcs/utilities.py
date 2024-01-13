@@ -2,6 +2,8 @@ import json
 import random
 
 import numpy as np
+from scipy.sparse import csr_array
+from scipy.sparse.csgraph import reverse_cuthill_mckee
 from scipy.stats import rv_discrete
 
 from .contagion import *
@@ -14,7 +16,7 @@ def single_inference(
 ):
     n = np.size(A, axis=0)
     x0 = np.zeros(n)
-    x0[random.sample(range(n), int(round(rho0 * n)))] = 1
+    x0[random.sample(range(n), round(rho0 * n))] = 1
 
     x = contagion_process(A, gamma, c, x0, tmin=0, tmax=tmax)
     p = beta(p_rho[0], p_rho[1]).rvs()
@@ -42,6 +44,14 @@ def single_inference(
 
 def to_imshow_orientation(A):
     return np.flipud(A.T)
+
+
+def prettify_matrix(A):
+    idx = reverse_cuthill_mckee(csr_array(A), symmetric_mode=True)
+    Ap = A.copy()
+    Ap = Ap[idx]
+    Ap = Ap[:, idx]
+    return Ap
 
 
 def posterior_similarity(samples, A):
@@ -104,7 +114,7 @@ def nu_distribution(x, A):
     k = A.sum(axis=0)
     nu = A @ x.T
     T, n = x.shape
-    kmax = int(round(np.max(k)))
+    kmax = round(k.max())
     mat = np.zeros((kmax + 1, kmax + 1))
     for t in range(T):
         for i in range(n):
@@ -118,7 +128,9 @@ def degrees(A):
     return A.sum(axis=0)
 
 
-def power_law(n, minval, maxval, alpha):
+def power_law(n, minval, maxval, alpha, seed=None):
+    if seed is not None:
+        np.random.seed(seed)
     u = np.random.random(n)
     a = minval ** (1 - alpha)
     b = maxval ** (1 - alpha)
@@ -217,7 +229,7 @@ def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
 def target_ipn(A, gamma, c, mode, rho0, tmax, realizations):
     n = A.shape[0]
     x0 = np.zeros(n)
-    x0[random.sample(range(n), int(round(rho0 * n)))] = 1
+    x0[random.sample(range(n), round(rho0 * n))] = 1
     ipn = 0
     for _ in range(realizations):
         x = contagion_process(A, gamma, c, x0, tmax=tmax)

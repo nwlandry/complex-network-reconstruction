@@ -537,7 +537,7 @@ def infer_dyamics_loop(x, A, p_gamma, p_c):
 
         # infection events
         for i, nu in enumerate(nus):
-            nu = int(round(nu))
+            nu = round(nu)
             a[nu] += x[t + 1, i] * (1 - x[t, i])
             b[nu] += (1 - x[t + 1, i]) * (1 - x[t, i])
 

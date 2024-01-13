@@ -15,7 +15,7 @@ n_processes = len(os.sched_getaffinity(0))
 
 n_t = 33
 tmax = np.logspace(1, 5, n_t).astype(int)
-realizations = 10
+realizations = 100
 
 A = zkc()
 n = A.shape[0]
@@ -26,9 +26,9 @@ p_rho = [1, 1]
 rho0 = 1
 
 # MCMC parameters
-burn_in = 250000
+burn_in = 100000
 nsamples = 100
-skip = 2000
+skip = 10000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 

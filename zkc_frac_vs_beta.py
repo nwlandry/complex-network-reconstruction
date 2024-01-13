@@ -22,7 +22,7 @@ nb = 33
 # MCMC parameters
 burn_in = 100000
 nsamples = 1000
-skip = 2000
+skip = 10000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 
@@ -39,15 +39,16 @@ frac = np.linspace(0, 1.0, nf)
 tmax = 1000
 
 arglist = []
-for i, b in enumerate(beta):
-    for j, f in enumerate(frac):
-        for k in range(realizations):
+for f in frac:
+    for b in beta:
+        for r in range(realizations):
             c = f * sc(np.arange(n), b) + (1 - f) * cc(np.arange(n), tau, b)
             arglist.append(
                 (
-                    f"{data_dir}/{b}_{f}_{k}",
+                    f"{data_dir}/{f}_{b}_{r}",
                     gamma,
                     c,
+                    b,
                     rho0,
                     A.copy(),
                     tmax,
