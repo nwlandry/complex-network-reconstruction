@@ -128,7 +128,9 @@ def degrees(A):
     return A.sum(axis=0)
 
 
-def power_law(n, minval, maxval, alpha):
+def power_law(n, minval, maxval, alpha, seed=None):
+    if seed is not None:
+        np.random.seed(seed)
     u = np.random.random(n)
     a = minval ** (1 - alpha)
     b = maxval ** (1 - alpha)

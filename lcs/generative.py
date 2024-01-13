@@ -143,7 +143,7 @@ def truncated_power_law_configuration(n, kmin, kmax, alpha, seed=None):
     if seed is not None:
         random.seed(seed)
 
-    k = power_law(n, kmin, kmax, alpha)
+    k = power_law(n, kmin, kmax, alpha, seed=seed)
     if np.sum(k) % 2 == 1:
         fixed = False
         while not fixed:
