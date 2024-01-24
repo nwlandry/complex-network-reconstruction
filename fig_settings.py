@@ -11,6 +11,18 @@ import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
 
 
+import matplotlib as mpl
+import matplotlib.colors as mcolors
+from cycler import cycler
+
+
+ 
+#color styling
+pallete = ["#355C7D","#F67280","#F8B195","#C06C84","#6C5B7B"]
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color= pallete)
+cmap = mcolors.LinearSegmentedColormap.from_list('my_cmap',[pallete[0],pallete[1]])
+
+
 def set_fonts(extra_params={}):
     params = {
         "font.family": "Sans-Serif",
@@ -51,6 +63,10 @@ def fig_size(frac_width, frac_height, n_cols=1, n_rows=1):
         height = (page_height - tb_margins - mid_marg_height) * frac_height
 
     return (width, height)
+
+
+
+
 
 
 def get_formats():
