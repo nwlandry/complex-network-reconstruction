@@ -6,11 +6,11 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2024-01-04T16:51:47.322201</dc:date>
+    <dc:date>2024-01-23T21:43:37.221247</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
-      <dc:title>Matplotlib v3.6.2, https://matplotlib.org/</dc:title>
+      <dc:title>Matplotlib v3.7.2, https://matplotlib.org/</dc:title>
      </cc:Agent>
     </dc:creator>
    </cc:Work>
@@ -30,32 +30,32 @@ z
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path d="M 30.535 205.2 
-L 204.975 205.2 
-L 204.975 30.76 
-L 30.535 30.76 
+    <path d="M 30.4 204.3 
+L 205.2 204.3 
+L 205.2 29.5 
+L 30.4 29.5 
 z
 " style="fill: #ffffff"/>
    </g>
-   <g clip-path="url(#p6d293423df)">
+   <g clip-path="url(#p261d7db61a)">
     <image xlink:href="data:image/png;base64,
-iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAABI0lEQVR4nM1Y2xaDIAxLOfz/L3cPG5xYCzi55oXpoNcERVFVFRHUoKqwc1Q1/xaRPIfHFnhe5MUlB979Xthgg3fTLnhSMW+s2Upz0rUAyKusAS9Ar3IjIF+bd6M2iKd9f4vQa2AEXwAglgzb7GdWAzAcWeGwhMDOVwaR1fJTUthVAZv8TTWz5NnCjaxbOZIwSopvEHcHkPzHXa3gIIABO+so3MgKrFXORb6rnNZwDEeOqMhRqjmiIsBBHFmyj/Ajn0eGu4/MBr/B53PNTId2Y6zRQNxX+MnwTgiBL2Y49Ox6uU8lq6rW20FB5kBmdIgdlSpzkW+tLT0t4+RaiYbWUbK3UpYnpcQCa7pk6B8H9rxieZLawf8DtI+0SPXk+8ibFifbH3cvz13fE48wAAAAAElFTkSuQmCC" id="imageeb0b77c573" transform="matrix(5.147059 0 0 5.147059 30.535 30.2)" style="image-rendering:crisp-edges;image-rendering:pixelated" width="34" height="34"/>
+iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAABI0lEQVR4nM1Y2xaDIAxLOfz/L3cPG5xYCzi55oXpoNcERVFVFRHUoKqwc1Q1/xaRPIfHFnhe5MUlB979Xthgg3fTLnhSMW+s2Upz0rUAyKusAS9Ar3IjIF+bd6M2iKd9f4vQa2AEXwAglgzb7GdWAzAcWeGwhMDOVwaR1fJTUthVAZv8TTWz5NnCjaxbOZIwSopvEHcHkPzHXa3gIIABO+so3MgKrFXORb6rnNZwDEeOqMhRqjmiIsBBHFmyj/Ajn0eGu4/MBr/B53PNTId2Y6zRQNxX+MnwTgiBL2Y49Ox6uU8lq6rW20FB5kBmdIgdlSpzkW+tLT0t4+RaiYbWUbK3UpYnpcQCa7pk6B8H9rxieZLawf8DtI+0SPXk+8ibFifbH3cvz13fE48wAAAAAElFTkSuQmCC" id="image8ae33f862e" transform="matrix(5.141176 0 0 5.141176 30.4 29.5)" style="image-rendering:crisp-edges;image-rendering:pixelated" width="34" height="34"/>
    </g>
    <g id="matplotlib.axis_1">
     <g id="xtick_1">
      <g id="line2d_1">
       <defs>
-       <path id="mff65862b2d" d="M 0 0 
+       <path id="mca3b22cf3c" d="M 0 0 
 L 0 -3.5 
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#mff65862b2d" x="33.100294" y="30.76" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mca3b22cf3c" x="32.970588" y="29.5" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_1">
       <!-- 0 -->
-      <g transform="translate(29.824669 21.345) scale(0.12 -0.12)">
+      <g transform="translate(29.694963 20.085) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-30" d="M 3234 2328 
 Q 3234 1075 2870 489 
@@ -94,12 +94,12 @@ z
     <g id="xtick_2">
      <g id="line2d_2">
       <g>
-       <use xlink:href="#mff65862b2d" x="84.406176" y="30.76" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mca3b22cf3c" x="84.382353" y="29.5" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_2">
       <!-- 10 -->
-      <g transform="translate(77.854926 21.345) scale(0.12 -0.12)">
+      <g transform="translate(77.831103 20.085) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-31" d="M 2975 0 
 L 706 0 
@@ -125,12 +125,12 @@ z
     <g id="xtick_3">
      <g id="line2d_3">
       <g>
-       <use xlink:href="#mff65862b2d" x="135.712059" y="30.76" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mca3b22cf3c" x="135.794118" y="29.5" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_3">
       <!-- 20 -->
-      <g transform="translate(129.160809 21.345) scale(0.12 -0.12)">
+      <g transform="translate(129.242868 20.085) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-32" d="M 3213 0 
 L 341 0 
@@ -172,12 +172,12 @@ z
     <g id="xtick_4">
      <g id="line2d_4">
       <g>
-       <use xlink:href="#mff65862b2d" x="187.017941" y="30.76" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mca3b22cf3c" x="187.205882" y="29.5" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_4">
       <!-- 30 -->
-      <g transform="translate(180.466691 21.345) scale(0.12 -0.12)">
+      <g transform="translate(180.654632 20.085) scale(0.12 -0.12)">
        <defs>
         <path id="Tahoma-33" d="M 1597 4209 
 Q 1428 4209 1259 4168 
@@ -239,17 +239,17 @@ z
     <g id="ytick_1">
      <g id="line2d_5">
       <defs>
-       <path id="m82893c81f3" d="M 0 0 
+       <path id="mb5bb0e9d16" d="M 0 0 
 L -3.5 0 
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#m82893c81f3" x="30.535" y="33.325294" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb5bb0e9d16" x="30.4" y="32.070588" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_5">
       <!-- 0 -->
-      <g transform="translate(16.98375 37.884357) scale(0.12 -0.12)">
+      <g transform="translate(16.84875 36.629651) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-30"/>
       </g>
      </g>
@@ -257,12 +257,12 @@ L -3.5 0
     <g id="ytick_2">
      <g id="line2d_6">
       <g>
-       <use xlink:href="#m82893c81f3" x="30.535" y="84.631176" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb5bb0e9d16" x="30.4" y="83.482353" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_6">
       <!-- 10 -->
-      <g transform="translate(10.4325 89.190239) scale(0.12 -0.12)">
+      <g transform="translate(10.2975 88.041415) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-31"/>
        <use xlink:href="#Tahoma-30" x="54.589844"/>
       </g>
@@ -271,12 +271,12 @@ L -3.5 0
     <g id="ytick_3">
      <g id="line2d_7">
       <g>
-       <use xlink:href="#m82893c81f3" x="30.535" y="135.937059" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb5bb0e9d16" x="30.4" y="134.894118" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_7">
       <!-- 20 -->
-      <g transform="translate(10.4325 140.496121) scale(0.12 -0.12)">
+      <g transform="translate(10.2975 139.45318) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-32"/>
        <use xlink:href="#Tahoma-30" x="54.589844"/>
       </g>
@@ -285,12 +285,12 @@ L -3.5 0
     <g id="ytick_4">
      <g id="line2d_8">
       <g>
-       <use xlink:href="#m82893c81f3" x="30.535" y="187.242941" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mb5bb0e9d16" x="30.4" y="186.305882" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_8">
       <!-- 30 -->
-      <g transform="translate(10.4325 191.802004) scale(0.12 -0.12)">
+      <g transform="translate(10.2975 190.864945) scale(0.12 -0.12)">
        <use xlink:href="#Tahoma-33"/>
        <use xlink:href="#Tahoma-30" x="54.589844"/>
       </g>
@@ -298,30 +298,30 @@ L -3.5 0
     </g>
    </g>
    <g id="patch_3">
-    <path d="M 30.535 205.2 
-L 30.535 30.76 
+    <path d="M 30.4 204.3 
+L 30.4 29.5 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_4">
-    <path d="M 204.975 205.2 
-L 204.975 30.76 
+    <path d="M 205.2 204.3 
+L 205.2 29.5 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_5">
-    <path d="M 30.535 205.2 
-L 204.975 205.2 
+    <path d="M 30.4 204.3 
+L 205.2 204.3 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="patch_6">
-    <path d="M 30.535 30.76 
-L 204.975 30.76 
+    <path d="M 30.4 29.5 
+L 205.2 29.5 
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="p6d293423df">
-   <rect x="30.535" y="30.76" width="174.44" height="174.44"/>
+  <clipPath id="p261d7db61a">
+   <rect x="30.4" y="29.5" width="174.8" height="174.8"/>
   </clipPath>
  </defs>
 </svg>
