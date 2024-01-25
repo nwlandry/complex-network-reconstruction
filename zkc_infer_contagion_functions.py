@@ -28,14 +28,7 @@ c1 = cf1(np.arange(n), b1)
 
 x1 = contagion_process(A, gamma, c1, x0, tmin=0, tmax=tmax, random_seed=None)
 
-gamma1_samples, c1_samples = infer_dynamics(
-    x1,
-    A,
-    p_rho,
-    p_gamma,
-    p_c,
-    nsamples=1000,
-)
+gamma1_samples, c1_samples = infer_dynamics(x1, A, p_rho, p_gamma, p_c, nsamples=1000)
 
 nu1 = np.zeros(n)
 for i, val in zip(*np.unique(A @ x1.T, return_counts=True)):
@@ -53,14 +46,7 @@ c2 = cf2(np.arange(n), b2)
 
 x2 = contagion_process(A, gamma, c2, x0, tmin=0, tmax=tmax, random_seed=None)
 
-gamma2_samples, c2_samples = infer_dynamics(
-    x2,
-    A,
-    p_rho,
-    p_gamma,
-    p_c,
-    nsamples=1000
-)
+gamma2_samples, c2_samples = infer_dynamics(x2, A, p_rho, p_gamma, p_c, nsamples=1000)
 
 nu2 = np.zeros(n)
 for i, val in zip(*np.unique(A @ x2.T, return_counts=True)):
