@@ -1,7 +1,6 @@
 import json
 
 import numpy as np
-from scipy.stats import beta
 
 from lcs import *
 
