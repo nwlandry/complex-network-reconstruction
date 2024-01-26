@@ -14,7 +14,6 @@ def test_erdos_renyi():
     assert A.sum() == 16
 
 
-
 def test_unipartite_clustering():
     n = 21
     clique_numbers = np.arange(1, 20)
@@ -24,12 +23,11 @@ def test_unipartite_clustering():
     my_p_dist = delta_dist(clique_size)
     my_g_dist = delta_dist(clique_membership)
 
-    
-    k1 = [clique_membership]*n
-    k2 = [clique_size]*clique_number
+    k1 = [clique_membership] * n
+    k2 = [clique_size] * clique_number
 
-    #A = clustered_unipartite(clique_number, n, my_p_dist, my_g_dist)
-    A = clustered_network(k1,k2)
+    # A = clustered_unipartite(clique_number, n, my_p_dist, my_g_dist)
+    A = clustered_network(k1, k2)
 
     G = nx.from_numpy_array(A)
     # Calculate the Laplacian matrix
