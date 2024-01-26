@@ -39,7 +39,6 @@ def test_unipartite_clustering():
     num_zeros = np.count_nonzero(
         np.isclose(eigenvalues, 0)
     )  # this should be equal to the clique number
-    breakpoint()
     assert num_zeros == clique_number
 
 
