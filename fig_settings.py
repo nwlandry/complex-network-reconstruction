@@ -14,13 +14,35 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.colors as mcolors
 from cycler import cycler
-
+import cmasher as cmr
 
  
+
+
 #color styling
-pallete = ["#355C7D","#F67280","#F8B195","#C06C84","#6C5B7B"]
-mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color= pallete)
-cmap = mcolors.LinearSegmentedColormap.from_list('my_cmap',[pallete[0],pallete[1]])
+
+
+def set_colors(n_colors = 2):
+    global cmap 
+    global pallette
+    cmap = 'cmr.redshift'
+    qualitative_cmap = cmr.get_sub_cmap(cmap, 0.2, 0.8, N=n_colors)
+
+    pallette = qualitative_cmap.colors
+    mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color= pallette)
+
+
+# cmap = mcolors.LinearSegmentedColormap.from_list('my_cmap',[pallete[0],pallete[1]])
+# cmap = cmr.ember
+
+def set_fontsize():
+    plt.rcParams['axes.labelsize'] = 30
+    # Set the global default size of the tick labels
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.rcParams['axes.titlesize'] = 25
+    plt.rcParams['legend.fontsize'] = 25
+
 
 
 def set_fonts(extra_params={}):

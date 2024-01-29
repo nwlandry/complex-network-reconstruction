@@ -20,7 +20,7 @@ from cycler import cycler
 
 fs.set_fonts()
 fs.set_colors()
-fs.set_fontsize()
+#fs.set_fontsize()
 cmap = fs.cmap
 
 fs.set_fonts({"font.family": "sans-serif"})

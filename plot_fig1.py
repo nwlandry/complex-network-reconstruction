@@ -217,8 +217,12 @@ ax4.set_ylabel(r"$\beta$")
 ax4.set_xticks([0, 0.5, 1], [0, 0.5, 1])
 ax4.set_yticks([0, 0.25, 0.5, 0.75, 1], [0, 0.25, 0.5, 0.75, 1])
 
-cbar = plt.colorbar(c,ax = ax4)
+
+cbar_ax = fig.add_axes([0.92, 0.11, 0.02, 0.35])  # x, y, width, height
+cbar = plt.colorbar(c, cax=cbar_ax)
 cbar.set_label(r"F-Score", fontsize=12, rotation=270, labelpad=15)
+
+#plt.tight_layout()
 
 
 plt.savefig("Figures/Fig1/figure1_4panel.png", dpi=1000)
