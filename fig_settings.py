@@ -6,22 +6,13 @@ Created on Thu Mar  4 10:11:05 2021
 """
 
 import os
-
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
-
-
 import matplotlib as mpl
-import matplotlib.colors as mcolors
-from cycler import cycler
 import cmasher as cmr
-
- 
 
 
 #color styling
-
-
 def set_colors(n_colors = 2):
     global cmap 
     global pallette
@@ -31,9 +22,6 @@ def set_colors(n_colors = 2):
     pallette = qualitative_cmap.colors
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color= pallette)
 
-
-# cmap = mcolors.LinearSegmentedColormap.from_list('my_cmap',[pallete[0],pallete[1]])
-# cmap = cmr.ember
 
 def set_fontsize():
     plt.rcParams['axes.labelsize'] = 30
@@ -85,11 +73,6 @@ def fig_size(frac_width, frac_height, n_cols=1, n_rows=1):
         height = (page_height - tb_margins - mid_marg_height) * frac_height
 
     return (width, height)
-
-
-
-
-
 
 def get_formats():
     return ["eps", "jpg", "pdf", "png", "tif"]

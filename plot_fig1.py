@@ -1,20 +1,12 @@
 
 import json
-
 import arviz as az
-import cmasher as cmr
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import xgi
-
 import fig_settings as fs
 from lcs import *
-
-import matplotlib as mpl
-import matplotlib.colors as mcolors
-from cycler import cycler
 
 
 
@@ -45,7 +37,7 @@ x0[0] = 1
 
 x = contagion_process(A, gamma, c, x0, tmin=0, tmax=100, random_seed=2)
 
-infected_color = 'C1' 
+infected_color = 'C0' 
 susceptible_color = "white"
 subgraph_color = "black"
 graph_color = (0.1, 0.1, 0.1, 0.1)
@@ -59,7 +51,7 @@ nbrs.add(i)
 pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.3))
 node_fc = [infected_color if x[t, i] else susceptible_color for i in H.nodes]
 node_ec = [subgraph_node_lc if n in nbrs else graph_node_lc for n in H.nodes]
-node_fc[12] = 'C0'
+node_fc[12] = 'C1'
 
 dyad_color = [subgraph_color if e in sg else graph_color for e in H.edges]
 
@@ -75,9 +67,6 @@ xgi.draw(
     node_lw=0.5,
     ax = ax1
 )
-
-# plt.savefig("Figures/Fig1/zkc_network.svg", dpi=1000)
-# plt.savefig("Figures/Fig1/zkc_network.png", dpi=1000)
 
 
 """
@@ -101,9 +90,6 @@ c2_samples = np.array(data["c2-samples"], dtype=float)
 l1 = np.array(data["l1"], dtype=float)
 l2 = np.array(data["l2"], dtype=float)
 
-# import cmasher as cmr
-# cmap = cmr.ember
-
 kmax = np.max(degrees(A))
 n = A.shape[0]
 
@@ -112,7 +98,6 @@ nus = np.arange(0, n, 1)
 # simple contagion
 c1_mean = c1_samples.mean(axis=0)
 ax2.plot(nus, c1, "-", color='C0', label="Simple contagion")
-# ax2.scatter(nus, c1_mean, linewidth=0.5, color=colors[2])
 
 err_c1 = np.zeros((2, n))
 c1_mode = np.zeros(n)
@@ -126,7 +111,6 @@ ax2.errorbar(nus, c1_mean, err_c1, color='C0', fmt="o")
 # threshold contagion, tau=2
 c2_mean = c2_samples.mean(axis=0)
 ax2.plot(nus, c2, "-", color='C1', label="Complex contagion")
-# ax2.scatter(nus, c2_mean, linewidth=0.5, color=colors[1])
 
 err_c2 = np.zeros((2, n))
 c2_mode = np.zeros(n)
@@ -150,10 +134,6 @@ ax2.legend(loc="upper left")
 sns.despine()
 
 
-# # ax2.savefig("Figures/Fig1/zkc_infer_contagion_function.svg", dpi=1000)
-# # ax2.savefig("Figures/Fig1/zkc_infer_contagion_function.png", dpi=1000)
-# ax2.show()
-
 with open("Data/zkc_infer_vs_tmax.json") as file:
     data = json.load(file)
 
@@ -164,7 +144,6 @@ ps = np.array(data["ps"], dtype=float)
 fce = np.array(data["fce"], dtype=float)
 
 
-#ax3.semilogx(tmax, sps[0].mean(axis=1), color=colors[2], label="Simple contagion")
 ax3.semilogx(tmax, sps[0].mean(axis=1), color='C0', label="Simple contagion")
 ax3.semilogx(tmax, sps[1].mean(axis=1), color='C1', label="Complex contagion")
 ax3.fill_between(
@@ -197,7 +176,6 @@ ps = np.array(data["ps"], dtype=float)
 sps = np.array(data["sps"], dtype=float)
 fce = np.array(data["fce"], dtype=float)
 
-#cmap = cmr.gem
 cmap = cmap
 
 sps_summary = sps.mean(axis=2)
@@ -221,9 +199,6 @@ ax4.set_yticks([0, 0.25, 0.5, 0.75, 1], [0, 0.25, 0.5, 0.75, 1])
 cbar_ax = fig.add_axes([0.92, 0.11, 0.02, 0.35])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
 cbar.set_label(r"F-Score", fontsize=12, rotation=270, labelpad=15)
-
-#plt.tight_layout()
-
 
 plt.savefig("Figures/Fig1/figure1_4panel.png", dpi=1000)
 plt.savefig("Figures/Fig1/figure1_4_panel.pdf", dpi=1000)

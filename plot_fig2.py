@@ -1,29 +1,17 @@
 
 import json
 
-import arviz as az
-import cmasher as cmr
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 import xgi
 
 import fig_settings as fs
 from lcs import *
 
-import matplotlib as mpl
-import matplotlib.colors as mcolors
-from cycler import cycler
-
-
-
 fs.set_fonts()
 fs.set_colors()
-#fs.set_fontsize()
-cmap = fs.cmap
-
 fs.set_fonts({"font.family": "sans-serif"})
+cmap = fs.cmap
 
 
 models = ["Erdos-Renyi", "SBM", "Watts-Strogatz", "CM", "clustered_network"]
@@ -50,7 +38,6 @@ xticklabels = [
     ["1", "7", "13", "19"],
 ]
 convert_to_log = [False, False, True, False, False]
-
 
 def visualize_networks(i, ax):
     n = 50
@@ -90,11 +77,6 @@ def visualize_networks(i, ax):
         case 2:
             pos = xgi.circular_layout(H)
         case 3:
-            # sorted_nodes = [n for n, _ in sorted(H.nodes.degree.asdict().items(), key=lambda d: d[1])]
-            # Hnew = xgi.Hypergraph()
-            # Hnew.add_nodes_from(sorted_nodes)
-            # Hnew.add_edges_from(e)
-            # pos = xgi.circular_layout(Hnew)
             pos = xgi.pairwise_spring_layout(H, seed=2)
         case 4:
             pos = xgi.pairwise_spring_layout(H, seed=2)
