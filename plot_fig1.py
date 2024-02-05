@@ -201,4 +201,4 @@ cbar = plt.colorbar(c, cax=cbar_ax)
 cbar.set_label(r"F-Score", fontsize=12, rotation=270, labelpad=15)
 
 plt.savefig("Figures/Fig1/figure1_4panel.png", dpi=1000)
-plt.savefig("Figures/Fig1/figure1_4_panel.pdf", dpi=1000)
+plt.savefig("Figures/Fig1/figure1_4panel.pdf", dpi=1000)
