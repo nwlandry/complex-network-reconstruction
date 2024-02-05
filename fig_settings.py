@@ -6,9 +6,31 @@ Created on Thu Mar  4 10:11:05 2021
 """
 
 import os
-
 import matplotlib.pylab as pylab
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+import cmasher as cmr
+
+
+#color styling
+def set_colors(n_colors = 2):
+    global cmap 
+    global pallette
+    cmap = 'cmr.redshift'
+    qualitative_cmap = cmr.get_sub_cmap(cmap, 0.2, 0.8, N=n_colors)
+
+    pallette = qualitative_cmap.colors
+    mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color= pallette)
+
+
+def set_fontsize():
+    plt.rcParams['axes.labelsize'] = 30
+    # Set the global default size of the tick labels
+    plt.rcParams['xtick.labelsize'] = 15
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.rcParams['axes.titlesize'] = 25
+    plt.rcParams['legend.fontsize'] = 25
+
 
 
 def set_fonts(extra_params={}):
@@ -51,7 +73,6 @@ def fig_size(frac_width, frac_height, n_cols=1, n_rows=1):
         height = (page_height - tb_margins - mid_marg_height) * frac_height
 
     return (width, height)
-
 
 def get_formats():
     return ["eps", "jpg", "pdf", "png", "tif"]
