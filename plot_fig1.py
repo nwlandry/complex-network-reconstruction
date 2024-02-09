@@ -208,8 +208,8 @@ ax4.set_yticks([0, 0.25, 0.5, 0.75, 1], [0, 0.25, 0.5, 0.75, 1])
 
 cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.32])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=12, rotation=270, labelpad=15)
-cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=12)
+cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=15)
+cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
 
 plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
 plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)

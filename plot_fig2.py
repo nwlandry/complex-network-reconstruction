@@ -126,8 +126,8 @@ for i, m in enumerate(models):
 # cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.8])
 cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.57])
 cbar = fig.colorbar(im, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=16, rotation=270, labelpad=25)
-cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=12)
+cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=25)
+cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
