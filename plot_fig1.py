@@ -1,25 +1,27 @@
-
 import json
+
 import arviz as az
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import xgi
+from matplotlib.gridspec import GridSpec
+
 import fig_settings as fs
 from lcs import *
 
-
-
-fs.set_fonts()
+fs.set_fonts({"font.family": "sans-serif"})
 fs.set_colors()
-fs.set_fontsize()
 cmap = fs.cmap
 
-fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2,2,figsize=(16,12), sharey=False, sharex=False)
+fig = plt.figure(figsize=(8, 6))
+gs = GridSpec(2, 2, hspace=0.4, wspace=0.4)
 
 """
 Panel 1: Network Viz
 """
+ax1 = fig.add_subplot(gs[0])
+
 el = zkc(format="edgelist")
 H = xgi.Hypergraph(el)
 A = zkc()
@@ -37,7 +39,7 @@ x0[0] = 1
 
 x = contagion_process(A, gamma, c, x0, tmin=0, tmax=100, random_seed=2)
 
-infected_color = 'C0' 
+infected_color = "C0"
 susceptible_color = "white"
 subgraph_color = "black"
 graph_color = (0.1, 0.1, 0.1, 0.1)
@@ -51,10 +53,9 @@ nbrs.add(i)
 pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.3))
 node_fc = [infected_color if x[t, i] else susceptible_color for i in H.nodes]
 node_ec = [subgraph_node_lc if n in nbrs else graph_node_lc for n in H.nodes]
-node_fc[12] = 'C1'
+node_fc[12] = "C1"
 
 dyad_color = [subgraph_color if e in sg else graph_color for e in H.edges]
-
 
 
 xgi.draw(
@@ -63,16 +64,17 @@ xgi.draw(
     node_size=7.5,
     node_fc=node_fc,
     dyad_color=dyad_color,
+    dyad_lw=0.5,
     node_ec=node_ec,
     node_lw=0.5,
-    ax = ax1
+    ax=ax1,
 )
 
 
 """
 Panel 2: 
 """
-
+ax2 = fig.add_subplot(gs[1])
 
 with open("Data/zkc_infer_contagion_functions.json") as file:
     data = json.load(file)
@@ -97,7 +99,7 @@ nus = np.arange(0, n, 1)
 
 # simple contagion
 c1_mean = c1_samples.mean(axis=0)
-ax2.plot(nus, c1, "-", color='C0', label="Simple contagion")
+ax2.plot(nus, c1, "-", color="C0", label="Simple contagion")
 
 err_c1 = np.zeros((2, n))
 c1_mode = np.zeros(n)
@@ -106,11 +108,11 @@ for i in range(n):
     x, y = interval
     err_c1[0, i] = max(c1_mean[i] - x, 0)
     err_c1[1, i] = max(y - c1_mean[i], 0)
-ax2.errorbar(nus, c1_mean, err_c1, color='C0', fmt="o")
+ax2.errorbar(nus, c1_mean, err_c1, color="C0", fmt="o")
 
 # threshold contagion, tau=2
 c2_mean = c2_samples.mean(axis=0)
-ax2.plot(nus, c2, "-", color='C1', label="Complex contagion")
+ax2.plot(nus, c2, "-", color="C1", label="Complex contagion")
 
 err_c2 = np.zeros((2, n))
 c2_mode = np.zeros(n)
@@ -119,7 +121,7 @@ for i in range(n):
     x, y = interval
     err_c2[0, i] = max(c2_mean[i] - x, 0)
     err_c2[1, i] = max(y - c2_mean[i], 0)
-ax2.errorbar(nus, c2_mean, err_c2, color='C1', fmt="o")
+ax2.errorbar(nus, c2_mean, err_c2, color="C1", fmt="o")
 
 ax2.set_xticks(np.arange(0, n, 5))
 ax2.set_xlabel(r"$\nu$")
@@ -133,6 +135,11 @@ ax2.legend(loc="upper left")
 
 sns.despine()
 
+""""
+Panel 3: recovery vs. tmax
+"""
+ax3 = fig.add_subplot(gs[2])
+
 
 with open("Data/zkc_infer_vs_tmax.json") as file:
     data = json.load(file)
@@ -144,21 +151,21 @@ ps = np.array(data["ps"], dtype=float)
 fce = np.array(data["fce"], dtype=float)
 
 
-ax3.semilogx(tmax, sps[0].mean(axis=1), color='C0', label="Simple contagion")
-ax3.semilogx(tmax, sps[1].mean(axis=1), color='C1', label="Complex contagion")
+ax3.semilogx(tmax, sps[0].mean(axis=1), color="C0", label="Simple contagion")
+ax3.semilogx(tmax, sps[1].mean(axis=1), color="C1", label="Complex contagion")
 ax3.fill_between(
     tmax,
     sps[0].mean(axis=1) - sps[0].std(axis=1),
     sps[0].mean(axis=1) + sps[0].std(axis=1),
     alpha=0.3,
-    color='C0',
+    color="C0",
 )
 ax3.fill_between(
     tmax,
     sps[1].mean(axis=1) - sps[1].std(axis=1),
     sps[1].mean(axis=1) + sps[1].std(axis=1),
     alpha=0.3,
-    color='C1',
+    color="C1",
 )
 ax3.set_ylabel("F-Score")
 ax3.set_xlabel(r"$t_{max}$")
@@ -166,7 +173,10 @@ ax3.set_xlabel(r"$t_{max}$")
 ax3.legend(loc="upper left")
 sns.despine()
 
-
+"""
+Panel 4: heatmap of recover vs. beta and f
+"""
+ax4 = fig.add_subplot(gs[3])
 
 with open("Data/zkc_frac_vs_beta.json") as file:
     data = json.load(file)
@@ -196,9 +206,10 @@ ax4.set_xticks([0, 0.5, 1], [0, 0.5, 1])
 ax4.set_yticks([0, 0.25, 0.5, 0.75, 1], [0, 0.25, 0.5, 0.75, 1])
 
 
-cbar_ax = fig.add_axes([0.92, 0.11, 0.02, 0.35])  # x, y, width, height
+cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.32])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
 cbar.set_label(r"F-Score", fontsize=12, rotation=270, labelpad=15)
+cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=12)
 
-plt.savefig("Figures/Fig1/figure1_4panel.png", dpi=1000)
-plt.savefig("Figures/Fig1/figure1_4panel.pdf", dpi=1000)
+plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
+plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)
