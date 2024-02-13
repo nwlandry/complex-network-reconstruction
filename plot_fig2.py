@@ -1,14 +1,13 @@
-
 import json
 
 import matplotlib.pyplot as plt
 import numpy as np
 import xgi
+from matplotlib.gridspec import GridSpec
 
 import fig_settings as fs
 from lcs import *
 
-fs.set_fonts()
 fs.set_colors()
 fs.set_fonts({"font.family": "sans-serif"})
 cmap = fs.cmap
@@ -39,6 +38,7 @@ xticklabels = [
 ]
 convert_to_log = [False, False, True, False, False]
 
+
 def visualize_networks(i, ax):
     n = 50
     match i:
@@ -65,7 +65,7 @@ def visualize_networks(i, ax):
 
     H = xgi.Hypergraph(e)
 
-    node_size = 3
+    node_size = 5
     dyad_lw = 0.5
     node_lw = 0.5
 
@@ -83,8 +83,9 @@ def visualize_networks(i, ax):
     xgi.draw(H, ax=ax, pos=pos, node_size=node_size, node_lw=node_lw, dyad_lw=dyad_lw)
 
 
+fig = plt.figure(figsize=(16, 10))
+gs = GridSpec(len(cfs) + 1, len(models), wspace=0.2, hspace=0.2)
 
-fig, axes = plt.subplots(len(cfs) + 1, len(models), figsize=(14, 8))
 for i, m in enumerate(models):
     with open(f"Data/{m.lower()}.json") as file:
         data = json.load(file)
@@ -97,7 +98,8 @@ for i, m in enumerate(models):
 
     for j, cf in enumerate(cfs):
         sps_summary = sps[j].mean(axis=2).T
-        im = axes[j + 1, i].imshow(
+        ax = fig.add_subplot(gs[j + 1, i])
+        im = ax.imshow(
             to_imshow_orientation(sps_summary),
             extent=(min(var), max(var), min(b), max(b)),
             vmin=0,
@@ -105,25 +107,32 @@ for i, m in enumerate(models):
             aspect="auto",
             cmap=cmap,
         )
-        axes[j + 1, i].set_xlim([min(var), max(var)])
-        axes[j + 1, i].set_ylim([min(b), max(b)])
-        axes[j + 1, i].set_xticks(xticks[i], xticklabels[i])
-        axes[j + 1, i].set_yticks([0, 0.5, 1], [0, 0.5, 1])
+        ax.set_xlim([min(var), max(var)])
+        ax.set_ylim([min(b), max(b)])
+        ax.set_xticks(xticks[i], xticklabels[i])
+        ax.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
         if i == 0:
-            axes[j + 1, i].set_ylabel(f"{cfs[j]}\n" + r"$\beta$")
+            ax.set_ylabel(f"{cfs[j]}\n" + r"$\beta$")
+        else:
+            ax.set_yticks([], [])
 
         if j + 1 == len(cfs):
-            axes[j + 1, i].set_xlabel(labels[i], fontsize=16)
+            ax.set_xlabel(labels[i])
+        else:
+            ax.set_xticks([], [])
 
-fig.subplots_adjust(bottom=0.15, top=0.95, left=0.1, right=0.8, wspace=0.3, hspace=0.3)
-cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.8])
+# fig.subplots_adjust(bottom=0.15, top=0.95, left=0.1, right=0.8, wspace=0.1, hspace=0.3)
+# cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.8])
+cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.57])
 cbar = fig.colorbar(im, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=16, rotation=270, labelpad=25)
+cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=25)
+cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
 
 for i, m in enumerate(models):
-    visualize_networks(i, axes[0, i])
-    axes[0, i].set_title(titles[i])
+    ax = fig.add_subplot(gs[0, i])
+    visualize_networks(i, ax)
+    ax.set_title(titles[i])
 
 
 plt.savefig("Figures/Fig2/generative_models_sps.png", dpi=1000)
