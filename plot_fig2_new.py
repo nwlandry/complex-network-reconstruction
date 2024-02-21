@@ -13,30 +13,26 @@ fs.set_fonts({"font.family": "sans-serif"})
 cmap = fs.cmap
 
 
-models = ["Erdos-Renyi", "SBM", "Watts-Strogatz", "CM", "clustered_network"]
+models = ["Erdos-Renyi", "CM", "clustered_network"]
 cfs = [
     "SIS",
     r"Threshold, $\tau=2$",
     r"Threshold, $\tau=3$",
 ]
-keys = ["p", "epsilon", "p", "alpha", "size"]
-titles = ["Erdös-Rényi", "SBM", "Small-World", "Power-law CM", "Clustered"]
-labels = [r"$p$", r"$\epsilon$", r"$p$", r"$\alpha$", r"$s$"]
+keys = ["p", "alpha", "size"]
+titles = ["Erdös-Rényi", "Power-law CM", "Clustered"]
+labels = [r"$p$", r"$\alpha$", r"$s$"]
 xticks = [
     [0, 0.5, 1],
-    [0, 0.5, 1],
-    [-6, -4, -2, 0],
     [-4, -3.5, -3, -2.5, -2, -1.5],
     [1, 7, 13, 19],
 ]
 xticklabels = [
     ["0", "0.5", "1"],
-    ["0", "0.5", "1"],
-    [r"$10^{-6}$", r"$10^{-4}$", r"$10^{-2}$", r"$10^{0}$"],
     ["-4", "-3.5", "-3", "-2.5", "-2", "-1.5"],
     ["1", "7", "13", "19"],
 ]
-convert_to_log = [False, False, True, False, False]
+convert_to_log = [False, False, False]
 
 
 def visualize_networks(i, ax):
@@ -46,15 +42,9 @@ def visualize_networks(i, ax):
             A = erdos_renyi(n, 0.1, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 1:
-            A = sbm(n, 10, 0.9, seed=0)
-            e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 2:
-            A = watts_strogatz(n, 6, 0.03, seed=0)
-            e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 3:
             A = truncated_power_law_configuration(n, 2, 20, 3, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 4:
+        case 2:
             k = 2  # each node belongs to two cliques
             clique_size = 4
             k1 = k * np.ones(n)
@@ -65,7 +55,7 @@ def visualize_networks(i, ax):
 
     H = xgi.Hypergraph(e)
 
-    node_size = 5
+    node_size = 4
     dyad_lw = 0.5
     node_lw = 0.5
 
@@ -73,17 +63,13 @@ def visualize_networks(i, ax):
         case 0:
             pos = xgi.pairwise_spring_layout(H, seed=2)
         case 1:
-            pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=2))
-        case 2:
-            pos = xgi.circular_layout(H)
-        case 3:
             pos = xgi.pairwise_spring_layout(H, seed=2)
-        case 4:
+        case 2:
             pos = xgi.pairwise_spring_layout(H, seed=2)
     xgi.draw(H, ax=ax, pos=pos, node_size=node_size, node_lw=node_lw, dyad_lw=dyad_lw)
 
 
-fig = plt.figure(figsize=(16, 10))
+fig = plt.figure(figsize=(8, 9))
 gs = GridSpec(len(cfs) + 1, len(models), wspace=0.2, hspace=0.2)
 
 for i, m in enumerate(models):
@@ -122,8 +108,6 @@ for i, m in enumerate(models):
         else:
             ax.set_xticks([], [])
 
-# fig.subplots_adjust(bottom=0.15, top=0.95, left=0.1, right=0.8, wspace=0.1, hspace=0.3)
-# cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.8])
 cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.57])
 cbar = fig.colorbar(im, cax=cbar_ax)
 cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=25)
@@ -134,6 +118,6 @@ for i, m in enumerate(models):
     visualize_networks(i, ax)
     ax.set_title(titles[i])
 
-
-plt.savefig("Figures/Fig2/generative_models_sps.png", dpi=1000)
-plt.savefig("Figures/Fig2/generative_models_sps.pdf", dpi=1000)
+plt.savefig("Figures/Fig2/fig2.png", dpi=1000)
+plt.savefig("Figures/Fig2/fig2.pdf", dpi=1000)
+plt.show()
