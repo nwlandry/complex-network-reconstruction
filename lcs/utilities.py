@@ -132,23 +132,23 @@ def power_law(n, minval, maxval, alpha, seed=None):
     if seed is not None:
         np.random.seed(seed)
     u = np.random.random(n)
-    a = minval ** (1 - alpha)
-    b = maxval ** (1 - alpha)
-    return np.round((a + u * (b - a)) ** (1 / (1 - alpha))).astype(int)
+    a = minval ** (1 + alpha)
+    b = maxval ** (1 + alpha)
+    return np.round((a + u * (b - a)) ** (1 / (1 + alpha))).astype(int)
 
 
 def mean_power_law(minval, maxval, alpha):
-    if alpha == 1:
+    if alpha == -1:
         num = maxval - minval
         den = np.log(maxval) - np.log(minval)
         return num / den
-    elif alpha == 2:
+    elif alpha == -2:
         num = np.log(maxval) - np.log(minval)
         den = 1 / minval - 1 / maxval
         return num / den
     else:
-        num = (minval ** (2 - alpha) - maxval ** (2 - alpha)) / (alpha - 2)
-        den = (minval ** (1 - alpha) - maxval ** (1 - alpha)) / (alpha - 1)
+        num = (minval ** (2 + alpha) - maxval ** (2 + alpha)) / (-alpha - 2)
+        den = (minval ** (1 + alpha) - maxval ** (1 + alpha)) / (-alpha - 1)
         return num / den
 
 
