@@ -55,12 +55,34 @@ def get_metrics(f, dir, c_dict, b_dict, e_dict, r_dict):
     A = np.array(data["A"])
     samples = np.array(data["samples"])
 
+    rho = density(A)
+
     ps = posterior_similarity(samples, A)
-    sps = samplewise_posterior_similarity(samples, A)
+    fs = f_score(samples, A)
+    fs_norm_random = f_score(samples, A, normalize=True, rho_guess=0.5)
+    fs_norm_density = f_score(samples, A, normalize=True, rho_guess=rho)
     fc = fraction_of_correct_entries(samples, A)
+    fc_norm_random = fraction_of_correct_entries(
+        samples, A, normalize=True, rho_guess=0.5
+    )
+    fc_norm_density = fraction_of_correct_entries(
+        samples, A, normalize=True, rho_guess=rho
+    )
     print((i, j, k, l), flush=True)
 
-    return i, j, k, l, ps, sps, fc
+    return (
+        i,
+        j,
+        k,
+        l,
+        ps,
+        fs,
+        fs_norm_random,
+        fs_norm_density,
+        fc,
+        fc_norm_random,
+        fc_norm_density,
+    )
 
 
 # get number of available cores
@@ -74,8 +96,12 @@ n_e = len(e_dict)
 n_r = len(r_dict)
 
 ps = np.zeros((n_c, n_b, n_e, n_r))
-sps = np.zeros((n_c, n_b, n_e, n_r))
+fs = np.zeros((n_c, n_b, n_e, n_r))
+fs_norm_random = np.zeros((n_c, n_b, n_e, n_r))
+fs_norm_density = np.zeros((n_c, n_b, n_e, n_r))
 fce = np.zeros((n_c, n_b, n_e, n_r))
+fce_norm_random = np.zeros((n_c, n_b, n_e, n_r))
+fce_norm_density = np.zeros((n_c, n_b, n_e, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
@@ -83,17 +109,25 @@ for f in os.listdir(data_dir):
 
 data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
-for i, j, k, l, pos_sim, s_pos_sim, frac_corr in data:
-    ps[i, j, k, l] = pos_sim
-    sps[i, j, k, l] = s_pos_sim
-    fce[i, j, k, l] = frac_corr
+for i, j, k, l, metric1, metric2, metric3, metric4, metric5, metric6, metric7 in data:
+    ps[i, j, k, l] = metric1
+    fs[i, j, k, l] = metric2
+    fs_norm_random[i, j, k, l] = metric3
+    fs_norm_density[i, j, k, l] = metric4
+    fce[i, j, k, l] = metric5
+    fce_norm_random[i, j, k, l] = metric6
+    fce_norm_density[i, j, k, l] = metric7
 
 data = {}
 data["beta"] = list(b_dict)
 data["epsilon"] = list(e_dict)
-data["sps"] = sps.tolist()
 data["ps"] = ps.tolist()
+data["fs"] = fs.tolist()
+data["fs-norm-random"] = fs_norm_random.tolist()
+data["fs-norm-density"] = fs_norm_density.tolist()
 data["fce"] = fce.tolist()
+data["fce-norm-random"] = fce_norm_random.tolist()
+data["fce-norm-density"] = fce_norm_density.tolist()
 datastring = json.dumps(data)
 
 with open("Data/sbm.json", "w") as output_file:
