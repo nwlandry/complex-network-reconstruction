@@ -8,9 +8,9 @@ def test_posterior_similarity(A1, A2, A3, samples1):
 
 
 def test_samplewise_posterior_similarity(A1, A2, A3, samples1):
-    assert np.isclose(samplewise_posterior_similarity(samples1, A1), 0.869047619047619)
-    assert np.isclose(samplewise_posterior_similarity(samples1, A2), 0.915343915343915)
-    assert np.isclose(samplewise_posterior_similarity(samples1, A3), 0.879629629629629)
+    assert np.isclose(f_score(samples1, A1), 0.869047619047619)
+    assert np.isclose(f_score(samples1, A2), 0.915343915343915)
+    assert np.isclose(f_score(samples1, A3), 0.879629629629629)
 
 
 def test_hamming_distance(A1, A2, A3):
