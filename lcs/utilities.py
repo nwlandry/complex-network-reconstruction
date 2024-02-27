@@ -5,6 +5,7 @@ import numpy as np
 from scipy.sparse import csr_array
 from scipy.sparse.csgraph import reverse_cuthill_mckee
 from scipy.stats import rv_discrete
+from sklearn.metrics import roc_auc_score
 
 from .contagion import *
 from .generative import erdos_renyi
@@ -96,6 +97,13 @@ def f_score(samples, A, threshold):
     fp = np.sum(Q * (1 - A))
 
     return 2 * tp / (2 * tp + fn + fp)
+
+
+def auroc(samples,A):
+    Q = samples.mean(axis=0)
+    A = A.flatten()
+    Q = Q.flatten()
+    return roc_auc_score(A,Q)
 
 
 def infections_per_node(x, mode="mean"):
