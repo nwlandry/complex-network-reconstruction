@@ -68,6 +68,10 @@ def get_metrics(f, dir, c_dict, b_dict, a_dict, r_dict):
     fc_norm_density = fraction_of_correct_entries(
         samples, A, normalize=True, rho_guess=rho
     )
+
+    pr = precision(samples, A)
+    re = recall(samples, A)
+
     print((i, j, k, l), flush=True)
 
     return (
@@ -82,6 +86,8 @@ def get_metrics(f, dir, c_dict, b_dict, a_dict, r_dict):
         fc,
         fc_norm_random,
         fc_norm_density,
+        pr,
+        re,
     )
 
 
@@ -102,6 +108,8 @@ fs_norm_density = np.zeros((n_c, n_b, n_a, n_r))
 fce = np.zeros((n_c, n_b, n_a, n_r))
 fce_norm_random = np.zeros((n_c, n_b, n_a, n_r))
 fce_norm_density = np.zeros((n_c, n_b, n_a, n_r))
+pr = np.zeros((n_c, n_b, n_a, n_r))
+re = np.zeros((n_c, n_b, n_a, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
@@ -109,7 +117,21 @@ for f in os.listdir(data_dir):
 
 data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
-for i, j, k, l, metric1, metric2, metric3, metric4, metric5, metric6, metric7 in data:
+for (
+    i,
+    j,
+    k,
+    l,
+    metric1,
+    metric2,
+    metric3,
+    metric4,
+    metric5,
+    metric6,
+    metric7,
+    metric8,
+    metric9,
+) in data:
     ps[i, j, k, l] = metric1
     fs[i, j, k, l] = metric2
     fs_norm_random[i, j, k, l] = metric3
@@ -117,6 +139,8 @@ for i, j, k, l, metric1, metric2, metric3, metric4, metric5, metric6, metric7 in
     fce[i, j, k, l] = metric5
     fce_norm_random[i, j, k, l] = metric6
     fce_norm_density[i, j, k, l] = metric7
+    pr[i, j, k, l] = metric8
+    re[i, j, k, l] = metric9
 
 data = {}
 data["beta"] = list(b_dict)
@@ -128,6 +152,8 @@ data["fs-norm-density"] = fs_norm_density.tolist()
 data["fce"] = fce.tolist()
 data["fce-norm-random"] = fce_norm_random.tolist()
 data["fce-norm-density"] = fce_norm_density.tolist()
+data["precision"] = pr.tolist()
+data["recall"] = re.tolist()
 datastring = json.dumps(data)
 
 with open("Data/cm.json", "w") as output_file:
