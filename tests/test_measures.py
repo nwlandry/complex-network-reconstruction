@@ -38,6 +38,15 @@ def test_precision(A1, A2, A3, samples1):
     pr = precision(empty_network_samples, complete_network)
     assert np.isnan(pr)
 
+    pr = precision(samples1, A1)
+    assert pr == 0.75
+
+    pr = precision(samples1, A2)
+    assert np.isclose(pr, 0.9166666666666)
+
+    pr = precision(samples1, A3)
+    assert pr == 1.0
+
 
 def test_recall(A1, A2, A3, samples1):
     complete_network_samples = np.array([erdos_renyi(10, 1.0) for i in range(20)])
@@ -56,3 +65,12 @@ def test_recall(A1, A2, A3, samples1):
 
     pr = recall(empty_network_samples, complete_network)
     assert pr == 0.0
+
+    pr = recall(samples1, A1)
+    assert pr == 1.0
+
+    pr = recall(samples1, A2)
+    assert np.isclose(pr, 0.9166666666666)
+
+    pr = recall(samples1, A3)
+    assert pr == 0.8
