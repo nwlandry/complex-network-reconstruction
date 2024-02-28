@@ -54,50 +54,6 @@ def prettify_matrix(A):
     return Ap
 
 
-def posterior_similarity(samples, A):
-    meanA = samples.mean(axis=0)
-    num = np.sum(np.abs(A - meanA))
-    den = np.sum(np.abs(A + meanA))
-    if den > 0:
-        return 1 - num / den
-    else:
-        return 1
-
-
-def samplewise_posterior_similarity(samples, A):
-    ps = 0
-    n = samples.shape[0]
-    for i in range(n):
-        num = np.sum(np.abs(A - samples[i]))
-        den = np.sum(np.abs(A + samples[i]))
-        if den > 0:
-            ps += 1 - num / den
-        else:
-            ps += 1
-    return ps / n
-
-
-def hamming_distance(A1, A2):
-    return np.sum(np.abs(A1 - A2)) / 2
-
-
-def fraction_of_correct_entries(samples, A):
-    n = A.shape[0]
-    nsamples = samples.shape[0]
-    num = (np.sum(samples == A) - nsamples * n) / 2
-    den = nsamples * n * (n - 1) / 2
-    return num / den
-
-
-def f_score(samples, A, threshold):
-    Q = samples.mean(axis=0) >= threshold
-    tp = np.sum(Q * A)
-    fn = np.sum((1 - Q) * A)
-    fp = np.sum(Q * (1 - A))
-
-    return 2 * tp / (2 * tp + fn + fp)
-
-
 def infections_per_node(x, mode="mean"):
     match mode:
         case "mean":
@@ -132,23 +88,23 @@ def power_law(n, minval, maxval, alpha, seed=None):
     if seed is not None:
         np.random.seed(seed)
     u = np.random.random(n)
-    a = minval ** (1 - alpha)
-    b = maxval ** (1 - alpha)
-    return np.round((a + u * (b - a)) ** (1 / (1 - alpha))).astype(int)
+    a = minval ** (1 + alpha)
+    b = maxval ** (1 + alpha)
+    return np.round((a + u * (b - a)) ** (1 / (1 + alpha))).astype(int)
 
 
 def mean_power_law(minval, maxval, alpha):
-    if alpha == 1:
+    if alpha == -1:
         num = maxval - minval
         den = np.log(maxval) - np.log(minval)
         return num / den
-    elif alpha == 2:
+    elif alpha == -2:
         num = np.log(maxval) - np.log(minval)
         den = 1 / minval - 1 / maxval
         return num / den
     else:
-        num = (minval ** (2 - alpha) - maxval ** (2 - alpha)) / (alpha - 2)
-        den = (minval ** (1 - alpha) - maxval ** (1 - alpha)) / (alpha - 1)
+        num = (minval ** (2 + alpha) - maxval ** (2 + alpha)) / (-alpha - 2)
+        den = (minval ** (1 + alpha) - maxval ** (1 + alpha)) / (-alpha - 1)
         return num / den
 
 
