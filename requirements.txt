@@ -8,4 +8,4 @@ xgi
 arviz
 seaborn
 joblib
-sklearn
+scikit-learn
