@@ -8,6 +8,9 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
+metric_name = "fce-norm-density"
+axis_limits = [0, 2]
+
 fs.set_colors()
 fs.set_fonts({"font.family": "sans-serif"})
 cmap = fs.cmap
@@ -26,14 +29,14 @@ xticks = [
     [0, 0.5, 1],
     [0, 0.5, 1],
     [-6, -4, -2, 0],
-    [1.5, 2, 2.5, 3, 3.5, 4],
+    [-4, -3.5, -3, -2.5, -2, -1.5],
     [1, 7, 13, 19],
 ]
 xticklabels = [
     ["0", "0.5", "1"],
     ["0", "0.5", "1"],
     [r"$10^{-6}$", r"$10^{-4}$", r"$10^{-2}$", r"$10^{0}$"],
-    ["1.5", "2", "2.5", "3", "3.5", "4"],
+    ["-4", "-3.5", "-3", "-2.5", "-2", "-1.5"],
     ["1", "7", "13", "19"],
 ]
 convert_to_log = [False, False, True, False, False]
@@ -91,19 +94,19 @@ for i, m in enumerate(models):
         data = json.load(file)
     var = np.array(data[keys[i]], dtype=float)
     b = np.array(data["beta"], dtype=float)
-    sps = np.array(data["sps"], dtype=float)
+    recovery_metric = np.array(data[metric_name], dtype=float)
 
     if convert_to_log[i]:
         var = np.log10(var)
 
     for j, cf in enumerate(cfs):
-        sps_summary = sps[j].mean(axis=2).T
+        recovery_average = recovery_metric[j].mean(axis=2).T
         ax = fig.add_subplot(gs[j + 1, i])
         im = ax.imshow(
-            to_imshow_orientation(sps_summary),
+            to_imshow_orientation(recovery_average),
             extent=(min(var), max(var), min(b), max(b)),
-            vmin=0,
-            vmax=1,
+            vmin=axis_limits[0],
+            vmax=axis_limits[1],
             aspect="auto",
             cmap=cmap,
         )
@@ -127,7 +130,7 @@ for i, m in enumerate(models):
 cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.57])
 cbar = fig.colorbar(im, cax=cbar_ax)
 cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=25)
-cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
+# cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
@@ -135,5 +138,6 @@ for i, m in enumerate(models):
     ax.set_title(titles[i])
 
 
-plt.savefig("Figures/Fig2/generative_models_sps.png", dpi=1000)
-plt.savefig("Figures/Fig2/generative_models_sps.pdf", dpi=1000)
+plt.savefig(f"Figures/Fig2/generative_models_{metric_name}.png", dpi=1000)
+plt.savefig(f"Figures/Fig2/generative_models_{metric_name}.pdf", dpi=1000)
+# plt.show()
