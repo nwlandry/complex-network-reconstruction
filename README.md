@@ -1,5 +1,7 @@
 # modeling-and-inferring-higher-order-contagion-spread
 
+THIS IS A RAD PROJECT!
+
 Some things:
 
 * To run the unit tests, you need to pip install the package locally. Navigate to the local folder on your computer and run "pip install -e ."

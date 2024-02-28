@@ -76,3 +76,10 @@ def density(A):
 
 def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
+
+
+def auroc(samples,A):
+    Q = samples.mean(axis=0)
+    A = A.flatten()
+    Q = Q.flatten()
+    return roc_auc_score(A,Q)

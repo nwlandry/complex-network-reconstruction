@@ -5,6 +5,7 @@ import numpy as np
 from scipy.sparse import csr_array
 from scipy.sparse.csgraph import reverse_cuthill_mckee
 from scipy.stats import rv_discrete
+from sklearn.metrics import roc_auc_score
 
 from .contagion import *
 from .generative import erdos_renyi
