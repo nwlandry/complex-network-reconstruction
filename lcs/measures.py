@@ -29,11 +29,20 @@ def samplewise_posterior_similarity(samples, A):
 def f_score(samples, A, normalize=False, rho_guess=0.5):
     p = precision(samples, A)
     r = recall(samples, A)
-    f = 2 * p * r / (p + r)
+
+    if np.isnan(p) or np.isnan(r):
+        f = np.nan
+    else:
+        f = 2 * p * r / (p + r)
+
     if normalize:
         rho = density(A)
         # https://stats.stackexchange.com/questions/390200/what-is-the-baseline-of-the-f1-score-for-a-binary-classifier
-        f_random = 2 * rho * rho_guess / (rho + rho_guess)
+        if rho + rho_guess > 0:
+            f_random = 2 * rho * rho_guess / (rho + rho_guess)
+        else:
+            f_random = 0
+
         return f / f_random
     else:
         return f
@@ -43,14 +52,20 @@ def precision(samples, A):
     Q = samples.mean(axis=0)
     tp = np.sum(Q * A)
     fp = np.sum(Q * (1 - A))
-    return tp / (tp + fp)
+    if tp + fp > 0:
+        return tp / (tp + fp)
+    else:
+        return np.nan
 
 
 def recall(samples, A):
     Q = samples.mean(axis=0)
     tp = np.sum(Q * A)
     fn = np.sum((1 - Q) * A)
-    return tp / (tp + fn)
+    if tp + fn > 0:
+        return tp / (tp + fn)
+    else:
+        return np.nan
 
 
 def fraction_of_correct_entries(samples, A, normalize=False, rho_guess=0.5):
@@ -80,7 +95,10 @@ def hamming_distance(A1, A2):
 
 
 def auroc(samples, A):
+    n = A.shape[0]
     Q = samples.mean(axis=0)
-    A = A.flatten()
-    Q = Q.flatten()
-    return roc_auc_score(A, Q)
+    y_true = A[np.tril_indices(n, -1)]
+    y_score = Q[np.tril_indices(n, -1)]
+    if len(np.unique(y_true)) == 1:
+        return np.nan
+    return roc_auc_score(y_true, y_score)
