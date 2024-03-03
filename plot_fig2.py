@@ -8,7 +8,7 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-metric_name = "fce-norm-random"
+metric_name = "fs-norm-random"
 axis_limits = [0, 2]
 
 fs.set_colors()
@@ -49,21 +49,21 @@ def visualize_networks(i, ax):
             A = erdos_renyi(n, 0.1, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 1:
-            A = sbm(n, 10, 0.9, seed=0)
-            e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 2:
-            A = watts_strogatz(n, 6, 0.03, seed=0)
-            e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 3:
             A = truncated_power_law_configuration(n, 2, 20, 3, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 4:
+        case 2:
             k = 2  # each node belongs to two cliques
             clique_size = 4
             k1 = k * np.ones(n)
             num_cliques = round(sum(k1) / clique_size)
             k2 = clique_size * np.ones(num_cliques)
             A = clustered_network(k1, k2, seed=0)
+            e = [(i, j) for i, j in nx.Graph(A).edges]
+        case 3:
+            A = sbm(n, 10, 0.9, seed=0)
+            e = [(i, j) for i, j in nx.Graph(A).edges]
+        case 4:
+            A = watts_strogatz(n, 6, 0.03, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
 
     H = xgi.Hypergraph(e)
@@ -76,13 +76,13 @@ def visualize_networks(i, ax):
         case 0:
             pos = xgi.pairwise_spring_layout(H, seed=2)
         case 1:
-            pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=2))
+            pos = xgi.pairwise_spring_layout(H, seed=2)
         case 2:
-            pos = xgi.circular_layout(H)
+            pos = xgi.pairwise_spring_layout(H, seed=2)
         case 3:
-            pos = xgi.pairwise_spring_layout(H, seed=2)
+            pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=2))
         case 4:
-            pos = xgi.pairwise_spring_layout(H, seed=2)
+            pos = xgi.circular_layout(H)
     xgi.draw(H, ax=ax, pos=pos, node_size=node_size, node_lw=node_lw, dyad_lw=dyad_lw)
 
 
