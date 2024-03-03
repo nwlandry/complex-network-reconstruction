@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.special import binom
+from sklearn.metrics import roc_auc_score
 
 
 def posterior_similarity(samples, A):
@@ -78,8 +79,8 @@ def hamming_distance(A1, A2):
     return np.sum(np.abs(A1 - A2)) / 2
 
 
-def auroc(samples,A):
+def auroc(samples, A):
     Q = samples.mean(axis=0)
     A = A.flatten()
     Q = Q.flatten()
-    return roc_auc_score(A,Q)
+    return roc_auc_score(A, Q)
