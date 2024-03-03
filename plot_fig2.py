@@ -8,7 +8,7 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-metric_name = "fce-norm-density"
+metric_name = "fce-norm-random"
 axis_limits = [0, 2]
 
 fs.set_colors()
@@ -16,30 +16,30 @@ fs.set_fonts({"font.family": "sans-serif"})
 cmap = fs.cmap
 
 
-models = ["Erdos-Renyi", "SBM", "Watts-Strogatz", "CM", "clustered_network"]
+models = ["Erdos-Renyi", "CM", "clustered_network", "SBM", "Watts-Strogatz"]
 cfs = [
     "SIS",
     r"Threshold, $\tau=2$",
     r"Threshold, $\tau=3$",
 ]
-keys = ["p", "epsilon", "p", "alpha", "size"]
-titles = ["Erdös-Rényi", "SBM", "Small-World", "Power-law CM", "Clustered"]
-labels = [r"$p$", r"$\epsilon$", r"$p$", r"$\alpha$", r"$s$"]
+keys = ["p", "alpha", "size", "epsilon", "p"]
+titles = ["Erdös-Rényi", "Power-law CM", "Clustered", "SBM", "Small-World"]
+labels = [r"$p$", r"$\alpha$", r"$s$", r"$\epsilon$", r"$p$"]
 xticks = [
     [0, 0.5, 1],
-    [0, 0.5, 1],
-    [-6, -4, -2, 0],
     [-4, -3.5, -3, -2.5, -2, -1.5],
     [1, 7, 13, 19],
+    [0, 0.5, 1],
+    [-6, -4, -2, 0],
 ]
 xticklabels = [
     ["0", "0.5", "1"],
-    ["0", "0.5", "1"],
-    [r"$10^{-6}$", r"$10^{-4}$", r"$10^{-2}$", r"$10^{0}$"],
     ["-4", "-3.5", "-3", "-2.5", "-2", "-1.5"],
     ["1", "7", "13", "19"],
+    ["0", "0.5", "1"],
+    [r"$10^{-6}$", r"$10^{-4}$", r"$10^{-2}$", r"$10^{0}$"],
 ]
-convert_to_log = [False, False, True, False, False]
+convert_to_log = [False, False, False, False, True]
 
 
 def visualize_networks(i, ax):
