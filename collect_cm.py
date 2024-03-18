@@ -58,6 +58,7 @@ def get_metrics(f, dir, c_dict, b_dict, a_dict, r_dict):
     rho = density(A)
 
     ps = posterior_similarity(samples, A)
+    sps = samplewise_posterior_similarity(samples, A)
     fs = f_score(samples, A)
     fs_norm_random = f_score(samples, A, normalize=True, rho_guess=0.5)
     fs_norm_density = f_score(samples, A, normalize=True, rho_guess=rho)
@@ -68,9 +69,9 @@ def get_metrics(f, dir, c_dict, b_dict, a_dict, r_dict):
     fc_norm_density = fraction_of_correct_entries(
         samples, A, normalize=True, rho_guess=rho
     )
-
     pr = precision(samples, A)
     re = recall(samples, A)
+    ar = auroc(samples, A)
 
     print((i, j, k, l), flush=True)
 
@@ -88,6 +89,8 @@ def get_metrics(f, dir, c_dict, b_dict, a_dict, r_dict):
         fc_norm_density,
         pr,
         re,
+        sps,
+        ar,
     )
 
 
@@ -110,6 +113,8 @@ fce_norm_random = np.zeros((n_c, n_b, n_a, n_r))
 fce_norm_density = np.zeros((n_c, n_b, n_a, n_r))
 pr = np.zeros((n_c, n_b, n_a, n_r))
 re = np.zeros((n_c, n_b, n_a, n_r))
+sps = np.zeros((n_c, n_b, n_a, n_r))
+ar = np.zeros((n_c, n_b, n_a, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
@@ -131,6 +136,8 @@ for (
     metric7,
     metric8,
     metric9,
+    metric10,
+    metric11,
 ) in data:
     ps[i, j, k, l] = metric1
     fs[i, j, k, l] = metric2
@@ -141,6 +148,8 @@ for (
     fce_norm_density[i, j, k, l] = metric7
     pr[i, j, k, l] = metric8
     re[i, j, k, l] = metric9
+    sps[i, j, k, l] = metric10
+    ar[i, j, k, l] = metric11
 
 data = {}
 data["beta"] = list(b_dict)
@@ -154,6 +163,8 @@ data["fce-norm-random"] = fce_norm_random.tolist()
 data["fce-norm-density"] = fce_norm_density.tolist()
 data["precision"] = pr.tolist()
 data["recall"] = re.tolist()
+data["sps"] = sps.tolist()
+data["auroc"] = ar.tolist()
 datastring = json.dumps(data)
 
 with open("Data/cm.json", "w") as output_file:
