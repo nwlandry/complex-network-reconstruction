@@ -85,6 +85,14 @@ def degrees(A):
     return A.sum(axis=0)
 
 
+def clustering_coefficient(A):
+    T = np.diag(A @ A @ A)
+    k = degrees(A)
+    D = np.multiply(k, k - 1)
+    C = np.divide(T, D, out=np.zeros_like(T), where=D!=0)
+    return C
+
+
 def power_law(n, minval, maxval, alpha, seed=None):
     if seed is not None:
         np.random.seed(seed)
