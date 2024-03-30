@@ -1,111 +1,122 @@
-import json
-
+import cmasher as cmr
 import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
-import xgi
-from matplotlib.gridspec import GridSpec
+import seaborn as sns
 
-import fig_settings as fs
 from lcs import *
 
-fs.set_colors()
-fs.set_fonts({"font.family": "sans-serif"})
-cmap = fs.cmap
+with open(f"Data/zkc_tmax_comparison.json") as file:
+    data = json.load(file)
+    tmax = np.array(data["tmax"], dtype=float)
+    A = np.array(data["A"], dtype=float)[0, 0, 0]
+    Q = np.array(data["Q"], dtype=float)
 
+n_c, n_t, n_r, n, _ = Q.shape
 
-models = ["SBM", "Watts-Strogatz"]
-cfs = [
-    "SIS",
-    r"Threshold, $\tau=2$",
-    r"Threshold, $\tau=3$",
-]
-keys = ["epsilon", "p"]
-titles = ["SBM", "Small-World"]
-labels = [r"$\epsilon$", r"$p$"]
-xticks = [
-    [0, 0.5, 1],
-    [-6, -4, -2, 0],
-]
-xticklabels = [
-    ["0", "0.5", "1"],
-    [r"$10^{-6}$", r"$10^{-4}$", r"$10^{-2}$", r"$10^{0}$"],
-]
-convert_to_log = [False, True]
+G = nx.Graph(A.astype(int))
 
+cc = clustering_coefficient(A)
+deg = degrees(A)
 
-def visualize_networks(i, ax):
-    n = 50
-    match i:
-        case 0:
-            A = sbm(n, 10, 0.9, seed=0)
-            e = [(i, j) for i, j in nx.Graph(A).edges]
-        case 1:
-            A = watts_strogatz(n, 6, 0.03, seed=0)
-            e = [(i, j) for i, j in nx.Graph(A).edges]
+kc = nx.core_number(G)
+coreness = np.zeros(n)
+coreness[list(kc)] = list(kc.values())
 
-    H = xgi.Hypergraph(e)
+# plotting settings
 
-    node_size = 4
-    dyad_lw = 0.5
-    node_lw = 0.5
+colormap = cmr.redshift
+clist = [colormap(0.15), colormap(0.3), colormap(0.7), colormap(0.85)]
 
-    match i:
-        case 0:
-            pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=2))
-        case 1:
-            pos = xgi.circular_layout(H)
-    xgi.draw(H, ax=ax, pos=pos, node_size=node_size, node_lw=node_lw, dyad_lw=dyad_lw)
+## Coreness difference
 
+ms = 4
+alpha = 1
 
-fig = plt.figure(figsize=(6, 9))
-gs = GridSpec(len(cfs) + 1, len(models), wspace=0.2, hspace=0.2)
+x = tmax
 
-for i, m in enumerate(models):
-    with open(f"Data/{m.lower()}.json") as file:
-        data = json.load(file)
-    var = np.array(data[keys[i]], dtype=float)
-    b = np.array(data["beta"], dtype=float)
-    sps = np.array(data["sps"], dtype=float)
+y1 = np.zeros([n_r, n_t, n])
+y2 = np.zeros([n_r, n_t, n])
+for i in range(n_r):
+    y1[i] = [nodal_performance(Q[0, j, i], A) for j in range(n_t)]
+    y2[i] = [nodal_performance(Q[1, j, i], A) for j in range(n_t)]
 
-    if convert_to_log[i]:
-        var = np.log10(var)
+# plt.figure(figsize=(4, 3))
+plt.figure(figsize=(4, 6))
+plt.subplot(211)
 
-    for j, cf in enumerate(cfs):
-        sps_summary = sps[j].mean(axis=2).T
-        ax = fig.add_subplot(gs[j + 1, i])
-        im = ax.imshow(
-            to_imshow_orientation(sps_summary),
-            extent=(min(var), max(var), min(b), max(b)),
-            vmin=0,
-            vmax=1,
-            aspect="auto",
-            cmap=cmap,
-        )
-        ax.set_xlim([min(var), max(var)])
-        ax.set_ylim([min(b), max(b)])
-        ax.set_xticks(xticks[i], xticklabels[i])
-        ax.set_yticks([0, 0.5, 1], [0, 0.5, 1])
+core_values = np.unique(coreness)
 
-        if i == 0:
-            ax.set_ylabel(f"{cfs[j]}\n" + r"$\beta$")
-        else:
-            ax.set_yticks([], [])
+for idx, k in enumerate(core_values):
+    n_k = sum(coreness == k)
+    y = np.zeros([n_r, n_t, n_k])
+    for i in range(n_r):
+        y[i] = (y1[i, :, coreness == k] - y2[i, :, coreness == k]).T
+    ymean = y.mean(axis=2).mean(axis=0)
+    ystd = y.mean(axis=2).std(axis=0)
+    plt.semilogx(
+        x,
+        ymean,
+        "o-",
+        markersize=ms,
+        color=clist[idx],
+        alpha=alpha,
+        label=f"{int(k)}-core nodes",
+    )
+plt.semilogx(tmax, np.zeros_like(tmax), "k--")
 
-        if j + 1 == len(cfs):
-            ax.set_xlabel(labels[i])
-        else:
-            ax.set_xticks([], [])
+plt.xlim([tmax.min() - 0.5, tmax.max() + 1000])
+plt.yticks([-0.2, -0.1, 0, 0.1])
+plt.legend()
+plt.ylabel(r"$\varepsilon_{SC} - \varepsilon_{CC}$")
+plt.xlabel(r"$t_{max}$")
+sns.despine()
+# plt.tight_layout()
+# plt.savefig("Figures/Fig3/figure3a.png", dpi=1000)
+# plt.savefig("Figures/Fig3/figure3a.pdf", dpi=1000)
 
-cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.57])
-cbar = fig.colorbar(im, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=25)
-cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
+plt.subplot(212)
+# Degree difference
+ms = 4
+alpha = 1
 
-for i, m in enumerate(models):
-    ax = fig.add_subplot(gs[0, i])
-    visualize_networks(i, ax)
-    ax.set_title(titles[i])
+x = tmax
+y1 = np.zeros([n_r, n_t, n])
+y2 = np.zeros([n_r, n_t, n])
+for i in range(n_r):
+    y1[i] = [nodal_performance(Q[0, j, i], A) for j in range(n_t)]
+    y2[i] = [nodal_performance(Q[1, j, i], A) for j in range(n_t)]
 
-plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
-plt.savefig("Figures/Fig3/fig3.pdf", dpi=1000)
-plt.show()
+# plt.figure(figsize=(4, 3))
+
+deg_bounds = [[1, 5], [6, 10], [11, 15], [16, 20]]
+for idx, d in enumerate(deg_bounds):
+    n_d = sum((d[0] <= deg) & (deg <= d[1]))
+    y = np.zeros([n_r, n_t, n_d])
+    for i in range(n_r):
+        y[i] = (
+            y1[i, :, (d[0] <= deg) & (deg <= d[1])]
+            - y2[i, :, (d[0] <= deg) & (deg <= d[1])]
+        ).T
+    ymean = y.mean(axis=2).mean(axis=0)
+    ystd = y.mean(axis=2).std(axis=0)
+    plt.semilogx(
+        x,
+        ymean,
+        "o-",
+        markersize=ms,
+        color=clist[idx],
+        alpha=alpha,
+        label=rf"{int(d[0])}$\leq k\leq${int(d[1])}",
+    )
+plt.semilogx(tmax, np.zeros_like(tmax), "k--")
+
+plt.xlim([tmax.min() - 0.5, tmax.max() + 1000])
+plt.yticks([-0.1, 0, 0.1])
+plt.ylabel(r"$\varepsilon_{SC} - \varepsilon_{CC}$")
+plt.xlabel(r"$t_{max}$")
+plt.legend()
+plt.tight_layout()
+sns.despine()
+plt.savefig("Figures/Fig3/figure3b.png", dpi=1000)
+plt.savefig("Figures/Fig3/figure3b.pdf", dpi=1000)

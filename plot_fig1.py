@@ -39,7 +39,7 @@ x0[0] = 1
 
 x = contagion_process(A, gamma, c, x0, tmin=0, tmax=100, random_seed=2)
 
-infected_color = "C0"
+infected_color = "C1"
 susceptible_color = "white"
 subgraph_color = "black"
 graph_color = (0.1, 0.1, 0.1, 0.1)
@@ -53,7 +53,7 @@ nbrs.add(i)
 pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.3))
 node_fc = [infected_color if x[t, i] else susceptible_color for i in H.nodes]
 node_ec = [subgraph_node_lc if n in nbrs else graph_node_lc for n in H.nodes]
-node_fc[12] = "C1"
+node_fc[12] = "C0"
 
 dyad_color = [subgraph_color if e in sg else graph_color for e in H.edges]
 
@@ -61,7 +61,7 @@ dyad_color = [subgraph_color if e in sg else graph_color for e in H.edges]
 xgi.draw(
     H,
     pos=pos,
-    node_size=7.5,
+    node_size=6.5,
     node_fc=node_fc,
     dyad_color=dyad_color,
     dyad_lw=0.5,
@@ -126,7 +126,6 @@ ax2.errorbar(nus, c2_mean, err_c2, color="C1", fmt="o")
 ax2.set_xticks(np.arange(0, n, 5))
 ax2.set_xlabel(r"$\nu$")
 ax2.set_ylabel(r"$c(\nu)$")
-
 
 ax2.set_xlim([0, kmax + 2.5])
 ax2.set_ylim([0, 1])

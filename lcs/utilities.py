@@ -79,12 +79,6 @@ def nu_distribution(x, A):
     return mat
 
 
-def degrees(A):
-    if not isinstance(A, np.ndarray):
-        A = A.todense()
-    return A.sum(axis=0)
-
-
 def power_law(n, minval, maxval, alpha, seed=None):
     if seed is not None:
         np.random.seed(seed)

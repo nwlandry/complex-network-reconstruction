@@ -85,6 +85,10 @@ def fraction_of_correct_entries(samples, A, normalize=False, rho_guess=0.5):
         return fce
 
 
+def nodal_performance(Q, A):
+    return np.abs(Q - A).sum(axis=0) / A.shape[0]
+
+
 def density(A):
     n = A.shape[0]
     return (A.sum() / 2) / binom(n, 2)
@@ -102,3 +106,17 @@ def auroc(samples, A):
     if len(np.unique(y_true)) == 1:
         return np.nan
     return roc_auc_score(y_true, y_score)
+
+
+def degrees(A):
+    if not isinstance(A, np.ndarray):
+        A = A.todense()
+    return A.sum(axis=0)
+
+
+def clustering_coefficient(A):
+    T = np.diag(A @ A @ A)
+    k = degrees(A)
+    D = np.multiply(k, k - 1)
+    C = np.divide(T, D, out=np.zeros_like(T), where=D != 0)
+    return C
