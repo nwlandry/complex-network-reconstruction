@@ -8,11 +8,20 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-metric_name = "fs-norm-random"
+metric_name = "fce-norm-random"
 axis_limits = [0, 2]
 
+axislabel_fontsize = 20
+tick_fontsize = 18
+fs.set_fonts(
+    {
+        "font.family": "sans-serif",
+        "axes.labelsize": axislabel_fontsize,
+        "xtick.labelsize": tick_fontsize,
+        "ytick.labelsize": tick_fontsize,
+    }
+)
 fs.set_colors()
-fs.set_fonts({"font.family": "sans-serif"})
 cmap = fs.cmap
 
 
@@ -37,7 +46,12 @@ xticklabels = [
     ["-4", "-3.5", "-3", "-2.5", "-2", "-1.5"],
     ["1", "7", "13", "19"],
     ["0", "0.5", "1"],
-    [r"$10^{-6}$", r"$10^{-4}$", r"$10^{-2}$", r"$10^{0}$"],
+    [
+        r"$\mathregular{10^{-6}}$",
+        r"$\mathregular{10^{-2}}$",
+        r"$\mathregular{10^{-2}}$",
+        r"$\mathregular{10^{0}}$",
+    ],
 ]
 convert_to_log = [False, False, False, False, True]
 
@@ -87,6 +101,8 @@ def visualize_networks(i, ax):
 
 
 fig = plt.figure(figsize=(16, 10))
+plt.subplots_adjust(left=0.09, right=0.9, bottom=0.1, top=0.95, wspace=0.4, hspace=0.4)
+
 gs = GridSpec(len(cfs) + 1, len(models), wspace=0.2, hspace=0.2)
 
 for i, m in enumerate(models):
@@ -125,12 +141,10 @@ for i, m in enumerate(models):
         else:
             ax.set_xticks([], [])
 
-# fig.subplots_adjust(bottom=0.15, top=0.95, left=0.1, right=0.8, wspace=0.1, hspace=0.3)
-# cbar_ax = fig.add_axes([0.82, 0.15, 0.02, 0.8])
-cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.57])
+cbar_ax = fig.add_axes([0.91, 0.1, 0.015, 0.63])
 cbar = fig.colorbar(im, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=25)
-# cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
+cbar.set_label(r"Performance", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
+cbar_ax.set_yticks([0, 0.5, 1, 1.5, 2], [0, 0.5, 1, 1.5, 2], fontsize=tick_fontsize)
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])

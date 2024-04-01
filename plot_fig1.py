@@ -24,7 +24,7 @@ fs.set_colors()
 cmap = fs.cmap
 
 fig = plt.figure(figsize=(8, 6))
-plt.subplots_adjust(left=0.1, right=0.86, bottom=0.1, top=0.9, wspace=0.4, hspace=0.4)
+plt.subplots_adjust(left=0.1, right=0.86, bottom=0.15, top=0.95, wspace=0.4, hspace=0.4)
 
 gs = GridSpec(2, 2, hspace=0.4, wspace=0.4)
 
@@ -178,8 +178,15 @@ ax3.fill_between(
     alpha=0.3,
     color="C1",
 )
-ax3.set_ylabel("F-Score")
+ax3.set_ylabel("Performance")
 ax3.set_xlabel(r"$t_{max}$")
+ax3.set_xlim([10, 10**5])
+ax3.set_xticks(
+    [10, 1000, 100000],
+    [r"$\mathregular{10^1}$", r"$\mathregular{10^3}$", r"$\mathregular{10^5}$"],
+)
+ax3.set_ylim([0, 1])
+ax3.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 ax3.legend(loc="upper left")
 sns.despine()
@@ -217,11 +224,11 @@ ax4.set_xticks([0, 0.5, 1], [0, 0.5, 1])
 ax4.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 
-cbar_ax = fig.add_axes([0.875, 0.11, 0.015, 0.32])  # x, y, width, height
+cbar_ax = fig.add_axes([0.875, 0.15, 0.015, 0.335])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
+cbar.set_label(r"Performance", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
 cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=tick_fontsize)
 
-# plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
-# plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)
-plt.show()
+plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
+plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)
+# plt.show()
