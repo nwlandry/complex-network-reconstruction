@@ -10,11 +10,22 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-fs.set_fonts({"font.family": "sans-serif"})
+axislabel_fontsize = 20
+tick_fontsize = 18
+fs.set_fonts(
+    {
+        "font.family": "sans-serif",
+        "axes.labelsize": axislabel_fontsize,
+        "xtick.labelsize": tick_fontsize,
+        "ytick.labelsize": tick_fontsize,
+    }
+)
 fs.set_colors()
 cmap = fs.cmap
 
 fig = plt.figure(figsize=(8, 6))
+plt.subplots_adjust(left=0.1, right=0.86, bottom=0.1, top=0.9, wspace=0.4, hspace=0.4)
+
 gs = GridSpec(2, 2, hspace=0.4, wspace=0.4)
 
 """
@@ -129,6 +140,7 @@ ax2.set_ylabel(r"$c(\nu)$")
 
 ax2.set_xlim([0, kmax + 2.5])
 ax2.set_ylim([0, 1])
+ax2.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 ax2.legend(loc="upper left")
 
@@ -202,13 +214,14 @@ ax4.set_xlabel(r"$f$")
 ax4.set_ylabel(r"$\beta$")
 
 ax4.set_xticks([0, 0.5, 1], [0, 0.5, 1])
-ax4.set_yticks([0, 0.25, 0.5, 0.75, 1], [0, 0.25, 0.5, 0.75, 1])
+ax4.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 
-cbar_ax = fig.add_axes([0.91, 0.11, 0.015, 0.32])  # x, y, width, height
+cbar_ax = fig.add_axes([0.875, 0.11, 0.015, 0.32])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(r"F-Score", fontsize=15, rotation=270, labelpad=15)
-cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=15)
+cbar.set_label(r"F-Score", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
+cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=tick_fontsize)
 
-plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
-plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)
+# plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
+# plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)
+plt.show()
