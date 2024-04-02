@@ -229,6 +229,6 @@ cbar = plt.colorbar(c, cax=cbar_ax)
 cbar.set_label(r"Performance", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
 cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=tick_fontsize)
 
-plt.savefig("Figures/Fig1/illustration.png", dpi=1000)
-plt.savefig("Figures/Fig1/illustration.pdf", dpi=1000)
+plt.savefig("Figures/Fig1/fig1.png", dpi=1000)
+plt.savefig("Figures/Fig1/fig1.pdf", dpi=1000)
 # plt.show()

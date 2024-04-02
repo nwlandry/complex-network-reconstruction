@@ -12,6 +12,9 @@ with open(f"Data/zkc_tmax_comparison.json") as file:
     A = np.array(data["A"], dtype=float)[0, 0, 0]
     Q = np.array(data["Q"], dtype=float)
 
+xmin = tmax.min() - 1.2
+xmax = tmax.max() + 15000
+
 n_c, n_t, n_r, n, _ = Q.shape
 
 G = nx.Graph(A.astype(int))
@@ -63,10 +66,21 @@ for idx, k in enumerate(core_values):
         alpha=alpha,
         label=f"{int(k)}-core nodes",
     )
-plt.semilogx(tmax, np.zeros_like(tmax), "k--")
+plt.semilogx([xmin, xmax], [0, 0], "k--")
 
-plt.xlim([tmax.min() - 0.5, tmax.max() + 1000])
+plt.xlim([xmin, xmax])
+plt.xticks(
+    [10**1, 10**2, 10**3, 10**4, 10**5],
+    [
+        r"$\mathregular{10^1}$",
+        r"$\mathregular{10^2}$",
+        r"$\mathregular{10^3}$",
+        r"$\mathregular{10^4}$",
+        r"$\mathregular{10^5}$",
+    ],
+)
 plt.yticks([-0.2, -0.1, 0, 0.1])
+
 plt.legend()
 plt.ylabel(r"$\varepsilon_{SC} - \varepsilon_{CC}$")
 plt.xlabel(r"$t_{max}$")
@@ -74,6 +88,7 @@ sns.despine()
 # plt.tight_layout()
 # plt.savefig("Figures/Fig3/figure3a.png", dpi=1000)
 # plt.savefig("Figures/Fig3/figure3a.pdf", dpi=1000)
+
 
 plt.subplot(212)
 # Degree difference
@@ -109,14 +124,26 @@ for idx, d in enumerate(deg_bounds):
         alpha=alpha,
         label=rf"{int(d[0])}$\leq k\leq${int(d[1])}",
     )
-plt.semilogx(tmax, np.zeros_like(tmax), "k--")
+plt.semilogx([xmin, xmax], [0, 0], "k--")
 
-plt.xlim([tmax.min() - 0.5, tmax.max() + 1000])
+plt.xlim([xmin, xmax])
+plt.yticks([-0.2, -0.1, 0, 0.1])
+plt.xticks(
+    [10**1, 10**2, 10**3, 10**4, 10**5],
+    [
+        r"$\mathregular{10^1}$",
+        r"$\mathregular{10^2}$",
+        r"$\mathregular{10^3}$",
+        r"$\mathregular{10^4}$",
+        r"$\mathregular{10^5}$",
+    ],
+)
 plt.yticks([-0.1, 0, 0.1])
 plt.ylabel(r"$\varepsilon_{SC} - \varepsilon_{CC}$")
 plt.xlabel(r"$t_{max}$")
 plt.legend()
 plt.tight_layout()
 sns.despine()
-plt.savefig("Figures/Fig3/figure3b.png", dpi=1000)
-plt.savefig("Figures/Fig3/figure3b.pdf", dpi=1000)
+plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
+plt.savefig("Figures/Fig3/fig3.pdf", dpi=1000)
+# plt.show()
