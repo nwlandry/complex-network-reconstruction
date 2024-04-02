@@ -13,9 +13,9 @@ for f in os.listdir(data_dir):
 
 n_processes = len(os.sched_getaffinity(0))
 
-n_t = 33
-tmax = np.logspace(1, 5, n_t).astype(int)
-realizations = 100
+n_t = 25
+tmax = np.logspace(1, 4, n_t).astype(int)
+realizations = 1000
 
 A = zkc()
 n = A.shape[0]
@@ -27,8 +27,8 @@ rho0 = 1
 
 # MCMC parameters
 burn_in = 100000
-nsamples = 100
-skip = 10000
+nsamples = 1000
+skip = 1000
 p_c = np.ones((2, n))
 p_rho = np.array([1, 1])
 
