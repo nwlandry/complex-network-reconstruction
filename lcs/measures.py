@@ -2,17 +2,21 @@ import numpy as np
 from scipy.special import binom
 from sklearn.metrics import precision_recall_curve, auc, average_precision_score,roc_auc_score
 
-
 def posterior_similarity(samples, A):
     """
-    Calculates the posterior similarity between the given samples and a target matrix A.
+    Calculate the posterior similarity between the given samples and a target matrix A.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of samples.
-    - A (numpy.ndarray): The target matrix.
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of samples.
+    A : numpy.ndarray
+        The target matrix.
 
-    Returns:
-    - float: The posterior similarity value between 0 and 1.
+    Returns
+    -------
+    float
+        The posterior similarity value between 0 and 1.
     """
     meanA = samples.mean(axis=0)
     num = np.sum(np.abs(A - meanA))
@@ -25,14 +29,19 @@ def posterior_similarity(samples, A):
 
 def samplewise_posterior_similarity(samples, A):
     """
-    Calculates the posterior similarity between the given samples and a target matrix A.
+    Calculate the posterior similarity between the given samples and a target matrix A.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of sample adjacency matricies.
-    - A (numpy.ndarray): The adjacency target matrix
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of sample adjacency matrices.
+    A : numpy.ndarray
+        The adjacency target matrix.
 
-    Returns:
-    - f(float): The posterior similarity value between 0 and 1.
+    Returns
+    -------
+    float
+        The posterior similarity value between 0 and 1.
     """
     f = 0
     n = samples.shape[0]
@@ -50,14 +59,21 @@ def f_score(samples, A, normalize=False, rho_guess=0.5):
     """
     Calculate the F-score, a measure of the accuracy of a binary classifier, given the precision and recall.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of sample adjacency matricies.
-    - A (numpy.ndarray): The adjacency target matrix
-    - normalize(bool): Whether to normalize the F-score. Default is False.
-    - rho_guess(float): The guess for the density. Default is 0.5.
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of sample adjacency matrices.
+    A : numpy.ndarray
+        The adjacency target matrix.
+    normalize : bool, optional
+        Whether to normalize the F-score. Default is False.
+    rho_guess : float, optional
+        The guess for the density. Default is 0.5.
 
-    Returns:
-    - The F-score.
+    Returns
+    -------
+    float
+        The F-score.
     """
     p = precision(samples, A)
     r = recall(samples, A)
@@ -84,13 +100,17 @@ def precision(samples, A):
     """
     Calculate the precision of the network reconstruction.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of sample adjacency matricies.
-    - A (numpy.ndarray): The adjacency target matrix
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of sample adjacency matrices.
+    A : numpy.ndarray
+        The adjacency target matrix.
 
-    Returns:
-    - float: The precision score.
-
+    Returns
+    -------
+    float
+        The precision score.
     """
     Q = samples.mean(axis=0)
     tp = np.sum(Q * A)
@@ -105,13 +125,17 @@ def recall(samples, A):
     """
     Calculate the recall of the network reconstruction.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of sample adjacency matricies.
-    - A (numpy.ndarray): The adjacency target matrix
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of sample adjacency matrices.
+    A : numpy.ndarray
+        The adjacency target matrix.
 
-    Returns:
-    - float: The recall score.
-
+    Returns
+    -------
+    float
+        The recall score.
     """
     Q = samples.mean(axis=0)
     tp = np.sum(Q * A)
@@ -126,16 +150,20 @@ def fraction_of_correct_entries(samples, A, normalize=False, rho_guess=0.5):
     """
     Calculate the fraction of correct entries in a matrix.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of sample adjacency matricies.
-    - A (numpy.ndarray): The adjacency target matrix
-    - normalize(bool), optional:
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of sample adjacency matrices.
+    A : numpy.ndarray
+        The adjacency target matrix.
+    normalize : bool, optional
         Whether to normalize the fraction of correct entries. Default is False.
-    - rho_guess(float) optional:
+    rho_guess : float, optional
         The guess for the density of the ground truth matrix. Default is 0.5.
 
-    Returns:
-    - fce(float):
+    Returns
+    -------
+    float
         The fraction of correct entries in the matrix. If `normalize` is True, the fraction is normalized.
     """
     n = A.shape[0]
@@ -158,12 +186,17 @@ def nodal_performance(Q, A):
     """
     Calculate the nodal performance of a network.
 
-    Parameters:
-    Q (ndarray): The predicted values for each node in the network.
-    A (ndarray): The actual values for each node in the network.
+    Parameters
+    ----------
+    Q : ndarray
+        The predicted values for each node in the network.
+    A : ndarray
+        The actual values for each node in the network.
 
-    Returns:
-    ndarray: The nodal performance, the average discrepancy for all edges connecting to a given node.
+    Returns
+    -------
+    ndarray
+        The nodal performance, the average discrepancy for all edges connecting to a given node.
     """
     return np.abs(Q - A).sum(axis=0) / A.shape[0]
 
@@ -172,12 +205,15 @@ def density(A):
     """
     Calculate the density of a graph represented by an adjacency matrix.
 
-    Parameters:
-    A (numpy.ndarray): The adjacency matrix of the graph.
+    Parameters
+    ----------
+    A : numpy.ndarray
+        The adjacency matrix of the graph.
 
-    Returns:
-    float: The density of the graph.
-
+    Returns
+    -------
+    float
+        The density of the graph.
     """
     n = A.shape[0]
     return (A.sum() / 2) / binom(n, 2)
@@ -185,14 +221,19 @@ def density(A):
 
 def hamming_distance(A1, A2):
     """
-    Calculates the Hamming distance between two adjacency matricies.
+    Calculate the Hamming distance between two adjacency matrices.
 
-    Parameters:
-    A1 (numpy.ndarray): First matrix.
-    A2 (numpy.ndarray): Second matrix.
+    Parameters
+    ----------
+    A1 : numpy.ndarray
+        First matrix.
+    A2 : numpy.ndarray
+        Second matrix.
 
-    Returns:
-    float: The Hamming distance between the two matricies.
+    Returns
+    -------
+    float
+        The Hamming distance between the two matrices.
     """
     return np.sum(np.abs(A1 - A2)) / 2
 
@@ -201,13 +242,17 @@ def auroc(samples, A):
     """
     Calculate the Area Under the Receiver Operating Characteristic Curve (AUROC) for a given set of samples and adjacency matrix.
 
-    Parameters:
-    samples (numpy.ndarray): Array of shape (m, n) representing m samples of n-dimensional feature vectors.
-    A (numpy.ndarray): Adjacency matrix of shape (n, n) representing the binary connections between nodes.
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        Array of shape (m, n) representing m samples of n-dimensional feature vectors.
+    A : numpy.ndarray
+        Adjacency matrix of shape (n, n) representing the binary connections between nodes.
 
-    Returns:
-    float: The AUROC value.
-
+    Returns
+    -------
+    float
+        The AUROC value.
     """
     n = A.shape[0]
     Q = samples.mean(axis=0)
@@ -222,13 +267,17 @@ def auprc(samples, A):
     """
     Calculate the Area Under the Precision-Recall Curve (AUPRC) for a given set of samples and an adjacency matrix.
 
-    Parameters:
-    - samples (numpy.ndarray): An array of sample adjacency matricies.
-    - A (numpy.ndarray): The adjacency target matrix
+    Parameters
+    ----------
+    samples : numpy.ndarray
+        An array of sample adjacency matrices.
+    A : numpy.ndarray
+        The adjacency target matrix.
 
-    Returns:
-    float: The AUPRC score.
-
+    Returns
+    -------
+    float
+        The AUPRC score.
     """
     n = A.shape[0]
     y_true = A[np.tril_indices(n, -1)]
@@ -243,15 +292,20 @@ def auprc(samples, A):
 
     return auprc_score
 
+
 def degrees(A):
     """
-    Calculates the degree of each node in a graph represented by the adjacency matrix A.
+    Calculate the degree of each node in a graph represented by the adjacency matrix A.
 
-    Parameters:
-    A (numpy.ndarray or scipy.sparse.csr_matrix): The adjacency matrix of the graph.
+    Parameters
+    ----------
+    A : numpy.ndarray or scipy.sparse.csr_matrix
+        The adjacency matrix of the graph.
 
-    Returns:
-    numpy.ndarray: An array containing the degree of each node in the graph.
+    Returns
+    -------
+    numpy.ndarray
+        An array containing the degree of each node in the graph.
     """
     if not isinstance(A, np.ndarray):
         A = A.todense()
@@ -260,13 +314,17 @@ def degrees(A):
 
 def clustering_coefficient(A):
     """
-    Calculates the clustering coefficient of a graph represented by an adjacency matrix.
+    Calculate the clustering coefficient of a graph represented by an adjacency matrix.
 
-    Parameters:
-    A (numpy.ndarray): The adjacency matrix of the graph.
+    Parameters
+    ----------
+    A : numpy.ndarray
+        The adjacency matrix of the graph.
 
-    Returns:
-    numpy.ndarray: The clustering coefficient of each node in the graph.
+    Returns
+    -------
+    numpy.ndarray
+        The clustering coefficient of each node in the graph.
     """
     T = np.diag(A @ A @ A)
     k = degrees(A)

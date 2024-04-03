@@ -26,17 +26,20 @@ def single_inference(
         c : ndarray
             A 1d vector of the contagion rates. Should be N x 1.
         b : float
-            The b parameter for the contagion process.
+           beta, the maximum infection rate for the complex contagion 
         rho0 : float
             The initial density of activated nodes.
         A : ndarray
             The adjacency matrix of the network.
         tmax : int
             The maximum time step for the contagion process.
-        p_c : ndarray
-            The parameters for the contagion probability function.
-        p_rho : ndarray
-            The parameters for the initial density function.
+        p_c : list of lists or ndarray, optional
+            A 2 x N array of the priors on each entry in the c vector, by default None.
+            If None, it assumes a uniform prior.
+        p_rho : list or ndarray, optional
+            A 2-array specifying the parameters of the beta distribution
+            for the prior on rho, by default None. If None, it assumes a
+            uniform prior.
         nsamples : int
             The number of samples to generate.
         burn_in : int
@@ -140,7 +143,6 @@ def infections_per_node(x, mode="mean"):
 
 def nu_distribution(x, A):
     """
-
     Calculate the nu matrix, nu[i,j] counts the total number of times a node  of degree i with 
     j infected neighbors in timestep t gets infected in timestep t+1
 
@@ -156,10 +158,6 @@ def nu_distribution(x, A):
     numpy.ndarray
         The matrix representing the distribution of infections for a node with i infected neighbors 
 
-    Raises
-    ------
-    Exception
-        If adjacency matrix isn't square
     """
     k = A.sum(axis=0)
     nu = A @ x.T
@@ -204,6 +202,23 @@ def power_law(n, minval, maxval, alpha, seed=None):
 
 
 def mean_power_law(minval, maxval, alpha):
+    """
+    Calculates the mean of a power law distribution given the minimum value, maximum value, and alpha.
+
+    Parameters:
+    ----------
+    minval : float
+        The minimum value of the distribution.
+    maxval : float
+        The maximum value of the distribution.
+    alpha : float
+        The exponent of the power law distribution.
+
+    Returns:
+    -------
+    float
+        The mean of the power law distribution.
+    """
     if alpha == -1:
         num = maxval - minval
         den = np.log(maxval) - np.log(minval)
@@ -388,6 +403,32 @@ def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
 
 
 def target_ipn(A, gamma, c, mode, rho0, tmax, realizations):
+    """
+    Calculate the number of infections per node in a neighborhood-based contagion process on pairwise networks.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Adjacency matrix representing the network structure.
+    gamma : float
+        Contagion parameter.
+    c : float
+        Recovery parameter.
+    mode : str
+        Mode of infection calculation ('total' or 'active').
+    rho0 : float
+        Initial fraction of infected nodes.
+    tmax : int
+        Maximum time steps for the contagion process.
+    realizations : int
+        Number of realizations to average over.
+
+    Returns
+    -------
+    float
+        Average number of infections per node (IPN).
+
+    """
     n = A.shape[0]
     x0 = np.zeros(n)
     x0[random.sample(range(n), round(rho0 * n))] = 1
