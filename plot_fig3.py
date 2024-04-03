@@ -18,7 +18,7 @@ xmax = tmax.max() + 15000
 ymin = -0.2
 ymax = 0.2
 
-slice_idx = 13
+slice_idx = 11
 
 n_c, n_t, n_r, n, _ = Q.shape
 
@@ -49,7 +49,10 @@ for i in range(n_r):
 
 
 plt.figure(figsize=(4, 6))
+plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
 plt.subplot(211)
+ax = plt.gca()
+ax.set_position([0.18, 0.5, 0.75, 0.45])
 
 core_values = np.unique(coreness)
 
@@ -101,24 +104,17 @@ node_prop = (y1[slice_idx] - y2[slice_idx]).mean(axis=0)
 better_color = clist[0]
 worse_color = clist[2]
 ycolor = [better_color if d > 0 else worse_color for d in node_prop]
-print(len(ycolor))
 
-plt.title(r"$\mathregular{t_{max}=}$" + f"{tmax[slice_idx]}")
-# ax, collections = xgi.draw(
-#     H,
-#     pos=pos,
-#     node_fc=node_prop,
-# )
-# node_coll = collections[0]
-# plt.colorbar(node_coll)
+ax = plt.gca()
 ax, collections = xgi.draw(
     H,
     pos=pos,
+    node_size=6.5,
+    dyad_lw=1,
     node_fc=ycolor,
 )
 
-plt.tight_layout()
 sns.despine()
-# plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
-# plt.savefig("Figures/Fig3/fig3.pdf", dpi=1000)
+plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
+plt.savefig("Figures/Fig3/fig3.pdf", dpi=1000)
 plt.show()
