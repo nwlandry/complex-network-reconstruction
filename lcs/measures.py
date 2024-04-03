@@ -280,15 +280,16 @@ def auprc(samples, A):
         The AUPRC score.
     """
     n = A.shape[0]
+    Q = samples.mean(axis=0)
     y_true = A[np.tril_indices(n, -1)]
+    y_scores = Q[np.tril_indices(n, -1)]
     # Check if y_true contains only one class
     if len(np.unique(y_true)) == 1:
         return np.nan
     # Compute precision-recall pairs for different probability thresholds
-    p = precision(samples, A)
-    r = recall(samples, A)
+    precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
     # Calculate the area under the precision-recall curve
-    auprc_score = auc(r, p)
+    auprc_score = auc(recall, precision)
 
     return auprc_score
 
