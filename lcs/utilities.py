@@ -8,7 +8,6 @@ from scipy.stats import rv_discrete
 from sklearn.metrics import roc_auc_score
 
 from .contagion import *
-from .generative import erdos_renyi
 from .inference import *
 
 
@@ -49,6 +48,7 @@ def single_inference(
     Returns:
         None
     """
+    from .generative import erdos_renyi
     n = np.size(A, axis=0)
     x0 = np.zeros(n)
     x0[random.sample(range(n), round(rho0 * n))] = 1

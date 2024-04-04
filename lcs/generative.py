@@ -4,7 +4,6 @@ from itertools import chain
 import networkx as nx
 import numpy as np
 import networkx as nx
-from .utilities import power_law
 
 chaini = chain.from_iterable
 
@@ -276,6 +275,7 @@ def truncated_power_law_configuration(n, kmin, kmax, alpha, seed=None):
     None
 
     """
+    from .utilities import power_law
 
     if seed is not None:
         random.seed(seed)
