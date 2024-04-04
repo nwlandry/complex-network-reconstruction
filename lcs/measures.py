@@ -196,7 +196,7 @@ def nodal_performance(Q, A):
     Returns
     -------
     ndarray
-        The nodal performance, the average discrepancy for all edges connecting to a given node.
+        The nodal performance, the average discrepancy for all edges and non edgees connecting to a given node.
     """
     return np.abs(Q - A).sum(axis=0) / A.shape[0]
 
@@ -287,7 +287,7 @@ def auprc(samples, A):
     if len(np.unique(y_true)) == 1:
         return np.nan
     # Compute precision-recall pairs for different probability thresholds
-    precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
+    precision, recall, _ = precision_recall_curve(y_true, y_scores)
     # Calculate the area under the precision-recall curve
     auprc_score = auc(recall, precision)
 
