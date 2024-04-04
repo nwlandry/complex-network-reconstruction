@@ -3,11 +3,26 @@ from itertools import chain
 
 import networkx as nx
 import numpy as np
+import networkx as nx
 
 chaini = chain.from_iterable
 
 
 def zkc(format="adjacency"):
+    """
+    Generate the Zachary's Karate Club graph.
+
+    Parameters
+    ----------
+    format : str, optional
+        The format of the graph representation to return. Valid options are "adjacency" and "edgelist". Default is "adjacency".
+
+    Returns
+    -------
+    numpy.ndarray or list
+        The graph representation based on the specified format.
+
+    """
     match format:
         case "adjacency":
             G = nx.karate_club_graph()
@@ -18,6 +33,28 @@ def zkc(format="adjacency"):
 
 
 def erdos_renyi(n, p, seed=None):
+    """
+    Generates an Erdos-Renyi random graph.
+
+    Parameters
+    ----------
+    n : int
+        The number of nodes in the graph.
+    p : float
+        The probability of an edge between any two nodes.
+    seed : int, optional
+        The seed value for the random number generator.
+
+    Returns
+    -------
+    numpy.ndarray
+        The adjacency matrix of the generated graph.
+
+    Raises
+    ------
+    None
+
+    """
     if seed is not None:
         random.seed(seed)
 
@@ -33,13 +70,62 @@ def erdos_renyi(n, p, seed=None):
     return A
 
 
+
 def watts_strogatz(n, k, p, seed=None):
+    """
+    Generates a Watts-Strogatz graph with `n` nodes, `k` nearest neighbors, and rewiring probability `p`.
+
+    Parameters
+    ----------
+    n : int
+        The number of nodes in the graph.
+    k : int
+        Each node is connected to `k` nearest neighbors in a ring topology.
+    p : float
+        The probability of rewiring each edge.
+    seed : int, optional
+        Seed for random number generator (default: None).
+
+    Returns
+    -------
+    numpy.ndarray
+        The adjacency matrix of the generated graph.
+
+    Raises
+    ------
+    None
+
+    """
     G = nx.watts_strogatz_graph(n, k, p, seed)
     G.add_nodes_from(range(n))
     return nx.adjacency_matrix(G).todense()
 
 
 def watts_strogatz_edge_swap(n, k, p, seed=None):
+    """
+    Generate a Watts-Strogatz graph by performing edge swaps.
+
+    Parameters
+    ----------
+    n : int
+        The number of nodes in the graph.
+    k : int
+        Each node is connected to k nearest neighbors in a ring topology.
+    p : float
+        The probability of rewiring each edge.
+    seed : int
+        The seed value for the random number generator.
+
+    Returns
+    -------
+    numpy.ndarray
+        The adjacency matrix of the generated graph.
+
+    Raises
+    ------
+    None
+
+    """
     if seed is not None:
         random.seed(seed)
 
@@ -76,6 +162,30 @@ def watts_strogatz_edge_swap(n, k, p, seed=None):
 
 
 def sbm(n, k, epsilon, seed=None):
+    """
+    Generates a Stochastic Block Model (SBM) graph.
+
+    Parameters
+    ----------
+    n : int
+        The number of nodes in the graph.
+    k : int
+        The average degree of each node.
+    epsilon : float
+        The parameter controlling the ratio of inter- to intra-community edges.
+    seed : int, optional
+        The seed for the random number generator. Defaults to None.
+
+    Returns
+    -------
+    numpy.ndarray
+        The adjacency matrix of the generated SBM graph.
+
+    Raises
+    ------
+    None
+
+    """
     p = k / (n - 1)
     # ratio of inter- to intra-community edges
     p_in = (1 + epsilon) * p
@@ -87,12 +197,26 @@ def sbm(n, k, epsilon, seed=None):
 
 def clustered_network(k1, k2, seed=None):
     """
-    inputs:
-        k1: the number of cliques to which each node belongs
-        k2: the clique sizes
-        seed: seed for pseudorandom number generator
-    output:
-        A : an adjacency matrix with multiedges and loops removed.
+    Generates the unipartite projection of a higher-order network. Degree sequecnes for both sets of the bipartite network are provided and the unipartite projection is generated. 
+
+    Parameters
+    ----------
+    k1 : list
+        The number of cliques to which each node belongs.
+    k2 : list
+        The clique sizes.
+    seed : int, optional
+        Seed for pseudorandom number generator.
+
+    Returns
+    -------
+    numpy.ndarray
+        An adjacency matrix with multiedges and loops removed.
+
+    Raises
+    ------
+    None
+
     """
     if seed is not None:
         random.seed(seed)
@@ -128,15 +252,28 @@ def truncated_power_law_configuration(n, kmin, kmax, alpha, seed=None):
     """
     Generates a bipartite graph with a truncated power-law degree distribution.
 
-    Parameters:
-    - n (int): Number of nodes in the graph.
-    - kmin (int): Minimum degree value.
-    - kmax (int): Maximum degree value.
-    - alpha (float): Power-law exponent.
-    - seed (int, optional): Seed for the random number generator.
+    Parameters
+    ----------
+    n : int
+        Number of nodes in the graph.
+    kmin : int
+        Minimum degree value.
+    kmax : int
+        Maximum degree value.
+    alpha : float
+        Power-law exponent.
+    seed : int, optional
+        Seed for the random number generator.
 
-    Returns:
-    - G (networkx.Graph): Graph with the specified degree distribution.
+    Returns
+    -------
+    networkx.Graph
+        Graph with the specified degree distribution.
+
+    Raises
+    ------
+    None
+
     """
     from .utilities import power_law
 
