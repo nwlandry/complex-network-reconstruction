@@ -55,43 +55,29 @@ def get_metrics(f, dir, c_dict, b_dict, a_dict, r_dict):
     A = np.array(data["A"])
     samples = np.array(data["samples"])
 
-    rho = density(A)
-
-    ps = posterior_similarity(samples, A)
-    sps = samplewise_posterior_similarity(samples, A)
-    fs = f_score(samples, A)
-    fs_norm_random = f_score(samples, A, normalize=True, rho_guess=0.5)
-    fs_norm_density = f_score(samples, A, normalize=True, rho_guess=rho)
-    fc = fraction_of_correct_entries(samples, A)
-    fc_norm_random = fraction_of_correct_entries(
+    m = dict()
+    m["rho"] = density(A)
+    m["rho-samples"] = density(samples.mean(axis=0))
+    m["ps"] = posterior_similarity(samples, A)
+    m["sps"] = samplewise_posterior_similarity(samples, A)
+    m["fs"] = f_score(samples, A)
+    m["fs-norm-random"] = f_score(samples, A, normalize=True, rho_guess=0.5)
+    m["fs-norm-density"] = f_score(samples, A, normalize=True, rho_guess=m["rho"])
+    m["fce"] = fraction_of_correct_entries(samples, A)
+    m["fce-norm-random"] = fraction_of_correct_entries(
         samples, A, normalize=True, rho_guess=0.5
     )
-    fc_norm_density = fraction_of_correct_entries(
-        samples, A, normalize=True, rho_guess=rho
+    m["fce-norm-density"] = fraction_of_correct_entries(
+        samples, A, normalize=True, rho_guess=m["rho"]
     )
-    pr = precision(samples, A)
-    re = recall(samples, A)
-    ar = auroc(samples, A)
+    m["precision"] = precision(samples, A)
+    m["recall"] = recall(samples, A)
+    m["auroc"] = auroc(samples, A)
+    m["auprc"] = auprc(samples, A)
 
     print((i, j, k, l), flush=True)
 
-    return (
-        i,
-        j,
-        k,
-        l,
-        ps,
-        fs,
-        fs_norm_random,
-        fs_norm_density,
-        fc,
-        fc_norm_random,
-        fc_norm_density,
-        pr,
-        re,
-        sps,
-        ar,
-    )
+    return i, j, k, l, m
 
 
 # get number of available cores
@@ -104,67 +90,38 @@ n_b = len(b_dict)
 n_a = len(a_dict)
 n_r = len(r_dict)
 
-ps = np.zeros((n_c, n_b, n_a, n_r))
-fs = np.zeros((n_c, n_b, n_a, n_r))
-fs_norm_random = np.zeros((n_c, n_b, n_a, n_r))
-fs_norm_density = np.zeros((n_c, n_b, n_a, n_r))
-fce = np.zeros((n_c, n_b, n_a, n_r))
-fce_norm_random = np.zeros((n_c, n_b, n_a, n_r))
-fce_norm_density = np.zeros((n_c, n_b, n_a, n_r))
-pr = np.zeros((n_c, n_b, n_a, n_r))
-re = np.zeros((n_c, n_b, n_a, n_r))
-sps = np.zeros((n_c, n_b, n_a, n_r))
-ar = np.zeros((n_c, n_b, n_a, n_r))
+data = {}
+data["beta"] = list(b_dict)
+data["alpha"] = list(a_dict)
+data["rho"] = np.zeros((n_c, n_b, n_a, n_r))
+data["rho-samples"] = np.zeros((n_c, n_b, n_a, n_r))
+data["ps"] = np.zeros((n_c, n_b, n_a, n_r))
+data["sps"] = np.zeros((n_c, n_b, n_a, n_r))
+data["fs"] = np.zeros((n_c, n_b, n_a, n_r))
+data["fs-norm-random"] = np.zeros((n_c, n_b, n_a, n_r))
+data["fs-norm-density"] = np.zeros((n_c, n_b, n_a, n_r))
+data["fce"] = np.zeros((n_c, n_b, n_a, n_r))
+data["fce-norm-random"] = np.zeros((n_c, n_b, n_a, n_r))
+data["fce-norm-density"] = np.zeros((n_c, n_b, n_a, n_r))
+data["precision"] = np.zeros((n_c, n_b, n_a, n_r))
+data["recall"] = np.zeros((n_c, n_b, n_a, n_r))
+data["auroc"] = np.zeros((n_c, n_b, n_a, n_r))
+data["auprc"] = np.zeros((n_c, n_b, n_a, n_r))
 
 arglist = []
 for f in os.listdir(data_dir):
     arglist.append((f, data_dir, c_dict, b_dict, a_dict, r_dict))
 
-data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
+results = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
-for (
-    i,
-    j,
-    k,
-    l,
-    metric1,
-    metric2,
-    metric3,
-    metric4,
-    metric5,
-    metric6,
-    metric7,
-    metric8,
-    metric9,
-    metric10,
-    metric11,
-) in data:
-    ps[i, j, k, l] = metric1
-    fs[i, j, k, l] = metric2
-    fs_norm_random[i, j, k, l] = metric3
-    fs_norm_density[i, j, k, l] = metric4
-    fce[i, j, k, l] = metric5
-    fce_norm_random[i, j, k, l] = metric6
-    fce_norm_density[i, j, k, l] = metric7
-    pr[i, j, k, l] = metric8
-    re[i, j, k, l] = metric9
-    sps[i, j, k, l] = metric10
-    ar[i, j, k, l] = metric11
+for i, j, k, l, m in results:
+    for key, val in m.items():
+        data[key][i, j, k, l] = val
 
-data = {}
-data["beta"] = list(b_dict)
-data["alpha"] = list(a_dict)
-data["ps"] = ps.tolist()
-data["fs"] = fs.tolist()
-data["fs-norm-random"] = fs_norm_random.tolist()
-data["fs-norm-density"] = fs_norm_density.tolist()
-data["fce"] = fce.tolist()
-data["fce-norm-random"] = fce_norm_random.tolist()
-data["fce-norm-density"] = fce_norm_density.tolist()
-data["precision"] = pr.tolist()
-data["recall"] = re.tolist()
-data["sps"] = sps.tolist()
-data["auroc"] = ar.tolist()
+for key, val in data.items():
+    if not isinstance(val, list):
+        data[key] = val.tolist()
+
 datastring = json.dumps(data)
 
 with open("Data/cm.json", "w") as output_file:
