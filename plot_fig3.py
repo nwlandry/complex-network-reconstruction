@@ -13,8 +13,11 @@ with open(f"Data/zkc_tmax_comparison.json") as file:
     A = np.array(data["A"], dtype=float)[0, 0, 0]
     Q = np.array(data["Q"], dtype=float)
 
+print(A.shape)
+print(Q.shape)
+
 xmin = tmax.min() - 1.2
-xmax = tmax.max() + 15000
+xmax = tmax.max()
 ymin = -0.2
 ymax = 0.2
 
@@ -72,6 +75,8 @@ for idx, k in enumerate(core_values):
         alpha=alpha,
         label=f"{int(k)}-core nodes",
     )
+    plt.fill_between(x, ymean - ystd, ymean + ystd, color=clist[idx], alpha=0.1)
+
 plt.semilogx([xmin, xmax], [0, 0], "k--")
 
 plt.plot([tmax[slice_idx], tmax[slice_idx]], [ymin, ymax], color="grey", alpha=0.3)
@@ -79,13 +84,12 @@ plt.plot([tmax[slice_idx], tmax[slice_idx]], [ymin, ymax], color="grey", alpha=0
 plt.xlim([xmin, xmax])
 plt.ylim([ymin, ymax])
 plt.xticks(
-    [10**1, 10**2, 10**3, 10**4, 10**5],
+    [10**1, 10**2, 10**3, 10**4],
     [
         r"$\mathregular{10^1}$",
         r"$\mathregular{10^2}$",
         r"$\mathregular{10^3}$",
         r"$\mathregular{10^4}$",
-        r"$\mathregular{10^5}$",
     ],
 )
 plt.yticks([-0.2, -0.1, 0, 0.1])
@@ -115,6 +119,6 @@ ax, collections = xgi.draw(
 )
 
 sns.despine()
-plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
-plt.savefig("Figures/Fig3/fig3.pdf", dpi=1000)
+# plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
+# plt.savefig("Figures/Fig3/fig3.pdf", dpi=1000)
 plt.show()
