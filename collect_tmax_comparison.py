@@ -58,6 +58,8 @@ def get_matrices(f, dir, c_dict, t_dict, r_dict):
     A = np.array(data["A"], dtype=float)
     samples = np.array(data["samples"], dtype=float)
 
+    print((i, j, k), flush=True)
+
     return i, j, k, A, samples.mean(axis=0)
 
 
