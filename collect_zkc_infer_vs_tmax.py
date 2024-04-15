@@ -105,9 +105,9 @@ for f in os.listdir(data_dir):
 
 results = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
-for i, j, k, l, m in results:
+for i, j, k, m in results:
     for key, val in m.items():
-        data[key][i, j, k, l] = val
+        data[key][i, j, k] = val
 
 for key, val in data.items():
     if not isinstance(val, list):

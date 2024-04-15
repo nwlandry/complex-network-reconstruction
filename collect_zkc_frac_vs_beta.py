@@ -105,8 +105,6 @@ arglist = []
 for f in os.listdir(data_dir):
     arglist.append((f, data_dir, b_dict, f_dict, r_dict))
 
-data = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
-
 results = Parallel(n_jobs=n_processes)(delayed(get_metrics)(*arg) for arg in arglist)
 
 for i, j, k, m in results:
