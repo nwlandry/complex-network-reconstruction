@@ -23,8 +23,8 @@ fs.set_fonts(
 fs.set_colors()
 cmap = fs.cmap
 
-fig = plt.figure(figsize=(7, 5))
-plt.subplots_adjust(left=0.1, right=0.86, bottom=0.15, top=0.95)
+fig = plt.figure(figsize=(5.5, 5))
+plt.subplots_adjust(left=0.12, right=0.89, bottom=0.15, top=0.95)
 
 gs = GridSpec(2, 2, hspace=0.6, wspace=0.5)
 
@@ -33,7 +33,7 @@ Panel 1: Network Viz
 """
 ax1 = fig.add_subplot(gs[0])
 
-ax1.text(-0.29, 1.1, "(a)", transform=ax1.transAxes, fontsize=13, fontweight='bold', va="top")
+ax1.text(-0.36, 1.05, "(a)", transform=ax1.transAxes, fontsize=13, fontweight='bold', va="top")
 
 el = zkc(format="edgelist")
 H = xgi.Hypergraph(el)
@@ -89,14 +89,14 @@ xgi.draw(
 )
 plt.scatter(pos[13][0], pos[13][1], s=50, c='C0', edgecolors='black', linewidths=0.8, zorder=10, marker='s')
 
-ax1.set_xlim([1.01 * min([pos[i][0] for i in pos]), 1.01 * max([pos[i][0] for i in pos])])
+ax1.set_xlim([1.1 * min([pos[i][0] for i in pos]), 1.1 * max([pos[i][0] for i in pos])])
 
 
 """
 Panel 2: 
 """
 ax2 = fig.add_subplot(gs[1])
-ax2.text(-0.3, 1.1, "(b)", transform=ax2.transAxes, fontsize=12, fontweight='bold',  va="top")
+ax2.text(-0.39, 1.05, "(b)", transform=ax2.transAxes, fontsize=12, fontweight='bold',  va="top")
 
 
 with open("Data/zkc_infer_contagion_functions.json") as file:
@@ -153,14 +153,15 @@ ax2.errorbar(nus + offset_distance, c2_mean, err_c2, color="C1", fmt="o",
 
 
 ax2.set_xticks(np.arange(0, n, 5))
-ax2.set_xlabel(r"# of infected neighbors $\nu$")
-ax2.set_ylabel(r"Contagion $c(\nu)$")
+ax2.set_xlabel(r"# of infected neighbors, $\nu$")
+ax2.set_ylabel(r"Probability, $c(\nu)$")
 
-ax2.set_xlim([0, 15.5])
+ax2.set_xlim([0, 13.5])
 ax2.set_ylim([0, 1])
 ax2.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
-ax2.legend(loc="upper left", handletextpad=0.1, frameon=False)
+ax2.legend(loc='upper left', bbox_to_anchor=(-0.1, 0.9, 0.2, 0.2), 
+           handletextpad=0.1, frameon=False)
 
 sns.despine()
 
@@ -168,7 +169,7 @@ sns.despine()
 Panel 3: recovery vs. tmax
 """
 ax3 = fig.add_subplot(gs[2])
-ax3.text(-0.29, 1.1, "(c)", transform=ax3.transAxes, fontsize=12, fontweight='bold',  va="top")
+ax3.text(-0.35, 1.05, "(c)", transform=ax3.transAxes, fontsize=12, fontweight='bold',  va="top")
 
 
 with open("Data/zkc_infer_vs_tmax.json") as file:
@@ -209,14 +210,15 @@ ax3.set_xticks(
 ax3.set_ylim([0, 1])
 ax3.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
-ax3.legend(loc="lower right", markerfirst=False, frameon=False, handlelength=0.8)
+ax3.legend(loc="lower right",   bbox_to_anchor=(0.85, 0, 0.2, 0.2), 
+           markerfirst=False, frameon=False, handlelength=0.8)
 sns.despine()
 
 """
 Panel 4: heatmap of recover vs. beta and f
 """
 ax4 = fig.add_subplot(gs[3])
-ax4.text(-0.31, 1.1, "(d)", transform=ax4.transAxes, fontsize=12, fontweight='bold',  va="top")
+ax4.text(-0.38, 1.05, "(d)", transform=ax4.transAxes, fontsize=12, fontweight='bold',  va="top")
 
 with open("Data/zkc_frac_vs_beta.json") as file:
     data = json.load(file)
@@ -232,24 +234,24 @@ sps_summary = sps.mean(axis=2)
 
 
 c = ax4.imshow(
-    to_imshow_orientation(sps_summary),
-    extent=(min(frac), max(frac), min(beta), max(beta)),
+    np.fliplr(to_imshow_orientation(sps_summary)),
+    extent=(min(frac), max(frac), max(beta), min(beta)),
     aspect="auto",
     cmap=cmap,
     vmin=0,
     vmax=1,
 )
-ax4.set_xlabel(r"Complexity $\lambda$")
-ax4.set_ylabel(r"Infectivity $\beta$")
+ax4.set_xlabel(r"Complexity, $\lambda$")
+ax4.set_ylabel(r"Infectivity, $\beta$")
 
 ax4.set_xticks([0, 0.5, 1], [0, 0.5, 1])
 ax4.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 
-cbar_ax = fig.add_axes([0.875, 0.15, 0.015, 0.31])  # x, y, width, height
+cbar_ax = fig.add_axes([0.91, 0.15, 0.015, 0.31])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(r"Performance", fontsize=axislabel_fontsize, rotation=270, labelpad=15)
-cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=tick_fontsize)
+cbar.set_label(r"Performance", fontsize=axislabel_fontsize, rotation=270, labelpad=10)
+cbar_ax.set_yticks([0, 1], [0, 1], fontsize=tick_fontsize)
 
 plt.savefig("Figures/Fig1/fig1.png", dpi=1000)
 plt.savefig("Figures/Fig1/fig1.pdf", dpi=1000)
