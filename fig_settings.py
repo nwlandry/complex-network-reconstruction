@@ -23,15 +23,15 @@ def set_colors(n_colors=2):
 
 def set_fonts(extra_params={}):
     params = {
-        "font.family": "Sans-Serif",
-        "font.sans-serif": ["Tahoma", "DejaVu Sans", "Lucida Grande", "Verdana"],
+        "font.family": "Serif",
+        # "font.sans-serif": ["Tahoma", "DejaVu Sans", "Lucida Grande", "Verdana"],
         "mathtext.fontset": "cm",
         "legend.fontsize": 12,
-        "axes.labelsize": 15,
-        "axes.titlesize": 15,
-        "xtick.labelsize": 15,
-        "ytick.labelsize": 15,
-        "figure.titlesize": 15,
+        "axes.labelsize": 12,
+        "axes.titlesize": 12,
+        "xtick.labelsize": 12,
+        "ytick.labelsize": 12,
+        "figure.titlesize": 12,
     }
     for key, value in extra_params.items():
         params[key] = value
