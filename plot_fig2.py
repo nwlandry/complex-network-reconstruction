@@ -108,7 +108,10 @@ for i, m in enumerate(models):
         ax.set_xticks([], [])
 
     # plot the density
-    recovery_metric = np.array(data["rho"], dtype=float) - np.array(data["rho-samples"], dtype=float)
+    rho_samples = np.array(data["rho-samples"], dtype=float)
+    rho = np.array(data["rho"], dtype=float)
+    recovery_metric = np.divide(rho_samples - rho, rho)
+    print(np.any(np.isnan(recovery_metric)))
     for j, cf in enumerate(cfs):
         recovery_average = recovery_metric[j].mean(axis=2).T
         ax = fig.add_subplot(gs[j + 3, i])
