@@ -5,7 +5,19 @@ import numpy as np
 import seaborn as sns
 import xgi
 
+import fig_settings as fs
 from lcs import *
+
+axislabel_fontsize = 12
+tick_fontsize = 12
+fs.set_fonts(
+    {
+        "font.family": "serif",
+        "axes.labelsize": axislabel_fontsize,
+        "xtick.labelsize": tick_fontsize,
+        "ytick.labelsize": tick_fontsize,
+    }
+)
 
 with open(f"Data/zkc_tmax_comparison.json") as file:
     data = json.load(file)
@@ -13,15 +25,17 @@ with open(f"Data/zkc_tmax_comparison.json") as file:
     A = np.array(data["A"], dtype=float)[0, 0, 0]
     Q = np.array(data["Q"], dtype=float)
 
-print(A.shape)
-print(Q.shape)
+# with open("Data/zkc_infer_vs_tmax.json") as file:
+#     data = json.load(file)
+# tmax = np.array(data["tmax"], dtype=float)
+# performance = np.array(data["auprc"], dtype=float)
+# slice_idx = np.argmax(performance[1].mean(axis=1) - performance[0].mean(axis=1))
+slice_idx = 11
 
 xmin = tmax.min() - 1.2
 xmax = tmax.max()
 ymin = -0.2
 ymax = 0.2
-
-slice_idx = 11
 
 n_c, n_t, n_r, n, _ = Q.shape
 
@@ -33,7 +47,6 @@ coreness[list(kc)] = list(kc.values())
 H = xgi.Hypergraph([[i, j] for i, j in G.edges])
 
 # plotting settings
-
 colormap = cmr.redshift
 clist = [colormap(0.15), colormap(0.3), colormap(0.7), colormap(0.85)]
 
@@ -51,11 +64,22 @@ for i in range(n_r):
     y2[i] = [nodal_performance(Q[1, j, i], A) for j in range(n_t)]
 
 
-plt.figure(figsize=(4, 6))
+plt.figure(figsize=(5.5, 8))
 plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
+
 plt.subplot(211)
 ax = plt.gca()
 ax.set_position([0.18, 0.5, 0.75, 0.45])
+
+ax.text(
+    -0.2,
+    1.0,
+    "(a)",
+    transform=ax.transAxes,
+    fontsize=13,
+    fontweight="bold",
+    va="top",
+)
 
 core_values = np.unique(coreness)
 
@@ -101,6 +125,16 @@ sns.despine()
 
 
 plt.subplot(212)
+ax = plt.gca()
+ax.text(
+    0.025,
+    0.9,
+    "(b)",
+    transform=ax.transAxes,
+    fontsize=13,
+    fontweight="bold",
+    va="top",
+)
 
 pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.3))
 
@@ -113,7 +147,7 @@ ax = plt.gca()
 ax, collections = xgi.draw(
     H,
     pos=pos,
-    node_size=6.5,
+    node_size=10,
     dyad_lw=1,
     node_fc=ycolor,
 )
