@@ -63,11 +63,8 @@ sg = H.nodes.memberships(i)
 nbrs = H.nodes.neighbors(i)
 nbrs.add(i)
 
-pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.25))
-# rotate pos by 30 degree3
-angle = -1.15 * np.pi / 6
-rotation_matrix = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
-pos = {k: np.dot(v, rotation_matrix) for k,v in pos.items()}
+# rotate pos by 30 degrees
+pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.25), theta=30)
 
 node_fc = [infected_color if x[t, i] else susceptible_color for i in H.nodes]
 node_ec = [subgraph_node_lc if n in nbrs else graph_node_lc for n in H.nodes]
