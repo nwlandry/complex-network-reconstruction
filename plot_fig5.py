@@ -88,7 +88,7 @@ for i, m in enumerate(models):
     performance = np.array(data["auprc"], dtype=float)
 
     # plot the difference in auprc
-    mean_difference = performance[1].mean(axis=2).T - performance[0].mean(axis=2).T
+    mean_difference = performance[2].mean(axis=2).T - performance[0].mean(axis=2).T
     ax = fig.add_subplot(gs[1, i])
     im1 = ax.imshow(
         to_imshow_orientation(mean_difference),
@@ -115,7 +115,7 @@ for i, m in enumerate(models):
     rho = np.array(data["rho"], dtype=float)
     density_error = np.abs(rho_samples - rho)
 
-    mean_difference = density_error[0].mean(axis=2) - density_error[1].mean(axis=2)
+    mean_difference = density_error[0].mean(axis=2) - density_error[2].mean(axis=2)
     ax = fig.add_subplot(gs[2, i])
     im2 = ax.imshow(
         to_imshow_orientation(mean_difference),
@@ -158,6 +158,6 @@ for i, m in enumerate(models):
     visualize_networks(i, ax)
     ax.set_title(titles[i])
 
-plt.savefig(f"Figures/Fig2/fig2.png", dpi=1000)
-plt.savefig(f"Figures/Fig2/fig2.pdf", dpi=1000)
+plt.savefig(f"Figures/Fig5/fig5.png", dpi=1000)
+plt.savefig(f"Figures/Fig5/fig5.pdf", dpi=1000)
 plt.show()

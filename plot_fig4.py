@@ -151,7 +151,6 @@ for i, m in enumerate(models):
     visualize_networks(i, ax)
     ax.set_title(titles[i])
 
-
 plt.savefig(f"Figures/Fig4/fig4.png", dpi=1000)
 plt.savefig(f"Figures/Fig4/fig4.pdf", dpi=1000)
 plt.show()
