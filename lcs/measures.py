@@ -1,6 +1,12 @@
 import numpy as np
 from scipy.special import binom
-from sklearn.metrics import precision_recall_curve, auc, average_precision_score,roc_auc_score
+from sklearn.metrics import (
+    auc,
+    average_precision_score,
+    precision_recall_curve,
+    roc_auc_score,
+)
+
 
 def posterior_similarity(samples, A):
     """
@@ -78,7 +84,7 @@ def f_score(samples, A, normalize=False, rho_guess=0.5):
     p = precision(samples, A)
     r = recall(samples, A)
 
-    if np.isnan(p) or np.isnan(r):
+    if np.isnan(p) or np.isnan(r) or p + r == 0:
         f = np.nan
     else:
         f = 2 * p * r / (p + r)
@@ -89,7 +95,7 @@ def f_score(samples, A, normalize=False, rho_guess=0.5):
         if rho + rho_guess > 0:
             f_random = 2 * rho * rho_guess / (rho + rho_guess)
         else:
-            f_random = 0
+            return np.nan
 
         return f / f_random
     else:

@@ -3,7 +3,6 @@ from itertools import chain
 
 import networkx as nx
 import numpy as np
-import networkx as nx
 
 chaini = chain.from_iterable
 
@@ -68,7 +67,6 @@ def erdos_renyi(n, p, seed=None):
         for j in range(i):
             A[i, j] = A[j, i] = random.random() <= p
     return A
-
 
 
 def watts_strogatz(n, k, p, seed=None):
@@ -197,7 +195,7 @@ def sbm(n, k, epsilon, seed=None):
 
 def clustered_network(k1, k2, seed=None):
     """
-    Generates the unipartite projection of a higher-order network. Degree sequecnes for both sets of the bipartite network are provided and the unipartite projection is generated. 
+    Generates the unipartite projection of a higher-order network. Degree sequecnes for both sets of the bipartite network are provided and the unipartite projection is generated.
 
     Parameters
     ----------

@@ -25,7 +25,7 @@ def single_inference(
         c : ndarray
             A 1d vector of the contagion rates. Should be N x 1.
         b : float
-           beta, the maximum infection rate for the complex contagion 
+           beta, the maximum infection rate for the complex contagion
         rho0 : float
             The initial density of activated nodes.
         A : ndarray
@@ -49,6 +49,7 @@ def single_inference(
         None
     """
     from .generative import erdos_renyi
+
     n = np.size(A, axis=0)
     x0 = np.zeros(n)
     x0[random.sample(range(n), round(rho0 * n))] = 1
@@ -94,10 +95,10 @@ def to_imshow_orientation(A):
 def prettify_matrix(A):
     """
     Rearranges the rows and columns of a matrix A to improve its visual appearance.
-    
+
     Parameters:
     A (numpy.ndarray): The input matrix to be prettified.
-    
+
     Returns:
     numpy.ndarray: The prettified matrix with rearranged rows and columns.
     """
@@ -143,7 +144,7 @@ def infections_per_node(x, mode="mean"):
 
 def nu_distribution(x, A):
     """
-    Calculate the nu matrix, nu[i,j] counts the total number of times a node  of degree i with 
+    Calculate the nu matrix, nu[i,j] counts the total number of times a node  of degree i with
     j infected neighbors in timestep t gets infected in timestep t+1
 
     Parameters
@@ -156,7 +157,7 @@ def nu_distribution(x, A):
     Returns
     -------
     numpy.ndarray
-        The matrix representing the distribution of infections for a node with i infected neighbors 
+        The matrix representing the distribution of infections for a node with i infected neighbors
 
     """
     k = A.sum(axis=0)
@@ -329,7 +330,7 @@ def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
     ipn_target : float
         The target number of infections per node.
     cf :  function
-        The contagion function that determines the contagion rates, 
+        The contagion function that determines the contagion rates,
     gamma : float
         The healing rate.
     A : ndarray
@@ -365,13 +366,13 @@ def ipn_func(b, ipn_target, cf, gamma, A, rho0, realizations, tmax, mode):
 def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
     """
     Fit a model to result in a target number of infections per node(IPN). Adjucst the value of b to m
-    
+
     b0 : float
        beta, the initial maximum infection rate for the threshold contagion
     ipn_target : float
         The target number of infections per node.
     cf : Numpy ndarray
-        The non-parametric contagion function that determines the contagion rates, 
+        The non-parametric contagion function that determines the contagion rates,
     gamma : float
         The healing rate.
     A : ndarray
@@ -388,7 +389,7 @@ def fit_ipn(b0, ipn_target, cf, gamma, A, rho0, tmax, mode):
     Returns:
     -------
     float
-       The scaled b value to generate a target number of infections per node 
+       The scaled b value to generate a target number of infections per node
     """
     f = lambda b: ipn_func(b, ipn_target, cf, gamma, A, rho0, 1, tmax, mode)
     bscaled = robbins_monro_solve(f, b0, verbose=True)
