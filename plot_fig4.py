@@ -8,8 +8,8 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-metric_name = "fce-norm-random"
-axis_limits = [0, 2]
+metric_name = "auprc"
+axis_limits = [0, 1]
 
 axislabel_fontsize = 20
 tick_fontsize = 18
@@ -143,8 +143,8 @@ for i, m in enumerate(models):
 
 cbar_ax = fig.add_axes([0.91, 0.1, 0.015, 0.63])
 cbar = fig.colorbar(im, cax=cbar_ax)
-cbar.set_label(r"Performance", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
-cbar_ax.set_yticks([0, 0.5, 1, 1.5, 2], [0, 0.5, 1, 1.5, 2], fontsize=tick_fontsize)
+cbar.set_label(r"AUPRC", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
+cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=tick_fontsize)
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
@@ -152,6 +152,6 @@ for i, m in enumerate(models):
     ax.set_title(titles[i])
 
 
-plt.savefig(f"Figures/Fig2/generative_models_{metric_name}.png", dpi=1000)
-plt.savefig(f"Figures/Fig2/generative_models_{metric_name}.pdf", dpi=1000)
-# plt.show()
+plt.savefig(f"Figures/Fig4/fig4.png", dpi=1000)
+plt.savefig(f"Figures/Fig4/fig4.pdf", dpi=1000)
+plt.show()
