@@ -29,12 +29,16 @@ titles = ["Erdös-Rényi", "Power-law CM", "Clustered"]
 labels = [r"$p$", r"$\alpha$", r"$s$"]
 xticks = [
     [0, 0.5, 1],
-    [-4, -3.5, -3, -2.5, -2, -1.5],
+    [
+        -4,
+        -3,
+        -2,
+    ],
     [1, 7, 13, 19],
 ]
 xticklabels = [
     ["0", "0.5", "1"],
-    ["-4", "-3.5", "-3", "-2.5", "-2", "-1.5"],
+    [r"$\mathregular{-4}$", r"$\mathregular{-3}$", r"$\mathregular{-2}$"],
     ["1", "7", "13", "19"],
 ]
 convert_to_log = [False, False, False]
@@ -74,7 +78,7 @@ def visualize_networks(i, ax):
     xgi.draw(H, ax=ax, pos=pos, node_size=node_size, node_lw=node_lw, dyad_lw=dyad_lw)
 
 
-fig = plt.figure(figsize=(8, 8))
+fig = plt.figure(figsize=(5.5, 5))
 plt.subplots_adjust(left=0.12, right=0.85, bottom=0.1, top=0.95, wspace=0.4, hspace=0.4)
 
 gs = GridSpec(3, len(models), wspace=0.2, hspace=0.2)
