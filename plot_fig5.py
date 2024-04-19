@@ -64,7 +64,7 @@ def visualize_networks(i, ax):
 
     H = xgi.Hypergraph(e)
 
-    node_size = 5
+    node_size = 4
     dyad_lw = 0.5
     node_lw = 0.5
 
