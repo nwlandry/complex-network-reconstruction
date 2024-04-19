@@ -144,7 +144,7 @@ for i, m in enumerate(models):
 cbar_ax1 = fig.add_axes([0.86, 0.4, 0.015, 0.25])
 cbar = fig.colorbar(im1, cax=cbar_ax1)
 cbar.set_label(r"$\Delta \,\mathregular{AUPRC}$", rotation=270, labelpad=25)
-cbar_ax1.set_yticks([-0.5, 0, -0.5])
+cbar_ax1.set_yticks([-0.5, 0, 0.5])
 
 cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.25])
 cbar = fig.colorbar(im2, cax=cbar_ax2)
@@ -153,7 +153,7 @@ cbar.set_label(
     rotation=270,
     labelpad=25,
 )
-cbar_ax2.set_yticks([-0.5, 0, -0.5])
+cbar_ax2.set_yticks([-0.5, 0, 0.5])
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
