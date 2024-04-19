@@ -84,15 +84,15 @@ node_error_simple = np.zeros([n, n_t, n_r])
 node_error_complex = np.zeros([n, n_t, n_r])
 for i, j, k, A, Q in data:
     if i == 0:
-        node_error_simple[:, j, k] = nodal_performance(Q)
+        node_error_simple[:, j, k] = nodal_performance(Q, A)
     if i == 1:
-        node_error_complex[:, j, k] = nodal_performance(Q)
+        node_error_complex[:, j, k] = nodal_performance(Q, A)
 
 data = {}
 data["tmax"] = list(t_dict)
 data["A"] = A.tolist()
 data["node-error-simple"] = node_error_simple.tolist()
-data["node-error-complex"] = node_error_simple.tolist()
+data["node-error-complex"] = node_error_complex.tolist()
 
 
 datastring = json.dumps(data)
