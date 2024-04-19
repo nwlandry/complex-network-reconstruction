@@ -75,7 +75,7 @@ def visualize_networks(i, ax):
 
 
 fig = plt.figure(figsize=(5.5, 5))
-plt.subplots_adjust(left=0.12, right=0.85, bottom=0.1, top=0.95, wspace=0.4, hspace=0.4)
+plt.subplots_adjust(left=0.12, right=0.84, bottom=0.1, top=0.95, wspace=0.4, hspace=0.4)
 
 gs = GridSpec(3, len(models), wspace=0.2, hspace=0.2)
 
@@ -137,18 +137,14 @@ for i, m in enumerate(models):
 
     ax.set_xlabel(labels[i])
 
-cbar_ax1 = fig.add_axes([0.86, 0.4, 0.015, 0.25])
+cbar_ax1 = fig.add_axes([0.85, 0.4, 0.015, 0.25])
 cbar = fig.colorbar(im1, cax=cbar_ax1)
-cbar.set_label(r"$ \Delta \,\mathregular{AUPRC}$", rotation=270, labelpad=25)
+cbar.set_label(r"$ \Delta \,\mathregular{AUPRC}$", rotation=270, labelpad=10)
 cbar_ax1.set_yticks([-0.5, 0, 0.5])
 
 cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.25])
 cbar = fig.colorbar(im2, cax=cbar_ax2)
-cbar.set_label(
-    r"$\Delta\, \phi(\rho)$",
-    rotation=270,
-    labelpad=25,
-)
+cbar.set_label(r"$\Delta\, \phi(\rho)$", rotation=270, labelpad=10)
 cbar_ax2.set_yticks([-0.5, 0, 0.5])
 
 for i, m in enumerate(models):
