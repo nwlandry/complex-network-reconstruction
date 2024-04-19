@@ -47,7 +47,7 @@ def visualize_networks(i, ax):
             A = erdos_renyi(n, 0.1, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 1:
-            A = truncated_power_law_configuration(n, 2, 20, 3, seed=0)
+            A = truncated_power_law_configuration(n, 2, 20, -3, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 2:
             k = 2  # each node belongs to two cliques
