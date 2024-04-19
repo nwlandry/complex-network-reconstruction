@@ -188,7 +188,7 @@ def fraction_of_correct_entries(samples, A, normalize=False, rho_guess=0.5):
         return fce
 
 
-def nodal_performance(Q, A):
+def nodal_performance(Q, A, norm=1):
     """
     Calculate the nodal performance of a network.
 
@@ -203,8 +203,8 @@ def nodal_performance(Q, A):
     -------
     ndarray
         The nodal performance, the average discrepancy for all edges and non edgees connecting to a given node.
-    """
-    return np.abs(Q - A).sum(axis=0) / A.shape[0]
+    """ 
+    return 1 - (np.abs((Q - A) ** norm).sum(axis=0) / A.shape[0]) ** (1.0 / norm)
 
 
 def density(A):
