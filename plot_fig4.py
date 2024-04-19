@@ -15,7 +15,7 @@ axislabel_fontsize = 20
 tick_fontsize = 18
 fs.set_fonts(
     {
-        "font.family": "sans-serif",
+        "font.family": "serif",
         "axes.labelsize": axislabel_fontsize,
         "xtick.labelsize": tick_fontsize,
         "ytick.labelsize": tick_fontsize,
@@ -153,4 +153,4 @@ for i, m in enumerate(models):
 
 plt.savefig(f"Figures/Fig4/fig4.png", dpi=1000)
 plt.savefig(f"Figures/Fig4/fig4.pdf", dpi=1000)
-plt.show()
+# plt.show()

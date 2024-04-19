@@ -137,21 +137,19 @@ for i, m in enumerate(models):
 
     ax.set_xlabel(labels[i])
 
-cbar_ax1 = fig.add_axes([0.86, 0.45, 0.015, 0.325])
+cbar_ax1 = fig.add_axes([0.86, 0.4, 0.015, 0.25])
 cbar = fig.colorbar(im1, cax=cbar_ax1)
-cbar.set_label(
-    r"$\mathregular{AUPRC_{Complex} - AUPRC_{Simple}}$", rotation=270, labelpad=25
-)
-# cbar_ax1.set_yticks([0, 0.5, 1], [0, 0.5, 1])
+cbar.set_label(r"$ \Delta \,\mathregular{AUPRC}$", rotation=270, labelpad=25)
+cbar_ax1.set_yticks([-0.5, 0, 0.5])
 
-cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.325])
+cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.25])
 cbar = fig.colorbar(im2, cax=cbar_ax2)
 cbar.set_label(
-    r"$|\rho-\rho_{\mathregular{Simple}}| - |\rho-\rho_{\mathregular{Complex}}|$",
+    r"$\Delta\, \phi(\rho)$",
     rotation=270,
     labelpad=25,
 )
-# cbar_ax2.set_yticks([-1, 0, 1], [-1, 0, 1])
+cbar_ax2.set_yticks([-0.5, 0, 0.5])
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
@@ -160,4 +158,4 @@ for i, m in enumerate(models):
 
 plt.savefig(f"Figures/Fig2/fig2.png", dpi=1000)
 plt.savefig(f"Figures/Fig2/fig2.pdf", dpi=1000)
-plt.show()
+# plt.show()

@@ -203,7 +203,7 @@ def nodal_performance(Q, A, norm=1):
     -------
     ndarray
         The nodal performance, the average discrepancy for all edges and non edgees connecting to a given node.
-    """ 
+    """
     return 1 - (np.abs((Q - A) ** norm).sum(axis=0) / A.shape[0]) ** (1.0 / norm)
 
 
