@@ -22,8 +22,9 @@ fs.set_fonts(
 with open(f"Data/zkc_tmax_comparison.json") as file:
     data = json.load(file)
     tmax = np.array(data["tmax"], dtype=float)
-    A = np.array(data["A"], dtype=float)[0, 0, 0]
-    Q = np.array(data["Q"], dtype=float)
+    A = np.array(data["A"], dtype=float)
+    node_error_simple = np.array(data["node-error-simple"], dtype=float)
+    node_error_complex = np.array(data["node-error-complex"], dtype=float)
 
 # with open("Data/zkc_infer_vs_tmax.json") as file:
 #     data = json.load(file)
@@ -37,7 +38,7 @@ xmax = tmax.max()
 ymin = -0.2
 ymax = 0.2
 
-n_c, n_t, n_r, n, _ = Q.shape
+n, n_t, n_r = node_error_simple.shape
 
 G = nx.Graph(A.astype(int))
 kc = nx.core_number(G)
@@ -56,13 +57,6 @@ ms = 4
 alpha = 1
 
 x = tmax
-
-y1 = np.zeros([n_r, n_t, n])
-y2 = np.zeros([n_r, n_t, n])
-for i in range(n_r):
-    y1[i] = [nodal_performance(Q[0, j, i], A) for j in range(n_t)]
-    y2[i] = [nodal_performance(Q[1, j, i], A) for j in range(n_t)]
-
 
 plt.figure(figsize=(5.5, 8))
 plt.subplots_adjust(left=0, bottom=0, right=1, top=1)
@@ -85,9 +79,7 @@ core_values = np.unique(coreness)
 
 for idx, k in enumerate(core_values):
     n_k = sum(coreness == k)
-    y = np.zeros([n_r, n_t, n_k])
-    for i in range(n_r):
-        y[i] = (y1[i, :, coreness == k] - y2[i, :, coreness == k]).T
+    y = (node_error_simple[coreness == k] - node_error_complex[coreness == k]).T
     ymean = y.mean(axis=2).mean(axis=0)
     ystd = y.mean(axis=2).std(axis=0)
     plt.semilogx(
@@ -95,11 +87,11 @@ for idx, k in enumerate(core_values):
         ymean,
         "o-",
         markersize=ms,
-        color=clist[idx],
+        color=clist[k - 1],
         alpha=alpha,
         label=f"{int(k)}-core nodes",
     )
-    plt.fill_between(x, ymean - ystd, ymean + ystd, color=clist[idx], alpha=0.1)
+    plt.fill_between(x, ymean - ystd, ymean + ystd, color=clist[k - 1], alpha=0.1)
 
 plt.semilogx([xmin, xmax], [0, 0], "k--")
 
@@ -138,10 +130,10 @@ ax.text(
 
 pos = xgi.pca_transform(xgi.pairwise_spring_layout(H, seed=5, k=0.3))
 
-node_prop = (y1[slice_idx] - y2[slice_idx]).mean(axis=0)
+node_prop = (node_error_simple[slice_idx] - node_error_complex[slice_idx]).mean(axis=0)
 better_color = clist[0]
 worse_color = clist[2]
-ycolor = [better_color if d > 0 else worse_color for d in node_prop]
+ycolor = [colormap(d) for d in node_prop]
 
 ax = plt.gca()
 ax, collections = xgi.draw(
@@ -149,8 +141,11 @@ ax, collections = xgi.draw(
     pos=pos,
     node_size=10,
     dyad_lw=1,
-    node_fc=ycolor,
+    node_fc=node_prop,
+    node_fc_cmap=colormap,
 )
+node_collection, _, _ = collections
+plt.colorbar(node_collection)
 
 sns.despine()
 # plt.savefig("Figures/Fig3/fig3.png", dpi=1000)
