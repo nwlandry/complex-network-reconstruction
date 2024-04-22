@@ -80,13 +80,21 @@ for f in os.listdir(data_dir):
 
 data = Parallel(n_jobs=n_processes)(delayed(get_matrices)(*arg) for arg in arglist)
 
+node_performance_simple = np.zeros([n, n_t, n_r])
+node_performance_complex = np.zeros([n, n_t, n_r])
 for i, j, k, A, Q in data:
-    Qsamples[i, j, k] = Q
+    if i == 0:
+        node_performance_simple[:, j, k] = nodal_performance(Q, A)
+    if i == 1:
+        node_performance_complex[:, j, k] = nodal_performance(Q, A)
 
 data = {}
 data["tmax"] = list(t_dict)
 data["A"] = A.tolist()
-data["Q"] = Qsamples.tolist()
+data["node-performance-simple"] = node_performance_simple.tolist()
+data["node-performance-complex"] = node_performance_complex.tolist()
+
+
 datastring = json.dumps(data)
 
 with open("Data/zkc_tmax_comparison.json", "w") as output_file:

@@ -15,7 +15,7 @@ axislabel_fontsize = 20
 tick_fontsize = 18
 fs.set_fonts(
     {
-        "font.family": "sans-serif",
+        "font.family": "serif",
         "axes.labelsize": axislabel_fontsize,
         "xtick.labelsize": tick_fontsize,
         "ytick.labelsize": tick_fontsize,
@@ -63,7 +63,7 @@ def visualize_networks(i, ax):
             A = erdos_renyi(n, 0.1, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 1:
-            A = truncated_power_law_configuration(n, 2, 20, 3, seed=0)
+            A = truncated_power_law_configuration(n, 2, 20, -3, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 2:
             k = 2  # each node belongs to two cliques
@@ -153,4 +153,4 @@ for i, m in enumerate(models):
 
 plt.savefig(f"Figures/Fig4/fig4.png", dpi=1000)
 plt.savefig(f"Figures/Fig4/fig4.pdf", dpi=1000)
-plt.show()
+# plt.show()

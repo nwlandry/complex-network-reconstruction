@@ -29,12 +29,16 @@ titles = ["Erdös-Rényi", "Power-law CM", "Clustered"]
 labels = [r"$p$", r"$\alpha$", r"$s$"]
 xticks = [
     [0, 0.5, 1],
-    [-4, -3.5, -3, -2.5, -2, -1.5],
+    [
+        -4,
+        -3,
+        -2,
+    ],
     [1, 7, 13, 19],
 ]
 xticklabels = [
     ["0", "0.5", "1"],
-    ["-4", "-3.5", "-3", "-2.5", "-2", "-1.5"],
+    [r"$\mathregular{-4}$", r"$\mathregular{-3}$", r"$\mathregular{-2}$"],
     ["1", "7", "13", "19"],
 ]
 convert_to_log = [False, False, False]
@@ -47,7 +51,7 @@ def visualize_networks(i, ax):
             A = erdos_renyi(n, 0.1, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 1:
-            A = truncated_power_law_configuration(n, 2, 20, 3, seed=0)
+            A = truncated_power_law_configuration(n, 2, 20, -3, seed=0)
             e = [(i, j) for i, j in nx.Graph(A).edges]
         case 2:
             k = 2  # each node belongs to two cliques
@@ -60,7 +64,7 @@ def visualize_networks(i, ax):
 
     H = xgi.Hypergraph(e)
 
-    node_size = 5
+    node_size = 4
     dyad_lw = 0.5
     node_lw = 0.5
 
@@ -74,8 +78,8 @@ def visualize_networks(i, ax):
     xgi.draw(H, ax=ax, pos=pos, node_size=node_size, node_lw=node_lw, dyad_lw=dyad_lw)
 
 
-fig = plt.figure(figsize=(8, 8))
-plt.subplots_adjust(left=0.12, right=0.85, bottom=0.1, top=0.95, wspace=0.4, hspace=0.4)
+fig = plt.figure(figsize=(5.5, 5))
+plt.subplots_adjust(left=0.12, right=0.84, bottom=0.1, top=0.95, wspace=0.4, hspace=0.4)
 
 gs = GridSpec(3, len(models), wspace=0.2, hspace=0.2)
 
@@ -137,21 +141,15 @@ for i, m in enumerate(models):
 
     ax.set_xlabel(labels[i])
 
-cbar_ax1 = fig.add_axes([0.86, 0.45, 0.015, 0.325])
+cbar_ax1 = fig.add_axes([0.85, 0.4, 0.015, 0.25])
 cbar = fig.colorbar(im1, cax=cbar_ax1)
-cbar.set_label(
-    r"$\mathregular{AUPRC_{Complex} - AUPRC_{Simple}}$", rotation=270, labelpad=25
-)
-# cbar_ax1.set_yticks([0, 0.5, 1], [0, 0.5, 1])
+cbar.set_label(r"$\Delta \,\mathregular{AUPRC}$", rotation=270, labelpad=10)
+cbar_ax1.set_yticks([-0.5, 0, 0.5])
 
-cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.325])
+cbar_ax2 = fig.add_axes([0.85, 0.1, 0.015, 0.25])
 cbar = fig.colorbar(im2, cax=cbar_ax2)
-cbar.set_label(
-    r"$|\rho-\rho_{\mathregular{Simple}}| - |\rho-\rho_{\mathregular{Complex}}|$",
-    rotation=270,
-    labelpad=25,
-)
-# cbar_ax2.set_yticks([-1, 0, 1], [-1, 0, 1])
+cbar.set_label(r"$\Delta\, \phi(\rho)$", rotation=270, labelpad=10)
+cbar_ax2.set_yticks([-0.5, 0, 0.5])
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
@@ -160,4 +158,4 @@ for i, m in enumerate(models):
 
 plt.savefig(f"Figures/Fig5/fig5.png", dpi=1000)
 plt.savefig(f"Figures/Fig5/fig5.pdf", dpi=1000)
-plt.show()
+# plt.show()
