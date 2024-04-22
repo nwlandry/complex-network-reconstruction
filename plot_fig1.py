@@ -212,7 +212,7 @@ ax3.text(
     va="top",
 )
 
-measure = "auprc"
+measure = "auroc"
 
 with open("Data/zkc_infer_vs_tmax.json") as file:
     data = json.load(file)
@@ -253,8 +253,8 @@ ax3.set_xticks(
         r"$\mathregular{10^4}$",
     ],
 )
-ax3.set_ylim([0, 1])
-ax3.set_yticks([0, 0.5, 1], [0, 0.5, 1])
+ax3.set_ylim([0.5, 1])
+ax3.set_yticks([0.5, 0.75, 1], [0.5, 0.75, 1])
 
 ax3.legend(
     loc="lower right",
@@ -293,7 +293,7 @@ c = ax4.imshow(
     extent=(min(frac), max(frac), max(beta), min(beta)),
     aspect="auto",
     cmap=cmap,
-    vmin=0,
+    vmin=0.5,
     vmax=1,
 )
 ax4.set_xlabel(r"Complexity, $\lambda$")
@@ -304,8 +304,8 @@ ax4.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 cbar_ax = fig.add_axes([0.91, 0.15, 0.015, 0.31])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(r"AUPRC", fontsize=axislabel_fontsize, rotation=270, labelpad=10)
-cbar_ax.set_yticks([0, 1], [0, 1], fontsize=tick_fontsize)
+cbar.set_label(measure.upper(), fontsize=axislabel_fontsize, rotation=270, labelpad=10)
+cbar_ax.set_yticks([0.5, 1], [0.5, 1], fontsize=tick_fontsize)
 
 plt.savefig("Figures/Fig1/fig1.png", dpi=1000)
 plt.savefig("Figures/Fig1/fig1.pdf", dpi=1000)
