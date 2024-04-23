@@ -10,6 +10,8 @@ from lcs import *
 
 axis_limits = [0, 1]
 
+measure = "auprc"
+
 fs.set_fonts()
 fs.set_colors()
 cmap = fs.cmap
@@ -85,7 +87,7 @@ for i, m in enumerate(models):
     var = np.array(data[keys[i]], dtype=float)
     b = np.array(data["beta"], dtype=float)
 
-    performance = np.array(data["auprc"], dtype=float)
+    performance = np.array(data[measure], dtype=float)
 
     # plot the difference in auprc
     mean_difference = performance[1].mean(axis=2).T - performance[0].mean(axis=2).T
@@ -139,12 +141,12 @@ for i, m in enumerate(models):
 
 cbar_ax1 = fig.add_axes([0.85, 0.4, 0.015, 0.25])
 cbar = fig.colorbar(im1, cax=cbar_ax1)
-cbar.set_label(r"$ \Delta \,\mathregular{AUPRC}$", rotation=270, labelpad=10)
+cbar.set_label(rf"$\Delta$ {measure.upper()}", rotation=270, labelpad=10)
 cbar_ax1.set_yticks([-0.5, 0, 0.5])
 
 cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.25])
 cbar = fig.colorbar(im2, cax=cbar_ax2)
-cbar.set_label(r"$\Delta\, \phi(\rho)$", rotation=270, labelpad=10)
+cbar.set_label(r"$\Delta\, \phi_{\rho}$", rotation=270, labelpad=10)
 cbar_ax2.set_yticks([-0.5, 0, 0.5])
 
 for i, m in enumerate(models):

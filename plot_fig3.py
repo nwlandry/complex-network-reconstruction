@@ -97,10 +97,9 @@ plt.xticks(
 plt.yticks([-0.2, -0.1, 0, 0.1, 0.2])
 
 plt.legend(frameon=False, loc="upper left")
-plt.ylabel(r"$\Delta\,\phi(a_{ij})$")
-plt.xlabel(r"$t_{\mathregular{max}}$")
+plt.ylabel(r"$\Delta\,\phi_i$")
+plt.xlabel(r"$t_{\max}$")
 sns.despine()
-
 plt.tight_layout()
 
 plt.savefig("Figures/Fig3/fig3.png", dpi=1000)

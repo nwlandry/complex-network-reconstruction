@@ -304,7 +304,7 @@ ax4.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 cbar_ax = fig.add_axes([0.91, 0.15, 0.015, 0.31])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(r"AUPRC", fontsize=axislabel_fontsize, rotation=270, labelpad=10)
+cbar.set_label(measure.upper(), fontsize=axislabel_fontsize, rotation=270, labelpad=10)
 cbar_ax.set_yticks([0, 1], [0, 1], fontsize=tick_fontsize)
 
 plt.savefig("Figures/Fig1/fig1.png", dpi=1000)

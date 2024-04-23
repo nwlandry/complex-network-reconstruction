@@ -8,7 +8,7 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-metric_name = "auprc"
+measure = "auprc"
 axis_limits = [0, 1]
 
 axislabel_fontsize = 20
@@ -110,7 +110,7 @@ for i, m in enumerate(models):
         data = json.load(file)
     var = np.array(data[keys[i]], dtype=float)
     b = np.array(data["beta"], dtype=float)
-    recovery_metric = np.array(data[metric_name], dtype=float)
+    recovery_metric = np.array(data[measure], dtype=float)
 
     if convert_to_log[i]:
         var = np.log10(var)
@@ -143,7 +143,7 @@ for i, m in enumerate(models):
 
 cbar_ax = fig.add_axes([0.91, 0.1, 0.015, 0.63])
 cbar = fig.colorbar(im, cax=cbar_ax)
-cbar.set_label(r"AUPRC", fontsize=axislabel_fontsize, rotation=270, labelpad=25)
+cbar.set_label(measure.upper(), fontsize=axislabel_fontsize, rotation=270, labelpad=25)
 cbar_ax.set_yticks([0, 0.5, 1], [0, 0.5, 1], fontsize=tick_fontsize)
 
 for i, m in enumerate(models):
