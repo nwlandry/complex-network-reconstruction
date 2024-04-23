@@ -8,7 +8,7 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
-measure = "auroc"
+measure = "auprc"
 
 axis_limits = [0, 1]
 

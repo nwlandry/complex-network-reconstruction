@@ -10,7 +10,7 @@ from lcs import *
 
 axis_limits = [0, 1]
 
-measure = "auroc"
+measure = "auprc"
 
 fs.set_fonts()
 fs.set_colors()
