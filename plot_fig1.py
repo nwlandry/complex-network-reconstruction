@@ -241,7 +241,7 @@ for i in range(len(tmax)):
     hdi_b[i] = b
 
 ax3.fill_between(tmax, hdi_a, hdi_b, alpha=0.3, color="C1", edgecolor="none")
-ax3.set_ylabel("AUPRC")
+ax3.set_ylabel(measure.upper())
 ax3.set_xlabel(r"$t_{\mathregular{max}}$")
 ax3.set_xlim([10, 10**4])
 ax3.set_xticks(
