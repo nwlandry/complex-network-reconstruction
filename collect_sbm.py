@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 from joblib import Parallel, delayed
+from numpy.linalg import eigh
 
 from lcs import *
 
@@ -58,6 +59,9 @@ def get_metrics(f, dir, c_dict, b_dict, e_dict, r_dict):
     m = dict()
     m["rho"] = density(A)
     m["rho-samples"] = density(samples.mean(axis=0))
+    m["mean-degree"] = degrees(A).mean()
+    m["mean-squared-degree"] = (degrees(A) ** 2).mean()
+    m["pf-eigenvalue"] = eigh(A)[0][-1]
     m["ps"] = posterior_similarity(samples, A)
     m["sps"] = samplewise_posterior_similarity(samples, A)
     m["fs"] = f_score(samples, A)
@@ -95,6 +99,9 @@ data["beta"] = list(b_dict)
 data["epsilon"] = list(e_dict)
 data["rho"] = np.zeros((n_c, n_b, n_e, n_r))
 data["rho-samples"] = np.zeros((n_c, n_b, n_e, n_r))
+data["mean-degree"] = np.zeros((n_c, n_b, n_e, n_r))
+data["mean-squared-degree"] = np.zeros((n_c, n_b, n_e, n_r))
+data["pf-eigenvalue"] = np.zeros((n_c, n_b, n_e, n_r))
 data["ps"] = np.zeros((n_c, n_b, n_e, n_r))
 data["sps"] = np.zeros((n_c, n_b, n_e, n_r))
 data["fs"] = np.zeros((n_c, n_b, n_e, n_r))

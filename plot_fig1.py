@@ -212,7 +212,7 @@ ax3.text(
     va="top",
 )
 
-measure = "auprc"
+measure = "auroc"
 
 with open("Data/zkc_infer_vs_tmax.json") as file:
     data = json.load(file)
@@ -258,7 +258,7 @@ ax3.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 ax3.legend(
     loc="lower right",
-    bbox_to_anchor=(0.87, -0.05, 0.2, 0.2),
+    bbox_to_anchor=(0.87, -0.07, 0.2, 0.2),
     markerfirst=False,
     frameon=False,
     handlelength=0.8,

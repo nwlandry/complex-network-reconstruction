@@ -1,5 +1,6 @@
 import json
 
+import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 import xgi
@@ -8,9 +9,9 @@ from matplotlib.gridspec import GridSpec
 import fig_settings as fs
 from lcs import *
 
+gamma = 0.1
+measure = "auroc"
 axis_limits = [0, 1]
-
-measure = "auprc"
 
 fs.set_fonts()
 fs.set_colors()
@@ -86,17 +87,18 @@ for i, m in enumerate(models):
         data = json.load(file)
     var = np.array(data[keys[i]], dtype=float)
     b = np.array(data["beta"], dtype=float)
+    l = np.array(data["pf-eigenvalue"], dtype=float)[0].mean(axis=0).mean(axis=1)
 
     performance = np.array(data[measure], dtype=float)
 
-    # plot the difference in auprc
+    # plot the difference in auroc
     mean_difference = performance[1].mean(axis=2).T - performance[0].mean(axis=2).T
     ax = fig.add_subplot(gs[1, i])
     im1 = ax.imshow(
         to_imshow_orientation(mean_difference),
         extent=(min(var), max(var), min(b), max(b)),
-        vmin=-0.5,
-        vmax=0.5,
+        vmin=-0.3,
+        vmax=0.3,
         aspect="auto",
         cmap=cmap,
     )
@@ -104,6 +106,10 @@ for i, m in enumerate(models):
     ax.set_ylim([min(b), max(b)])
     ax.set_xticks(xticks[i], xticklabels[i])
     ax.set_yticks([0, 0.5, 1], [0, 0.5, 1])
+
+    beta_c = gamma / l
+    for r0 in range(1, 10, 2):
+        ax.plot(var, r0 * beta_c, "r-", linewidth=0.5)
 
     if i == 0:
         ax.set_ylabel(r"$\beta$")
@@ -122,8 +128,8 @@ for i, m in enumerate(models):
     im2 = ax.imshow(
         to_imshow_orientation(mean_difference),
         extent=(min(var), max(var), min(b), max(b)),
-        vmin=-0.5,
-        vmax=0.5,
+        vmin=-0.3,
+        vmax=0.3,
         aspect="auto",
         cmap=cmap,
     )
@@ -142,12 +148,12 @@ for i, m in enumerate(models):
 cbar_ax1 = fig.add_axes([0.85, 0.4, 0.015, 0.25])
 cbar = fig.colorbar(im1, cax=cbar_ax1)
 cbar.set_label(rf"$\Delta$ {measure.upper()}", rotation=270, labelpad=10)
-cbar_ax1.set_yticks([-0.5, 0, 0.5])
+cbar_ax1.set_yticks([-0.3, 0, 0.3])
 
 cbar_ax2 = fig.add_axes([0.86, 0.1, 0.015, 0.25])
 cbar = fig.colorbar(im2, cax=cbar_ax2)
 cbar.set_label(r"$\Delta\, \phi_{\rho}$", rotation=270, labelpad=10)
-cbar_ax2.set_yticks([-0.5, 0, 0.5])
+cbar_ax2.set_yticks([-0.3, 0, 0.3])
 
 for i, m in enumerate(models):
     ax = fig.add_subplot(gs[0, i])
