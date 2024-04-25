@@ -34,4 +34,4 @@ This repository accompanies the preprint "$R_0$ explains when complex contagion 
 * `collect_zkc_infer_vs_tmax.py` and `collect_zkc_frac_vs_beta` collect this data and measure the performance of the reconstructions for Figs. 1(c) and 1(d) respectively.
 
 ### Notebooks
-* `run_dynamical_inference.ipynb` runs a single inference from a single network and time series.
+* `run_dynamical_inference.ipynb` runs a single inference for a single network and time series.
