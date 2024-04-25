@@ -8,7 +8,7 @@ This repository accompanies the preprint "$R_0$ explains when complex contagion 
 * The `tests` folder contains unit tests to validate the code written for generating our results.
 * The `lcs` (Learning Complex Structure) folder contains all of the code necessary for the generation of time series, the generation of random networks, the inference of networks, and the measurement of reconstruction performance.
 * The `Extra` folder contains scripts and notebooks which are not used in the manuscript.
-* The `convergence` folder contains notebooks used for heuristically determining what the values for bunr-in and sampling gap should be for our MCMC sampler.
+* The `convergence` folder contains notebooks used for heuristically determining what the values for burn-in and sampling gap should be for our MCMC sampler.
 
 ### General things:
 * To run the unit tests, you need to pip install the package locally. Navigate to the local folder on your computer and run "pip install -e ."
@@ -31,7 +31,7 @@ This repository accompanies the preprint "$R_0$ explains when complex contagion 
   * `collect_watts-strogatz.py`
 * `zkc_*.py` generates the data used in Figs. 1 and 3.
 * `collect_tmax_comparison.py` collect the data generated vs. tmax and measures the nodal performance displayed in Fig. 3.
-* `collect_zkc_infer_Vs_tmax.py` and `collect_zkc_frac_vs_beta` collect this data and measure the performance of the reconstructions for Figs. 1(c) and 1(d) respectively.
+* `collect_zkc_infer_vs_tmax.py` and `collect_zkc_frac_vs_beta` collect this data and measure the performance of the reconstructions for Figs. 1(c) and 1(d) respectively.
 
 ### Notebooks
 * `run_dynamical_inference.ipynb` runs a single inference from a single network and time series.
