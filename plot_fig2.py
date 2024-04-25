@@ -108,7 +108,7 @@ for i, m in enumerate(models):
     ax.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
     beta_c = gamma / l
-    for r0 in range(1, 10, 2):
+    for r0 in range(1, 100, 10):
         ax.plot(var, r0 * beta_c, "r-", linewidth=0.5)
 
     if i == 0:
@@ -133,6 +133,9 @@ for i, m in enumerate(models):
         aspect="auto",
         cmap=cmap,
     )
+
+    for r0 in range(1, 100, 10):
+        ax.plot(var, r0 * beta_c, "r-", linewidth=0.5)
     ax.set_xlim([min(var), max(var)])
     ax.set_ylim([min(b), max(b)])
     ax.set_xticks(xticks[i], xticklabels[i])

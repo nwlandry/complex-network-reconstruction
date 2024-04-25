@@ -221,6 +221,14 @@ performance = np.array(data[measure], dtype=float)
 
 ax3.semilogx(tmax, performance[0].mean(axis=1), color="C0", label="Simple")
 ax3.semilogx(tmax, performance[1].mean(axis=1), color="C1", label="Complex")
+min_idx = np.where((performance[0].mean(axis=1) - performance[1].mean(axis=1)) < 0)[
+    0
+].min()
+max_idx = np.where((performance[0].mean(axis=1) - performance[1].mean(axis=1)) < 0)[
+    0
+].max()
+print(tmax[min_idx])
+print(tmax[max_idx])
 
 hdi_a = np.zeros_like(tmax)
 hdi_b = np.zeros_like(tmax)
