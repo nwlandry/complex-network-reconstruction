@@ -1,6 +1,6 @@
-# $R_0$ explains when complex contagion outperforms simple contagion for network reconstruction
+# Complex contagions can outperform simple contagions for network reconstruction at high intensity
 
-This repository accompanies the preprint "$R_0$ explains when complex contagion outperforms simple contagion for network reconstruction" by Nicholas Landry, Will Thompson, Laurent Hébert-Dufresne, and Jean-Gabriel Young.
+This repository accompanies the preprint "Complex contagions can outperform simple contagions for network reconstruction at high intensity" by Nicholas Landry, Will Thompson, Laurent Hébert-Dufresne, and Jean-Gabriel Young.
 
 ### The structure of this repository is as follows:
 * The `Data` folder contains all of the data corresponding to the figures in the manuscript.
