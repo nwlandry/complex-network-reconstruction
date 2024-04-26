@@ -11,6 +11,8 @@ from lcs import *
 gamma = 0.1
 measure = "auroc"
 
+r0_lines = True
+
 axis_limits = [0, 1]
 
 fs.set_fonts()
@@ -113,8 +115,9 @@ for i, m in enumerate(models):
 
     beta_c = gamma / l
 
-    for r0 in range(1, 100, 10):
-        ax.plot(var, r0 * beta_c, "-", linewidth=0.25, color="grey")
+    if r0_lines:
+        for r0 in range(1, 100, 10):
+            ax.plot(var, r0 * beta_c, "-", linewidth=0.25, color="grey")
 
     if i == 0:
         ax.set_ylabel(r"$\beta$")

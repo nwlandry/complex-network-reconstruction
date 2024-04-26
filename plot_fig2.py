@@ -13,6 +13,8 @@ gamma = 0.1
 measure = "auroc"
 axis_limits = [0, 1]
 
+r0_lines = True
+
 fs.set_fonts()
 fs.set_colors()
 cmap = fs.cmap
@@ -108,8 +110,10 @@ for i, m in enumerate(models):
     ax.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
     beta_c = gamma / l
-    for r0 in range(1, 100, 10):
-        ax.plot(var, r0 * beta_c, "-", linewidth=0.25, color="grey")
+
+    if r0_lines:
+        for r0 in range(1, 100, 10):
+            ax.plot(var, r0 * beta_c, "-", linewidth=0.25, color="grey")
 
     if i == 0:
         ax.set_ylabel(r"$\beta$")
