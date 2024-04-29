@@ -35,8 +35,8 @@ ax1 = fig.add_subplot(gs[0])
 ax1.set_position([0, 0.4, 0.45, 0.75])
 
 ax1.text(
-    0.025,
-    0.775,
+    0.01,
+    0.79,
     "(a)",
     transform=ax1.transAxes,
     fontsize=13,
@@ -111,7 +111,7 @@ Panel 2:
 ax2 = fig.add_subplot(gs[1])
 ax2.text(
     -0.39,
-    1.1,
+    1.13,
     "(b)",
     transform=ax2.transAxes,
     fontsize=12,
@@ -203,8 +203,8 @@ Panel 3: recovery vs. tmax
 """
 ax3 = fig.add_subplot(gs[2])
 ax3.text(
-    -0.35,
-    1.05,
+    -0.37,
+    1.11,
     "(c)",
     transform=ax3.transAxes,
     fontsize=12,
@@ -280,7 +280,7 @@ Panel 4: heatmap of recover vs. beta and f
 ax4 = fig.add_subplot(gs[3])
 ax4.text(
     -0.38,
-    1.05,
+    1.11,
     "(d)",
     transform=ax4.transAxes,
     fontsize=12,
@@ -300,8 +300,8 @@ c = ax4.imshow(
     np.fliplr(to_imshow_orientation(mean_performance)),
     extent=(min(frac), max(frac), max(beta), min(beta)),
     aspect="auto",
-    cmap=cmap,
-    vmin=0,
+    cmap=fs.auroc_cmap,
+    vmin=0.5,
     vmax=1,
 )
 ax4.set_xlabel(r"Complexity, $\lambda$")
@@ -312,8 +312,8 @@ ax4.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
 cbar_ax = fig.add_axes([0.91, 0.15, 0.015, 0.31])  # x, y, width, height
 cbar = plt.colorbar(c, cax=cbar_ax)
-cbar.set_label(measure.upper(), fontsize=axislabel_fontsize, rotation=270, labelpad=10)
-cbar_ax.set_yticks([0, 1], [0, 1], fontsize=tick_fontsize)
+cbar.set_label(measure.upper(), fontsize=axislabel_fontsize, rotation=270, labelpad=0)
+cbar_ax.set_yticks([0.5, 1], [0.5, 1], fontsize=tick_fontsize)
 
 plt.savefig("Figures/Fig1/fig1.png", dpi=1000)
 plt.savefig("Figures/Fig1/fig1.pdf", dpi=1000)

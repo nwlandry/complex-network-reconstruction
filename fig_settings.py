@@ -13,9 +13,11 @@ import matplotlib.pylab as pylab
 # color styling
 def set_colors(n_colors=2):
     global cmap
+    global auroc_cmap
     global pallette
     cmap = "cmr.redshift"
     qualitative_cmap = cmr.get_sub_cmap(cmap, 0.2, 0.8, N=n_colors)
+    auroc_cmap = cmr.get_sub_cmap(cmap, 0.5, 1)
 
     pallette = qualitative_cmap.colors
     mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=pallette)
