@@ -250,7 +250,7 @@ for i in range(len(tmax)):
 
 ax3.fill_between(tmax, hdi_a, hdi_b, alpha=0.3, color="C1", edgecolor="none")
 ax3.set_ylabel(measure.upper())
-ax3.set_xlabel(r"$t_{\mathregular{max}}$")
+ax3.set_xlabel(r"Time series length, $T$")
 ax3.set_xlim([10, 10**4])
 ax3.set_xticks(
     [10, 100, 1000, 10000],
@@ -304,7 +304,7 @@ c = ax4.imshow(
     vmin=0.5,
     vmax=1,
 )
-ax4.set_xlabel(r"Complexity, $\lambda$")
+ax4.set_xlabel(r"Complexity, $\omega$")
 ax4.set_ylabel(r"Infectivity, $\beta$")
 
 ax4.set_xticks([0, 0.5, 1], [0, 0.5, 1])
