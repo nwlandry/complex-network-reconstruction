@@ -140,7 +140,7 @@ ax2.plot(nus, c1, "-", color="C0", lw=5, alpha=0.5)
 
 err_c1 = np.zeros((2, n))
 for i in range(n):
-    interval = az.hdi(c1_samples[:, i], hdi_prob=0.95)
+    interval = az.hdi(c1_samples[:, i], hdi_prob=0.8)
     x, y = interval
     err_c1[0, i] = max(c1_mean[i] - x, 0)
     err_c1[1, i] = max(y - c1_mean[i], 0)
@@ -165,7 +165,7 @@ ax2.plot(nus, c2, "-", color="C1", lw=5, alpha=0.5)
 
 err_c2 = np.zeros((2, n))
 for i in range(n):
-    interval = az.hdi(c2_samples[:, i], alpha=0.05, roundto=4)
+    interval = az.hdi(c2_samples[:, i], hdi_prob=0.8)
     x, y = interval
     err_c2[0, i] = max(c2_mean[i] - x, 0)
     err_c2[1, i] = max(y - c2_mean[i], 0)
@@ -219,12 +219,12 @@ with open("Data/zkc_infer_vs_tmax.json") as file:
 tmax = np.array(data["tmax"], dtype=float)
 performance = np.array(data[measure], dtype=float)
 
-ax3.semilogx(tmax, performance[0].mean(axis=1), color="C0", label="Simple")
-ax3.semilogx(tmax, performance[1].mean(axis=1), color="C1", label="Complex")
-min_idx = np.where((performance[0].mean(axis=1) - performance[1].mean(axis=1)) < 0)[
+ax3.semilogx(tmax, np.median(performance[0], axis=1), color="C0", label="Simple")
+ax3.semilogx(tmax, np.median(performance[1], axis=1), color="C1", label="Complex")
+min_idx = np.where((np.median(performance[0], axis=1) - np.median(performance[1], axis=1)) < 0)[
     0
 ].min()
-max_idx = np.where((performance[0].mean(axis=1) - performance[1].mean(axis=1)) < 0)[
+max_idx = np.where((np.median(performance[0], axis=1) - np.median(performance[1], axis=1)) < 0)[
     0
 ].max()
 print(tmax[min_idx])
@@ -233,7 +233,7 @@ print(tmax[max_idx])
 hdi_a = np.zeros_like(tmax)
 hdi_b = np.zeros_like(tmax)
 for i in range(len(tmax)):
-    interval = az.hdi(performance[0, i], hdi_prob=0.95)
+    interval = az.hdi(performance[0, i], hdi_prob=0.8)
     a, b = interval
     hdi_a[i] = a
     hdi_b[i] = b
@@ -243,7 +243,7 @@ ax3.fill_between(tmax, hdi_a, hdi_b, alpha=0.3, color="C0", edgecolor="none")
 hdi_a = np.zeros_like(tmax)
 hdi_b = np.zeros_like(tmax)
 for i in range(len(tmax)):
-    interval = az.hdi(performance[1, i], hdi_prob=0.95)
+    interval = az.hdi(performance[1, i], hdi_prob=0.8)
     a, b = interval
     hdi_a[i] = a
     hdi_b[i] = b
@@ -261,8 +261,8 @@ ax3.set_xticks(
         r"$\mathregular{10^4}$",
     ],
 )
-ax3.set_ylim([0, 1])
-ax3.set_yticks([0, 0.5, 1], [0, 0.5, 1])
+ax3.set_ylim([0.45, 1])
+ax3.set_yticks([0.5, 1], [0.5, 1])
 
 ax3.legend(
     loc="lower right",
