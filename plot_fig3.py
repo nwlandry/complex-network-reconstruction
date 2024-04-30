@@ -44,7 +44,7 @@ alpha = 1
 
 x = tmax
 
-plt.figure(figsize=(5.5, 4))
+plt.figure(figsize=(4, 3.5))
 
 core_values = np.unique(coreness)
 
@@ -69,7 +69,7 @@ for idx, k in enumerate(core_values):
         markersize=ms,
         color=clist[idx],
         alpha=alpha,
-        label=f"{int(k)}-core nodes",
+        label=f"{int(k)}-core",
     )
     plt.fill_between(x, hdpi_a, hdpi_b, color=clist[idx], alpha=0.1)
 
