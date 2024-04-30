@@ -1,6 +1,6 @@
-# Complex contagions can outperform simple contagions for network reconstruction at high intensity
+# Complex contagions can outperform simple contagions for network reconstruction with dense networks or saturated dynamics
 
-This repository accompanies the preprint "Complex contagions can outperform simple contagions for network reconstruction at high intensity" by Nicholas Landry, Will Thompson, Laurent Hébert-Dufresne, and Jean-Gabriel Young.
+This repository accompanies the preprint "Complex contagions can outperform simple contagions for network reconstruction with dense networks or saturated dynamics" by Nicholas Landry, Will Thompson, Laurent Hébert-Dufresne, and Jean-Gabriel Young.
 
 ### The structure of this repository is as follows:
 * The `Data` folder contains all of the data corresponding to the figures in the manuscript.
