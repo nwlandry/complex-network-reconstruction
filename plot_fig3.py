@@ -9,17 +9,8 @@ import xgi
 import fig_settings as fs
 from lcs import *
 
-axislabel_fontsize = 12
-tick_fontsize = 12
-fs.set_fonts(
-    {
-        "font.family": "serif",
-        "axes.labelsize": axislabel_fontsize,
-        "xtick.labelsize": tick_fontsize,
-        "ytick.labelsize": tick_fontsize,
-    }
-)
 
+fs.set_fonts()
 with open(f"Data/zkc_tmax_comparison.json") as file:
     data = json.load(file)
     tmax = np.array(data["tmax"], dtype=float)
@@ -52,7 +43,7 @@ alpha = 1
 
 x = tmax
 
-plt.figure(figsize=(5.5, 5))
+plt.figure(figsize=(5.5, 4))
 
 core_values = np.unique(coreness)
 
@@ -98,7 +89,7 @@ plt.yticks([-0.2, -0.1, 0, 0.1, 0.2])
 
 plt.legend(frameon=False, loc="upper left")
 plt.ylabel(r"$\Delta\,\phi_i$")
-plt.xlabel(r"$t_{\max}$")
+plt.xlabel(r"$T$")
 sns.despine()
 plt.tight_layout()
 
