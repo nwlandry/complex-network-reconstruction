@@ -9,16 +9,8 @@ import xgi
 import fig_settings as fs
 from lcs import *
 
-axislabel_fontsize = 12
-tick_fontsize = 12
-fs.set_fonts(
-    {
-        "font.family": "serif",
-        "axes.labelsize": axislabel_fontsize,
-        "xtick.labelsize": tick_fontsize,
-        "ytick.labelsize": tick_fontsize,
-    }
-)
+
+fs.set_fonts()
 
 with open(f"Data/zkc_tmax_comparison.json") as file:
     data = json.load(file)
@@ -52,7 +44,7 @@ alpha = 1
 
 x = tmax
 
-plt.figure(figsize=(5.5, 5))
+plt.figure(figsize=(4, 3.5))
 
 core_values = np.unique(coreness)
 
@@ -61,7 +53,7 @@ for idx, k in enumerate(core_values):
     y = node_performance_complex[coreness == k] - node_performance_simple[coreness == k]
     # combine first and last axes.
     y = np.array([y[i, :, j] for i in range(n_k) for j in range(n_r)]).T
-    ymean = y.mean(axis=1)
+    ymean = np.median(y, axis=1)
 
     hdpi_a = np.zeros_like(tmax)
     hdpi_b = np.zeros_like(tmax)
@@ -77,7 +69,7 @@ for idx, k in enumerate(core_values):
         markersize=ms,
         color=clist[idx],
         alpha=alpha,
-        label=f"{int(k)}-core nodes",
+        label=f"{int(k)}-core",
     )
     plt.fill_between(x, hdpi_a, hdpi_b, color=clist[idx], alpha=0.1)
 
@@ -98,7 +90,7 @@ plt.yticks([-0.2, -0.1, 0, 0.1, 0.2])
 
 plt.legend(frameon=False, loc="upper left")
 plt.ylabel(r"$\Delta\,\phi_i$")
-plt.xlabel(r"$t_{\max}$")
+plt.xlabel(r"$T$")
 sns.despine()
 plt.tight_layout()
 

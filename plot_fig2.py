@@ -31,7 +31,7 @@ cfs = [
 ]
 keys = ["p", "alpha", "size"]
 titles = ["Erdös-Rényi", "Power-law CM", "Clustered"]
-labels = [r"$p$", r"$\alpha$", r"$s$"]
+labels = [r"Density, $p$", r"Exponent $\alpha$", r"Clique size $s$"]
 xticks = [
     [0, 0.5, 1],
     [-4, -3, -2],
@@ -116,7 +116,7 @@ for i, m in enumerate(models):
             ax.plot(var, r0 * beta_c, "-", linewidth=0.25, color="grey")
 
     if i == 0:
-        ax.set_ylabel(r"$\beta$")
+        ax.set_ylabel(r"Infectivity, $\beta$")
     else:
         ax.set_yticks([], [])
 
@@ -144,7 +144,7 @@ for i, m in enumerate(models):
     ax.set_yticks([0, 0.5, 1], [0, 0.5, 1])
 
     if i == 0:
-        ax.set_ylabel(r"$\beta$")
+        ax.set_ylabel(r"Infectivity,$\beta$")
     else:
         ax.set_yticks([], [])
 
