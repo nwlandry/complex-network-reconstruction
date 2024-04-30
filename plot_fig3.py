@@ -11,6 +11,7 @@ from lcs import *
 
 
 fs.set_fonts()
+
 with open(f"Data/zkc_tmax_comparison.json") as file:
     data = json.load(file)
     tmax = np.array(data["tmax"], dtype=float)
@@ -52,7 +53,7 @@ for idx, k in enumerate(core_values):
     y = node_performance_complex[coreness == k] - node_performance_simple[coreness == k]
     # combine first and last axes.
     y = np.array([y[i, :, j] for i in range(n_k) for j in range(n_r)]).T
-    ymean = y.mean(axis=1)
+    ymean = np.median(y, axis=1)
 
     hdpi_a = np.zeros_like(tmax)
     hdpi_b = np.zeros_like(tmax)

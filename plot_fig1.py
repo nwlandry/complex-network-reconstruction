@@ -140,7 +140,7 @@ ax2.plot(nus, c1, "-", color="C0", lw=5, alpha=0.5)
 
 err_c1 = np.zeros((2, n))
 for i in range(n):
-    interval = az.hdi(c1_samples[:, i], hdi_prob=0.8)
+    interval = az.hdi(c1_samples[:, i], hdi_prob=0.5)
     x, y = interval
     err_c1[0, i] = max(c1_mean[i] - x, 0)
     err_c1[1, i] = max(y - c1_mean[i], 0)
@@ -165,7 +165,7 @@ ax2.plot(nus, c2, "-", color="C1", lw=5, alpha=0.5)
 
 err_c2 = np.zeros((2, n))
 for i in range(n):
-    interval = az.hdi(c2_samples[:, i], hdi_prob=0.8)
+    interval = az.hdi(c2_samples[:, i], hdi_prob=0.5)
     x, y = interval
     err_c2[0, i] = max(c2_mean[i] - x, 0)
     err_c2[1, i] = max(y - c2_mean[i], 0)
@@ -233,7 +233,7 @@ print(tmax[max_idx])
 hdi_a = np.zeros_like(tmax)
 hdi_b = np.zeros_like(tmax)
 for i in range(len(tmax)):
-    interval = az.hdi(performance[0, i], hdi_prob=0.8)
+    interval = az.hdi(performance[0, i], hdi_prob=0.5)
     a, b = interval
     hdi_a[i] = a
     hdi_b[i] = b
@@ -243,7 +243,7 @@ ax3.fill_between(tmax, hdi_a, hdi_b, alpha=0.3, color="C0", edgecolor="none")
 hdi_a = np.zeros_like(tmax)
 hdi_b = np.zeros_like(tmax)
 for i in range(len(tmax)):
-    interval = az.hdi(performance[1, i], hdi_prob=0.8)
+    interval = az.hdi(performance[1, i], hdi_prob=0.5)
     a, b = interval
     hdi_a[i] = a
     hdi_b[i] = b
