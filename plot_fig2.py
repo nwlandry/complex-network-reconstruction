@@ -31,7 +31,7 @@ cfs = [
 ]
 keys = ["p", "alpha", "size"]
 titles = ["Erdös-Rényi", "Power-law CM", "Clustered"]
-labels = [r"Density, $p$", r"Exponent $\alpha$", r"Clique size $s$"]
+labels = [r"Density, $p$", r"Exponent, $\alpha$", r"Clique size, $s$"]
 xticks = [
     [0, 0.5, 1],
     [-4, -3, -2],
