@@ -9,3 +9,4 @@ arviz
 seaborn
 joblib
 scikit-learn
+cmasher
