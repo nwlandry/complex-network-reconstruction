@@ -221,12 +221,12 @@ performance = np.array(data[measure], dtype=float)
 
 ax3.semilogx(tmax, np.median(performance[0], axis=1), color="C0", label="Simple")
 ax3.semilogx(tmax, np.median(performance[1], axis=1), color="C1", label="Complex")
-min_idx = np.where((np.median(performance[0], axis=1) - np.median(performance[1], axis=1)) < 0)[
-    0
-].min()
-max_idx = np.where((np.median(performance[0], axis=1) - np.median(performance[1], axis=1)) < 0)[
-    0
-].max()
+min_idx = np.where(
+    (np.median(performance[0], axis=1) - np.median(performance[1], axis=1)) < 0
+)[0].min()
+max_idx = np.where(
+    (np.median(performance[0], axis=1) - np.median(performance[1], axis=1)) < 0
+)[0].max()
 print(tmax[min_idx])
 print(tmax[max_idx])
 
