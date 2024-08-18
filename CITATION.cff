@@ -10,7 +10,7 @@ authors:
 - family-names: "Young"
   given-names: "Jean-Gabriel"
   orcid: "https://orcid.org/0000-0002-4464-2692"
-title: "conplex-network-reconstruction"
-version: 0.2
+title: "complex-network-reconstruction"
+version: 0.3
 date-released: 2024-08-18
 url: "https://github.com/nwlandry/complex-network-reconstruction"
