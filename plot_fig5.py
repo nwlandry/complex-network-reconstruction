@@ -32,8 +32,14 @@ cfs = [
     r"Threshold, $\tau=3$",
 ]
 keys = ["p", "alpha", "size", "epsilon", "p"]
-titles = ["Erdös-Rényi", "Power-law CM", "Clustered", "SBM", "Small-World"]
-labels = [r"Density, $p$", r"Exponent, $\alpha$", r"Clique size, $s$", r"Imbalance, $\epsilon$", r"Rewiring prob., $p$"]
+titles = ["Erdős-Rényi", "Power-law CM", "Clustered", "SBM", "Small-World"]
+labels = [
+    r"Density, $p$",
+    r"Exponent, $\alpha$",
+    r"Clique size, $s$",
+    r"Imbalance, $\epsilon$",
+    r"Rewiring prob., $p$",
+]
 xticks = [
     [0, 0.5, 1],
     [-4, -3.5, -3, -2.5, -2, -1.5],

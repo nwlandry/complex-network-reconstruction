@@ -9,7 +9,6 @@ import xgi
 import fig_settings as fs
 from lcs import *
 
-
 fs.set_fonts()
 
 with open(f"Data/zkc_tmax_comparison.json") as file:

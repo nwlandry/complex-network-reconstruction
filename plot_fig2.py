@@ -30,7 +30,7 @@ cfs = [
     r"Threshold, $\tau=2$",
 ]
 keys = ["p", "alpha", "size"]
-titles = ["Erdös-Rényi", "Power-law CM", "Clustered"]
+titles = ["Erdős-Rényi", "Power-law CM", "Clustered"]
 labels = [r"Density, $p$", r"Exponent, $\alpha$", r"Clique size, $s$"]
 
 xticks = [
