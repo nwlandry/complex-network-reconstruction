@@ -1,6 +1,6 @@
 # Reconstructing networks from simple and complex contagions
 
-This repository accompanies the preprint ["Reconstructing networks from simple and complex contagions"](https://arxiv.org/abs/2405.00129) by Nicholas Landry, Will Thompson, Laurent Hébert-Dufresne, and Jean-Gabriel Young.
+This repository accompanies the article ["Reconstructing networks from simple and complex contagions"](https://doi.org/10.1103/PhysRevE.110.L042301) by Nicholas Landry, Will Thompson, Laurent Hébert-Dufresne, and Jean-Gabriel Young.
 
 ### The structure of this repository is as follows:
 * The `Data` folder contains all of the data corresponding to the figures in the manuscript.
