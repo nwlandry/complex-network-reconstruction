@@ -298,7 +298,7 @@ mean_performance = performance.mean(axis=2)
 
 c = ax4.imshow(
     np.fliplr(to_imshow_orientation(mean_performance)),
-    extent=(min(frac), max(frac), max(beta), min(beta)),
+    extent=(min(frac), max(frac), min(beta), max(beta)),
     aspect="auto",
     cmap=fs.auroc_cmap,
     vmin=0.5,
